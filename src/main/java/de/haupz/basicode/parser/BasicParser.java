@@ -106,19 +106,23 @@ StatementNode statement() throws ParseException {Token t;
 // expressions
 //
   final public 
-ExpressionNode expression() throws ParseException {ExpressionNode e;
-    e = string();
-{if ("" != null) return e;}
-    throw new Error("Missing return statement in function");
-}
-
-//
-// values
-//
-  final public 
-StringNode string() throws ParseException {Token s;
-    s = jj_consume_token(STRING);
-{if ("" != null) return new StringNode(s.image.substring(1, s.image.length() - 1));}
+ExpressionNode expression() throws ParseException {Token t;
+    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+    case STRING:{
+      t = jj_consume_token(STRING);
+{if ("" != null) return new StringNode(t.image.substring(1, t.image.length() - 1));}
+      break;
+      }
+    case NUMBER:{
+      t = jj_consume_token(NUMBER);
+{if ("" != null) return new IntegerNode(Integer.parseInt(t.image));}
+      break;
+      }
+    default:
+      jj_la1[4] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
     throw new Error("Missing return statement in function");
 }
 
@@ -131,7 +135,7 @@ StringNode string() throws ParseException {Token s;
   public Token jj_nt;
   private int jj_ntk;
   private int jj_gen;
-  final private int[] jj_la1 = new int[4];
+  final private int[] jj_la1 = new int[5];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static {
@@ -139,10 +143,10 @@ StringNode string() throws ParseException {Token s;
 	   jj_la1_init_1();
 	}
 	private static void jj_la1_init_0() {
-	   jj_la1_0 = new int[] {0x10,0x8,0x5,0x0,};
+	   jj_la1_0 = new int[] {0x10,0x8,0x5,0x0,0x50,};
 	}
 	private static void jj_la1_init_1() {
-	   jj_la1_1 = new int[] {0x0,0x0,0x0,0x5,};
+	   jj_la1_1 = new int[] {0x0,0x0,0x0,0x5,0x0,};
 	}
 
   /** Constructor with InputStream. */
@@ -156,7 +160,7 @@ StringNode string() throws ParseException {Token s;
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 4; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 5; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -170,7 +174,7 @@ StringNode string() throws ParseException {Token s;
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 4; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 5; i++) jj_la1[i] = -1;
   }
 
   /** Constructor. */
@@ -180,7 +184,7 @@ StringNode string() throws ParseException {Token s;
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 4; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 5; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -198,7 +202,7 @@ StringNode string() throws ParseException {Token s;
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 4; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 5; i++) jj_la1[i] = -1;
   }
 
   /** Constructor with generated Token Manager. */
@@ -207,7 +211,7 @@ StringNode string() throws ParseException {Token s;
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 4; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 5; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -216,7 +220,7 @@ StringNode string() throws ParseException {Token s;
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 4; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 5; i++) jj_la1[i] = -1;
   }
 
   private Token jj_consume_token(int kind) throws ParseException {
@@ -272,7 +276,7 @@ StringNode string() throws ParseException {Token s;
 	   la1tokens[jj_kind] = true;
 	   jj_kind = -1;
 	 }
-	 for (int i = 0; i < 4; i++) {
+	 for (int i = 0; i < 5; i++) {
 	   if (jj_la1[i] == jj_gen) {
 		 for (int j = 0; j < 32; j++) {
 		   if ((jj_la1_0[i] & (1<<j)) != 0) {

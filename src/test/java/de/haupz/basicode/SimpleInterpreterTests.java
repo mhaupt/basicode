@@ -85,4 +85,9 @@ public class SimpleInterpreterTests {
         testInterpreter("10 PRINT \"Hello, world!\"", "Hello, world!\n");
     }
 
+    @Test
+    public void testInteger() {
+        testInterpreter("10 PRINT 23", "23\n");
+    }
+
 }

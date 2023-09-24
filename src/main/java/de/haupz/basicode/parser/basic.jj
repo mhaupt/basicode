@@ -116,21 +116,9 @@ StatementNode statement():
 
 ExpressionNode expression():
 {
-    ExpressionNode e;
+    Token t;
 }
 {
-    e = string()
-    { return e; }
-}
-
-//
-// values
-//
-
-StringNode string():
-{
-    Token s;
-}
-{
-    s = <STRING> { return new StringNode(s.image.substring(1, s.image.length() - 1)); }
+    t = <STRING> { return new StringNode(t.image.substring(1, t.image.length() - 1)); }
+|   t = <NUMBER> { return new IntegerNode(Integer.parseInt(t.image)); }
 }
