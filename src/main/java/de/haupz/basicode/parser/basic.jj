@@ -1,0 +1,115 @@
+options {
+  IGNORE_CASE = true;
+  STATIC = false;
+}
+
+PARSER_BEGIN(BasicParser)
+package de.haupz.basicode.parser;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import de.haupz.basicode.ast.*;
+
+public class BasicParser {}
+PARSER_END(BasicParser)
+
+// Lexer.
+
+SKIP: {
+    " "
+}
+
+TOKEN: {
+// basics
+    < EOL: "\n" >
+|   < COLON: ":" >
+// numbers and other values
+|   < NUMBER: (<DIGIT>)+ >
+|   < DIGIT: ["0"-"9"] >
+|   < STRING: "\"" (~["\"","\n"])* "\"" >
+// identifiers
+|   < LETTER: ["a"-"z","A"-"Z"] >
+// keywords
+|   < ABS: "ABS" > | < AND: "AND" > | < ASC: "ASC" > | < ATN: "ATN" >
+|   < CHRS: "CHR$" > | < COS: "COS" >
+|   < DATA: "DATA" > | < DIM: "DIM" >
+|   < END: "END" >
+|   < FOR: "FOR" >
+|   < GOSUB: "GOSUB" > | < GOTO: "GOTO" >
+|   < INT: "INT" > | < IF: "IF" > | < INPUT: "INPUT" >
+|   < LEFTS: "LEFT$" > | < LEN: "LEN" > | < LET: "LET" > | < LOG: "LOG" >
+|   < MIDS: "MID$" >
+|   < NEXT: "NEXT" > | < NOT: "NOT" >
+|   < ON: "ON" > | < OR: "OR" >
+|   < PRINT: "PRINT" >
+|   < READ: "READ" > | < REM: "REM" (~["\n"])* > // REM is special: it consumes all characters until the end of the line
+|   < RESTORE: "RESTORE" > | < RETURN: "RETURN" > | < RIGHTS: "RIGHT$" > | < RUN: "RUN" >
+|   < SGN: "SGN" > | < SIN: "SIN" > | < SQR: "SQR" > | < STEP: "STEP" > | < STOP: "STOP" >
+|   < TAB: "TAB" > | < TAN: "TAN" > | < THEN: "THEN" > | < TO: "TO" >
+|   < VAL: "VAL" >
+// operands
+|   < PLUS: "+" >
+|   < MINUS: "-" >
+|   < TIMES: "*" >
+|   < DIV: "/" >
+|   < CARET: "^" >
+|   < EQ: "=" >
+|   < LT: "<" >
+|   < GT: ">" >
+|   < NEQ: "<>" >
+|   < LEQ: "<=" >
+|   < GEQ: ">=" >
+}
+
+// Parser.
+
+ProgramNode program():
+{
+    List<LineNode> lines = new ArrayList<>();
+    LineNode l;
+}
+{
+    (l = line() { lines.add(l); })*
+    { return new ProgramNode(lines); }
+}
+
+LineNode line():
+{
+    List<StatementNode> statements = new ArrayList<>();
+    int num;
+    StatementNode st;
+}
+{
+    num = lineNumber()
+    st = statement() { statements.add(st); }
+    (<COLON> st = statement() { statements.add(st); })*
+    (<EOL>|<EOF>)
+    { return new LineNode(num, statements); }
+}
+
+int lineNumber():
+{
+    Token n;
+}
+{
+    n = <NUMBER> { return Integer.parseInt(n.image); }
+}
+
+StatementNode statement():
+{
+    Token t;
+    StringNode s;
+}
+{
+    t = <REM> { return new RemNode(t.image); }
+|   <PRINT> s = string() { return new PrintNode(s); }
+}
+
+StringNode string():
+{
+    Token s;
+}
+{
+    s = <STRING> { return new StringNode(s.image.substring(1, s.image.length() - 1)); }
+}
