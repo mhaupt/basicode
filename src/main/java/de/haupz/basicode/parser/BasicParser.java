@@ -76,8 +76,12 @@ statements.add(st);
     throw new Error("Missing return statement in function");
 }
 
-  final public StatementNode statement() throws ParseException {Token t;
-    StringNode s;
+//
+// statements
+//
+  final public 
+StatementNode statement() throws ParseException {Token t;
+    ExpressionNode e;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case REM:{
       t = jj_consume_token(REM);
@@ -86,8 +90,8 @@ statements.add(st);
       }
     case PRINT:{
       jj_consume_token(PRINT);
-      s = string();
-{if ("" != null) return new PrintNode(s);}
+      e = expression();
+{if ("" != null) return new PrintNode(e);}
       break;
       }
     default:
@@ -98,7 +102,21 @@ statements.add(st);
     throw new Error("Missing return statement in function");
 }
 
-  final public StringNode string() throws ParseException {Token s;
+//
+// expressions
+//
+  final public 
+ExpressionNode expression() throws ParseException {ExpressionNode e;
+    e = string();
+{if ("" != null) return e;}
+    throw new Error("Missing return statement in function");
+}
+
+//
+// values
+//
+  final public 
+StringNode string() throws ParseException {Token s;
     s = jj_consume_token(STRING);
 {if ("" != null) return new StringNode(s.image.substring(1, s.image.length() - 1));}
     throw new Error("Missing return statement in function");

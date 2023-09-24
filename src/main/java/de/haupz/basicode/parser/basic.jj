@@ -96,15 +96,36 @@ int lineNumber():
     n = <NUMBER> { return Integer.parseInt(n.image); }
 }
 
+//
+// statements
+//
+
 StatementNode statement():
 {
     Token t;
-    StringNode s;
+    ExpressionNode e;
 }
 {
     t = <REM> { return new RemNode(t.image); }
-|   <PRINT> s = string() { return new PrintNode(s); }
+|   <PRINT> e = expression() { return new PrintNode(e); }
 }
+
+//
+// expressions
+//
+
+ExpressionNode expression():
+{
+    ExpressionNode e;
+}
+{
+    e = string()
+    { return e; }
+}
+
+//
+// values
+//
 
 StringNode string():
 {
