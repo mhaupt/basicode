@@ -64,6 +64,10 @@ TOKEN: {
 
 // Parser.
 
+//
+// basic structures
+//
+
 ProgramNode program():
 {
     List<LineNode> lines = new ArrayList<>();
@@ -116,9 +120,11 @@ StatementNode statement():
 
 ExpressionNode expression():
 {
+    ExpressionNode e;
     Token t;
 }
 {
-    t = <STRING> { return new StringNode(t.image.substring(1, t.image.length() - 1)); }
+    <ABS> "(" e = expression() ")" { return new AbsNode(e); }
 |   t = <NUMBER> { return new IntegerNode(Integer.parseInt(t.image)); }
+|   t = <STRING> { return new StringNode(t.image.substring(1, t.image.length() - 1)); }
 }

@@ -10,6 +10,10 @@ import de.haupz.basicode.ast.*;
 public class BasicParser implements BasicParserConstants {
 
 // Parser.
+
+//
+// basic structures
+//
   final public 
 ProgramNode program() throws ParseException {List<LineNode> lines = new ArrayList<>();
     LineNode l;
@@ -106,16 +110,25 @@ StatementNode statement() throws ParseException {Token t;
 // expressions
 //
   final public 
-ExpressionNode expression() throws ParseException {Token t;
+ExpressionNode expression() throws ParseException {ExpressionNode e;
+    Token t;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-    case STRING:{
-      t = jj_consume_token(STRING);
-{if ("" != null) return new StringNode(t.image.substring(1, t.image.length() - 1));}
+    case ABS:{
+      jj_consume_token(ABS);
+      jj_consume_token(60);
+      e = expression();
+      jj_consume_token(61);
+{if ("" != null) return new AbsNode(e);}
       break;
       }
     case NUMBER:{
       t = jj_consume_token(NUMBER);
 {if ("" != null) return new IntegerNode(Integer.parseInt(t.image));}
+      break;
+      }
+    case STRING:{
+      t = jj_consume_token(STRING);
+{if ("" != null) return new StringNode(t.image.substring(1, t.image.length() - 1));}
       break;
       }
     default:
@@ -143,7 +156,7 @@ ExpressionNode expression() throws ParseException {Token t;
 	   jj_la1_init_1();
 	}
 	private static void jj_la1_init_0() {
-	   jj_la1_0 = new int[] {0x10,0x8,0x5,0x0,0x50,};
+	   jj_la1_0 = new int[] {0x10,0x8,0x5,0x0,0x150,};
 	}
 	private static void jj_la1_init_1() {
 	   jj_la1_1 = new int[] {0x0,0x0,0x0,0x5,0x0,};
@@ -271,7 +284,7 @@ ExpressionNode expression() throws ParseException {Token t;
   /** Generate ParseException. */
   public ParseException generateParseException() {
 	 jj_expentries.clear();
-	 boolean[] la1tokens = new boolean[60];
+	 boolean[] la1tokens = new boolean[62];
 	 if (jj_kind >= 0) {
 	   la1tokens[jj_kind] = true;
 	   jj_kind = -1;
@@ -288,7 +301,7 @@ ExpressionNode expression() throws ParseException {Token t;
 		 }
 	   }
 	 }
-	 for (int i = 0; i < 60; i++) {
+	 for (int i = 0; i < 62; i++) {
 	   if (la1tokens[i]) {
 		 jj_expentry = new int[1];
 		 jj_expentry[0] = i;
