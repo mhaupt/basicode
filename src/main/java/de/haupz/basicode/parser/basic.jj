@@ -26,6 +26,8 @@ TOKEN: {
 |   < COLON: ":" >
 // numbers and other values
 |   < NUMBER: (<DIGIT>)+ >
+|   < INTEGER: (<PLUS>|<MINUS>)? <NUMBER> >
+|   < FLOAT: (<PLUS>|<MINUS>)? <NUMBER> "." <NUMBER> >
 |   < DIGIT: ["0"-"9"] >
 |   < STRING: "\"" (~["\"","\n"])* "\"" >
 // identifiers
@@ -125,6 +127,7 @@ ExpressionNode expression():
 }
 {
     <ABS> "(" e = expression() ")" { return new AbsNode(e); }
-|   t = <NUMBER> { return new IntegerNode(Integer.parseInt(t.image)); }
+|   (t = <NUMBER> | t = <INTEGER>) { return new IntegerNode(Integer.parseInt(t.image)); }
+|   t = <FLOAT> { return new DoubleNode(Double.parseDouble(t.image)); }
 |   t = <STRING> { return new StringNode(t.image.substring(1, t.image.length() - 1)); }
 }

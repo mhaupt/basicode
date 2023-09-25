@@ -115,15 +115,34 @@ ExpressionNode expression() throws ParseException {ExpressionNode e;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case ABS:{
       jj_consume_token(ABS);
-      jj_consume_token(60);
+      jj_consume_token(62);
       e = expression();
-      jj_consume_token(61);
+      jj_consume_token(63);
 {if ("" != null) return new AbsNode(e);}
       break;
       }
-    case NUMBER:{
-      t = jj_consume_token(NUMBER);
+    case NUMBER:
+    case INTEGER:{
+      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+      case NUMBER:{
+        t = jj_consume_token(NUMBER);
+        break;
+        }
+      case INTEGER:{
+        t = jj_consume_token(INTEGER);
+        break;
+        }
+      default:
+        jj_la1[4] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
 {if ("" != null) return new IntegerNode(Integer.parseInt(t.image));}
+      break;
+      }
+    case FLOAT:{
+      t = jj_consume_token(FLOAT);
+{if ("" != null) return new DoubleNode(Double.parseDouble(t.image));}
       break;
       }
     case STRING:{
@@ -132,7 +151,7 @@ ExpressionNode expression() throws ParseException {ExpressionNode e;
       break;
       }
     default:
-      jj_la1[4] = jj_gen;
+      jj_la1[5] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -148,7 +167,7 @@ ExpressionNode expression() throws ParseException {ExpressionNode e;
   public Token jj_nt;
   private int jj_ntk;
   private int jj_gen;
-  final private int[] jj_la1 = new int[5];
+  final private int[] jj_la1 = new int[6];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static {
@@ -156,10 +175,10 @@ ExpressionNode expression() throws ParseException {ExpressionNode e;
 	   jj_la1_init_1();
 	}
 	private static void jj_la1_init_0() {
-	   jj_la1_0 = new int[] {0x10,0x8,0x5,0x0,0x150,};
+	   jj_la1_0 = new int[] {0x10,0x8,0x5,0x0,0x30,0x570,};
 	}
 	private static void jj_la1_init_1() {
-	   jj_la1_1 = new int[] {0x0,0x0,0x0,0x5,0x0,};
+	   jj_la1_1 = new int[] {0x0,0x0,0x0,0x14,0x0,0x0,};
 	}
 
   /** Constructor with InputStream. */
@@ -173,7 +192,7 @@ ExpressionNode expression() throws ParseException {ExpressionNode e;
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 5; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 6; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -187,7 +206,7 @@ ExpressionNode expression() throws ParseException {ExpressionNode e;
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 5; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 6; i++) jj_la1[i] = -1;
   }
 
   /** Constructor. */
@@ -197,7 +216,7 @@ ExpressionNode expression() throws ParseException {ExpressionNode e;
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 5; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 6; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -215,7 +234,7 @@ ExpressionNode expression() throws ParseException {ExpressionNode e;
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 5; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 6; i++) jj_la1[i] = -1;
   }
 
   /** Constructor with generated Token Manager. */
@@ -224,7 +243,7 @@ ExpressionNode expression() throws ParseException {ExpressionNode e;
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 5; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 6; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -233,7 +252,7 @@ ExpressionNode expression() throws ParseException {ExpressionNode e;
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 5; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 6; i++) jj_la1[i] = -1;
   }
 
   private Token jj_consume_token(int kind) throws ParseException {
@@ -284,12 +303,12 @@ ExpressionNode expression() throws ParseException {ExpressionNode e;
   /** Generate ParseException. */
   public ParseException generateParseException() {
 	 jj_expentries.clear();
-	 boolean[] la1tokens = new boolean[62];
+	 boolean[] la1tokens = new boolean[64];
 	 if (jj_kind >= 0) {
 	   la1tokens[jj_kind] = true;
 	   jj_kind = -1;
 	 }
-	 for (int i = 0; i < 5; i++) {
+	 for (int i = 0; i < 6; i++) {
 	   if (jj_la1[i] == jj_gen) {
 		 for (int j = 0; j < 32; j++) {
 		   if ((jj_la1_0[i] & (1<<j)) != 0) {
@@ -301,7 +320,7 @@ ExpressionNode expression() throws ParseException {ExpressionNode e;
 		 }
 	   }
 	 }
-	 for (int i = 0; i < 62; i++) {
+	 for (int i = 0; i < 64; i++) {
 	   if (la1tokens[i]) {
 		 jj_expentry = new int[1];
 		 jj_expentry[0] = i;

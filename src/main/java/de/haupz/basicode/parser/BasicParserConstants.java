@@ -17,115 +17,119 @@ public interface BasicParserConstants {
   /** RegularExpression Id. */
   int NUMBER = 4;
   /** RegularExpression Id. */
-  int DIGIT = 5;
+  int INTEGER = 5;
   /** RegularExpression Id. */
-  int STRING = 6;
+  int FLOAT = 6;
   /** RegularExpression Id. */
-  int LETTER = 7;
+  int DIGIT = 7;
   /** RegularExpression Id. */
-  int ABS = 8;
+  int STRING = 8;
   /** RegularExpression Id. */
-  int AND = 9;
+  int LETTER = 9;
   /** RegularExpression Id. */
-  int ASC = 10;
+  int ABS = 10;
   /** RegularExpression Id. */
-  int ATN = 11;
+  int AND = 11;
   /** RegularExpression Id. */
-  int CHRS = 12;
+  int ASC = 12;
   /** RegularExpression Id. */
-  int COS = 13;
+  int ATN = 13;
   /** RegularExpression Id. */
-  int DATA = 14;
+  int CHRS = 14;
   /** RegularExpression Id. */
-  int DIM = 15;
+  int COS = 15;
   /** RegularExpression Id. */
-  int END = 16;
+  int DATA = 16;
   /** RegularExpression Id. */
-  int FOR = 17;
+  int DIM = 17;
   /** RegularExpression Id. */
-  int GOSUB = 18;
+  int END = 18;
   /** RegularExpression Id. */
-  int GOTO = 19;
+  int FOR = 19;
   /** RegularExpression Id. */
-  int INT = 20;
+  int GOSUB = 20;
   /** RegularExpression Id. */
-  int IF = 21;
+  int GOTO = 21;
   /** RegularExpression Id. */
-  int INPUT = 22;
+  int INT = 22;
   /** RegularExpression Id. */
-  int LEFTS = 23;
+  int IF = 23;
   /** RegularExpression Id. */
-  int LEN = 24;
+  int INPUT = 24;
   /** RegularExpression Id. */
-  int LET = 25;
+  int LEFTS = 25;
   /** RegularExpression Id. */
-  int LOG = 26;
+  int LEN = 26;
   /** RegularExpression Id. */
-  int MIDS = 27;
+  int LET = 27;
   /** RegularExpression Id. */
-  int NEXT = 28;
+  int LOG = 28;
   /** RegularExpression Id. */
-  int NOT = 29;
+  int MIDS = 29;
   /** RegularExpression Id. */
-  int ON = 30;
+  int NEXT = 30;
   /** RegularExpression Id. */
-  int OR = 31;
+  int NOT = 31;
   /** RegularExpression Id. */
-  int PRINT = 32;
+  int ON = 32;
   /** RegularExpression Id. */
-  int READ = 33;
+  int OR = 33;
   /** RegularExpression Id. */
-  int REM = 34;
+  int PRINT = 34;
   /** RegularExpression Id. */
-  int RESTORE = 35;
+  int READ = 35;
   /** RegularExpression Id. */
-  int RETURN = 36;
+  int REM = 36;
   /** RegularExpression Id. */
-  int RIGHTS = 37;
+  int RESTORE = 37;
   /** RegularExpression Id. */
-  int RUN = 38;
+  int RETURN = 38;
   /** RegularExpression Id. */
-  int SGN = 39;
+  int RIGHTS = 39;
   /** RegularExpression Id. */
-  int SIN = 40;
+  int RUN = 40;
   /** RegularExpression Id. */
-  int SQR = 41;
+  int SGN = 41;
   /** RegularExpression Id. */
-  int STEP = 42;
+  int SIN = 42;
   /** RegularExpression Id. */
-  int STOP = 43;
+  int SQR = 43;
   /** RegularExpression Id. */
-  int TAB = 44;
+  int STEP = 44;
   /** RegularExpression Id. */
-  int TAN = 45;
+  int STOP = 45;
   /** RegularExpression Id. */
-  int THEN = 46;
+  int TAB = 46;
   /** RegularExpression Id. */
-  int TO = 47;
+  int TAN = 47;
   /** RegularExpression Id. */
-  int VAL = 48;
+  int THEN = 48;
   /** RegularExpression Id. */
-  int PLUS = 49;
+  int TO = 49;
   /** RegularExpression Id. */
-  int MINUS = 50;
+  int VAL = 50;
   /** RegularExpression Id. */
-  int TIMES = 51;
+  int PLUS = 51;
   /** RegularExpression Id. */
-  int DIV = 52;
+  int MINUS = 52;
   /** RegularExpression Id. */
-  int CARET = 53;
+  int TIMES = 53;
   /** RegularExpression Id. */
-  int EQ = 54;
+  int DIV = 54;
   /** RegularExpression Id. */
-  int LT = 55;
+  int CARET = 55;
   /** RegularExpression Id. */
-  int GT = 56;
+  int EQ = 56;
   /** RegularExpression Id. */
-  int NEQ = 57;
+  int LT = 57;
   /** RegularExpression Id. */
-  int LEQ = 58;
+  int GT = 58;
   /** RegularExpression Id. */
-  int GEQ = 59;
+  int NEQ = 59;
+  /** RegularExpression Id. */
+  int LEQ = 60;
+  /** RegularExpression Id. */
+  int GEQ = 61;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -137,6 +141,8 @@ public interface BasicParserConstants {
     "\"\\n\"",
     "\":\"",
     "<NUMBER>",
+    "<INTEGER>",
+    "<FLOAT>",
     "<DIGIT>",
     "<STRING>",
     "<LETTER>",

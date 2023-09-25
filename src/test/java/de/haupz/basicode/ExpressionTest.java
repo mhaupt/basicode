@@ -9,11 +9,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.StringReader;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public abstract class ExpressionTest {
 
-    void testExpression(String expression, Object expectedResult, Class<?> expectedClass) {
+    ExpressionNode parseExpression(String expression) {
         BasicParser parser = new BasicParser(new StringReader(expression));
         ExpressionNode expr;
         try {
@@ -21,12 +21,23 @@ public abstract class ExpressionTest {
         } catch (ParseException pe) {
             throw new RuntimeException(pe);
         }
+        return expr;
+    }
+
+    InterpreterState getState() {
         ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
         PrintStream out = new PrintStream(bytesOut, true);
-        InterpreterState state = new InterpreterState(out);
-        Object actualResult = expr.eval(state);
+        return new InterpreterState(out);
+    }
+
+    void testExpression(String expression, Object expectedResult, Class<?> expectedClass) {
+        Object actualResult = parseExpression(expression).eval(getState());
         assertEquals(expectedClass, actualResult.getClass());
         assertEquals(expectedResult, actualResult);
+    }
+
+    void testExpressionThrows(String expression, Class<? extends Throwable> exceptionClass) {
+        assertThrowsExactly(exceptionClass, () -> parseExpression(expression).eval(getState()));
     }
 
 }
