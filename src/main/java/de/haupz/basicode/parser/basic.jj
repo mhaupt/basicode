@@ -123,6 +123,8 @@ StatementNode statement():
 ExpressionNode expression():
 {
     ExpressionNode e;
+    ExpressionNode f;
+    ExpressionNode g;
     Token t;
 }
 {
@@ -131,6 +133,10 @@ ExpressionNode expression():
 |   <ATN> "(" e = expression() ")" { return new AtnNode(e); }
 |   <CHRS> "(" e = expression() ")" { return new ChrsNode(e); }
 |   <COS> "(" e = expression() ")" { return new CosNode(e); }
+|   <INT> "(" e = expression() ")" { return new IntNode(e); }
+|   <LEFTS> "(" e = expression() "," f = expression() ")" { return new LeftsNode(e, f); }
+|   <MIDS> "(" e = expression() "," f = expression() "," g = expression() ")" { return new MidsNode(e, f, g); }
+|   <RIGHTS> "(" e = expression() "," f = expression() ")" { return new RightsNode(e, f); }
 |   (t = <NUMBER> | t = <INTEGER>) { return new IntegerNode(Integer.parseInt(t.image)); }
 |   t = <FLOAT> { return new DoubleNode(Double.parseDouble(t.image)); }
 |   t = <STRING> { return new StringNode(t.image.substring(1, t.image.length() - 1)); }

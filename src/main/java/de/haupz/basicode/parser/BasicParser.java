@@ -111,6 +111,8 @@ StatementNode statement() throws ParseException {Token t;
 //
   final public 
 ExpressionNode expression() throws ParseException {ExpressionNode e;
+    ExpressionNode f;
+    ExpressionNode g;
     Token t;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case ABS:{
@@ -151,6 +153,46 @@ ExpressionNode expression() throws ParseException {ExpressionNode e;
       e = expression();
       jj_consume_token(63);
 {if ("" != null) return new CosNode(e);}
+      break;
+      }
+    case INT:{
+      jj_consume_token(INT);
+      jj_consume_token(62);
+      e = expression();
+      jj_consume_token(63);
+{if ("" != null) return new IntNode(e);}
+      break;
+      }
+    case LEFTS:{
+      jj_consume_token(LEFTS);
+      jj_consume_token(62);
+      e = expression();
+      jj_consume_token(64);
+      f = expression();
+      jj_consume_token(63);
+{if ("" != null) return new LeftsNode(e, f);}
+      break;
+      }
+    case MIDS:{
+      jj_consume_token(MIDS);
+      jj_consume_token(62);
+      e = expression();
+      jj_consume_token(64);
+      f = expression();
+      jj_consume_token(64);
+      g = expression();
+      jj_consume_token(63);
+{if ("" != null) return new MidsNode(e, f, g);}
+      break;
+      }
+    case RIGHTS:{
+      jj_consume_token(RIGHTS);
+      jj_consume_token(62);
+      e = expression();
+      jj_consume_token(64);
+      f = expression();
+      jj_consume_token(63);
+{if ("" != null) return new RightsNode(e, f);}
       break;
       }
     case NUMBER:
@@ -202,15 +244,20 @@ ExpressionNode expression() throws ParseException {ExpressionNode e;
   final private int[] jj_la1 = new int[6];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
+  static private int[] jj_la1_2;
   static {
 	   jj_la1_init_0();
 	   jj_la1_init_1();
+	   jj_la1_init_2();
 	}
 	private static void jj_la1_init_0() {
-	   jj_la1_0 = new int[] {0x10,0x8,0x5,0x0,0x30,0xf570,};
+	   jj_la1_0 = new int[] {0x10,0x8,0x5,0x0,0x30,0x2240f570,};
 	}
 	private static void jj_la1_init_1() {
-	   jj_la1_1 = new int[] {0x0,0x0,0x0,0x14,0x0,0x0,};
+	   jj_la1_1 = new int[] {0x0,0x0,0x0,0x14,0x0,0x80,};
+	}
+	private static void jj_la1_init_2() {
+	   jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,};
 	}
 
   /** Constructor with InputStream. */
@@ -335,7 +382,7 @@ ExpressionNode expression() throws ParseException {ExpressionNode e;
   /** Generate ParseException. */
   public ParseException generateParseException() {
 	 jj_expentries.clear();
-	 boolean[] la1tokens = new boolean[64];
+	 boolean[] la1tokens = new boolean[65];
 	 if (jj_kind >= 0) {
 	   la1tokens[jj_kind] = true;
 	   jj_kind = -1;
@@ -349,10 +396,13 @@ ExpressionNode expression() throws ParseException {ExpressionNode e;
 		   if ((jj_la1_1[i] & (1<<j)) != 0) {
 			 la1tokens[32+j] = true;
 		   }
+		   if ((jj_la1_2[i] & (1<<j)) != 0) {
+			 la1tokens[64+j] = true;
+		   }
 		 }
 	   }
 	 }
-	 for (int i = 0; i < 64; i++) {
+	 for (int i = 0; i < 65; i++) {
 	   if (la1tokens[i]) {
 		 jj_expentry = new int[1];
 		 jj_expentry[0] = i;
