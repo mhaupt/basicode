@@ -13,8 +13,7 @@ public class AscNode extends ExpressionNode {
     @Override
     public Object eval(InterpreterState state) {
         Object value = expression.eval(state);
-        if (value instanceof String) {
-            String s = (String) value;
+        if (value instanceof String s) {
             return s.length() == 0 ? -1 : (int) s.charAt(0);
         }
         throw new IllegalStateException("unexpected expression type " + value.getClass().getName());

@@ -13,11 +13,11 @@ public class AbsNode extends ExpressionNode {
     @Override
     public Object eval(InterpreterState state) {
         Object value = expression.eval(state);
-        if (value instanceof Integer) {
-            return Math.abs((int) value);
+        if (value instanceof Integer i) {
+            return Math.abs(i);
         }
-        if (value instanceof Double) {
-            return Math.abs((double) value);
+        if (value instanceof Double d) {
+            return Math.abs(d);
         }
         throw new IllegalStateException("unexpected expression type " + value.getClass().getName());
     }

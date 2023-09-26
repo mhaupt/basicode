@@ -10,14 +10,18 @@ public class ChrsNode extends ExpressionNode {
         this.expression = expression;
     }
 
+    interface O2O {
+        Object apply(Object o);
+    }
+
     @Override
     public Object eval(InterpreterState state) {
         Object value = expression.eval(state);
-        if (value instanceof Integer) {
-            return chrs((char) (int) value);
+        if (value instanceof Integer i) {
+            return chrs((char) i.intValue());
         }
-        if (value instanceof Double) {
-            return chrs((char) (double) value);
+        if (value instanceof Double d) {
+            return chrs((char) d.intValue());
         }
         throw new IllegalStateException("unexpected expression type " + value.getClass().getName());
     }
