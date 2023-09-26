@@ -130,6 +130,7 @@ ExpressionNode expression():
 |   <ASC> "(" e = expression() ")" { return new AscNode(e); }
 |   <ATN> "(" e = expression() ")" { return new AtnNode(e); }
 |   <CHRS> "(" e = expression() ")" { return new ChrsNode(e); }
+|   <COS> "(" e = expression() ")" { return new CosNode(e); }
 |   (t = <NUMBER> | t = <INTEGER>) { return new IntegerNode(Integer.parseInt(t.image)); }
 |   t = <FLOAT> { return new DoubleNode(Double.parseDouble(t.image)); }
 |   t = <STRING> { return new StringNode(t.image.substring(1, t.image.length() - 1)); }
