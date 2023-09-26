@@ -128,6 +128,7 @@ ExpressionNode expression():
 {
     <ABS> "(" e = expression() ")" { return new AbsNode(e); }
 |   <ASC> "(" e = expression() ")" { return new AscNode(e); }
+|   <ATN> "(" e = expression() ")" { return new AtnNode(e); }
 |   (t = <NUMBER> | t = <INTEGER>) { return new IntegerNode(Integer.parseInt(t.image)); }
 |   t = <FLOAT> { return new DoubleNode(Double.parseDouble(t.image)); }
 |   t = <STRING> { return new StringNode(t.image.substring(1, t.image.length() - 1)); }

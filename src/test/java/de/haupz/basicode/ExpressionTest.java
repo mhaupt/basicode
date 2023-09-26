@@ -33,7 +33,11 @@ public abstract class ExpressionTest {
     void testExpression(String expression, Object expectedResult, Class<?> expectedClass) {
         Object actualResult = parseExpression(expression).eval(getState());
         assertEquals(expectedClass, actualResult.getClass());
-        assertEquals(expectedResult, actualResult);
+        if (expectedClass == Double.class) {
+            assertEquals((double) expectedResult, (double) actualResult, 0.000001);
+        } else {
+            assertEquals(expectedResult, actualResult);
+        }
     }
 
     void testExpressionThrows(String expression, Class<? extends Throwable> exceptionClass) {
