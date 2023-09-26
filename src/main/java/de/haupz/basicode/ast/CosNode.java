@@ -2,24 +2,23 @@ package de.haupz.basicode.ast;
 
 import de.haupz.basicode.interpreter.InterpreterState;
 
-public class CosNode extends ExpressionNode {
+import java.util.Optional;
 
-    private final ExpressionNode expression;
+public class CosNode extends WrappingExpressionNode {
 
     public CosNode(ExpressionNode expression) {
-        this.expression = expression;
+        super(expression);
     }
 
     @Override
-    public Object eval(InterpreterState state) {
-        Object value = expression.eval(state);
+    Optional<Object> evalWithTypes(Object value) {
         if (value instanceof Integer i) {
-            return Math.cos(i);
+            return Optional.of(Math.cos(i));
         }
         if (value instanceof Double d) {
-            return Math.cos(d);
+            return Optional.of(Math.cos(d));
         }
-        throw new IllegalStateException("unexpected expression type " + value.getClass().getName());
+        return Optional.empty();
     }
 
 }

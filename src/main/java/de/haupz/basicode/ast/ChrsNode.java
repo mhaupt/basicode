@@ -2,28 +2,23 @@ package de.haupz.basicode.ast;
 
 import de.haupz.basicode.interpreter.InterpreterState;
 
-public class ChrsNode extends ExpressionNode {
+import java.util.Optional;
 
-    private final ExpressionNode expression;
+public class ChrsNode extends WrappingExpressionNode {
 
     public ChrsNode(ExpressionNode expression) {
-        this.expression = expression;
-    }
-
-    interface O2O {
-        Object apply(Object o);
+        super(expression);
     }
 
     @Override
-    public Object eval(InterpreterState state) {
-        Object value = expression.eval(state);
+    Optional<Object> evalWithTypes(Object value) {
         if (value instanceof Integer i) {
-            return chrs((char) i.intValue());
+            return Optional.of(chrs((char) i.intValue()));
         }
         if (value instanceof Double d) {
-            return chrs((char) d.intValue());
+            return Optional.of(chrs((char) d.intValue()));
         }
-        throw new IllegalStateException("unexpected expression type " + value.getClass().getName());
+        return Optional.empty();
     }
 
     private String chrs(char c) {
