@@ -4,6 +4,7 @@ import de.haupz.basicode.ast.ExpressionNode;
 import de.haupz.basicode.interpreter.InterpreterState;
 import de.haupz.basicode.parser.BasicParser;
 import de.haupz.basicode.parser.ParseException;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
