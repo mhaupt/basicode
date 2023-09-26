@@ -121,6 +121,14 @@ ExpressionNode expression() throws ParseException {ExpressionNode e;
 {if ("" != null) return new AbsNode(e);}
       break;
       }
+    case ASC:{
+      jj_consume_token(ASC);
+      jj_consume_token(62);
+      e = expression();
+      jj_consume_token(63);
+{if ("" != null) return new AscNode(e);}
+      break;
+      }
     case NUMBER:
     case INTEGER:{
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -175,7 +183,7 @@ ExpressionNode expression() throws ParseException {ExpressionNode e;
 	   jj_la1_init_1();
 	}
 	private static void jj_la1_init_0() {
-	   jj_la1_0 = new int[] {0x10,0x8,0x5,0x0,0x30,0x570,};
+	   jj_la1_0 = new int[] {0x10,0x8,0x5,0x0,0x30,0x1570,};
 	}
 	private static void jj_la1_init_1() {
 	   jj_la1_1 = new int[] {0x0,0x0,0x0,0x14,0x0,0x0,};
