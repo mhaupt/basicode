@@ -195,6 +195,46 @@ ExpressionNode expression() throws ParseException {ExpressionNode e;
 {if ("" != null) return new RightsNode(e, f);}
       break;
       }
+    case SGN:{
+      jj_consume_token(SGN);
+      jj_consume_token(62);
+      e = expression();
+      jj_consume_token(63);
+{if ("" != null) return new SgnNode(e);}
+      break;
+      }
+    case SIN:{
+      jj_consume_token(SIN);
+      jj_consume_token(62);
+      e = expression();
+      jj_consume_token(63);
+{if ("" != null) return new SinNode(e);}
+      break;
+      }
+    case SQR:{
+      jj_consume_token(SQR);
+      jj_consume_token(62);
+      e = expression();
+      jj_consume_token(63);
+{if ("" != null) return new SqrNode(e);}
+      break;
+      }
+    case TAN:{
+      jj_consume_token(TAN);
+      jj_consume_token(62);
+      e = expression();
+      jj_consume_token(63);
+{if ("" != null) return new TanNode(e);}
+      break;
+      }
+    case VAL:{
+      jj_consume_token(VAL);
+      jj_consume_token(62);
+      e = expression();
+      jj_consume_token(63);
+{if ("" != null) return new ValNode(e);}
+      break;
+      }
     case NUMBER:
     case INTEGER:{
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -254,7 +294,7 @@ ExpressionNode expression() throws ParseException {ExpressionNode e;
 	   jj_la1_0 = new int[] {0x10,0x8,0x5,0x0,0x30,0x2240f570,};
 	}
 	private static void jj_la1_init_1() {
-	   jj_la1_1 = new int[] {0x0,0x0,0x0,0x14,0x0,0x80,};
+	   jj_la1_1 = new int[] {0x0,0x0,0x0,0x14,0x0,0x48e80,};
 	}
 	private static void jj_la1_init_2() {
 	   jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,};

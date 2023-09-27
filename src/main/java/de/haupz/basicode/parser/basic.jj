@@ -137,6 +137,11 @@ ExpressionNode expression():
 |   <LEFTS> "(" e = expression() "," f = expression() ")" { return new LeftsNode(e, f); }
 |   <MIDS> "(" e = expression() "," f = expression() "," g = expression() ")" { return new MidsNode(e, f, g); }
 |   <RIGHTS> "(" e = expression() "," f = expression() ")" { return new RightsNode(e, f); }
+|   <SGN> "(" e = expression() ")" { return new SgnNode(e); }
+|   <SIN> "(" e = expression() ")" { return new SinNode(e); }
+|   <SQR> "(" e = expression() ")" { return new SqrNode(e); }
+|   <TAN> "(" e = expression() ")" { return new TanNode(e); }
+|   <VAL> "(" e = expression() ")" { return new ValNode(e); }
 |   (t = <NUMBER> | t = <INTEGER>) { return new IntegerNode(Integer.parseInt(t.image)); }
 |   t = <FLOAT> { return new DoubleNode(Double.parseDouble(t.image)); }
 |   t = <STRING> { return new StringNode(t.image.substring(1, t.image.length() - 1)); }
