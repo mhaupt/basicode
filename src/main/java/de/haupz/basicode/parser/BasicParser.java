@@ -112,8 +112,392 @@ StatementNode statement() throws ParseException {Token t;
   final public 
 ExpressionNode expression() throws ParseException {ExpressionNode e;
     ExpressionNode f;
+    List<ExpressionNode> l = new ArrayList<>();
+    e = and_expression();
+    label_3:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+      case OR:{
+        ;
+        break;
+        }
+      default:
+        jj_la1[4] = jj_gen;
+        break label_3;
+      }
+      jj_consume_token(OR);
+      f = and_expression();
+l.add(f);
+    }
+{if ("" != null) return l.isEmpty() ? e : new OrNode(e, l);}
+    throw new Error("Missing return statement in function");
+}
+
+  final public ExpressionNode and_expression() throws ParseException {ExpressionNode e;
+    ExpressionNode f;
+    List<ExpressionNode> l = new ArrayList<>();
+    e = equality_expression();
+    label_4:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+      case AND:{
+        ;
+        break;
+        }
+      default:
+        jj_la1[5] = jj_gen;
+        break label_4;
+      }
+      jj_consume_token(AND);
+      f = equality_expression();
+l.add(f);
+    }
+{if ("" != null) return l.isEmpty() ? e : new AndNode(e, l);}
+    throw new Error("Missing return statement in function");
+}
+
+  final public ExpressionNode equality_expression() throws ParseException {ExpressionNode e;
+    ExpressionNode f = null;
+    Token t = null;
+    e = relational_expression();
+    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+    case EQ:
+    case NEQ:{
+      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+      case EQ:{
+        t = jj_consume_token(EQ);
+        break;
+        }
+      case NEQ:{
+        t = jj_consume_token(NEQ);
+        break;
+        }
+      default:
+        jj_la1[6] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+      f = relational_expression();
+      break;
+      }
+    default:
+      jj_la1[7] = jj_gen;
+      ;
+    }
+if (null == f) {
+            {if ("" != null) return e;}
+        } else if (t.kind == EQ) {
+            {if ("" != null) return new EqNode(e, f);}
+        } else if (t.kind == NEQ) {
+            {if ("" != null) return new NeqNode(e, f);}
+        } else {
+            {if (true) throw new IllegalStateException("unexpected token: " + t.image);}
+        }
+    throw new Error("Missing return statement in function");
+}
+
+  final public ExpressionNode relational_expression() throws ParseException {ExpressionNode e;
+    ExpressionNode f = null;
+    Token t = null;
+    e = additive_expression();
+    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+    case LT:
+    case GT:
+    case LEQ:
+    case GEQ:{
+      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+      case LT:{
+        t = jj_consume_token(LT);
+        break;
+        }
+      case LEQ:{
+        t = jj_consume_token(LEQ);
+        break;
+        }
+      case GT:{
+        t = jj_consume_token(GT);
+        break;
+        }
+      case GEQ:{
+        t = jj_consume_token(GEQ);
+        break;
+        }
+      default:
+        jj_la1[8] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+      f = additive_expression();
+      break;
+      }
+    default:
+      jj_la1[9] = jj_gen;
+      ;
+    }
+if (null == f) {
+            {if ("" != null) return e;}
+        } else if (t.kind == LT) {
+            {if ("" != null) return new LtNode(e, f);}
+        } else if (t.kind == LEQ) {
+            {if ("" != null) return new LeqNode(e, f);}
+        } else if (t.kind == GT) {
+            {if ("" != null) return new GtNode(e, f);}
+        } else if (t.kind == GEQ) {
+            {if ("" != null) return new GeqNode(e, f);}
+        } else {
+            {if (true) throw new IllegalStateException("unexpected token: " + t.image);}
+        }
+    throw new Error("Missing return statement in function");
+}
+
+  final public ExpressionNode additive_expression() throws ParseException {ExpressionNode e;
+    ExpressionNode f;
+    e = multiplicative_expression();
+    label_5:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+      case 58:
+      case 59:{
+        ;
+        break;
+        }
+      default:
+        jj_la1[10] = jj_gen;
+        break label_5;
+      }
+      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+      case 58:{
+        jj_consume_token(58);
+        f = multiplicative_expression();
+e = new AddNode(e, f);
+        break;
+        }
+      case 59:{
+        jj_consume_token(59);
+        f = multiplicative_expression();
+e = new SubtractNode(e, f);
+        break;
+        }
+      default:
+        jj_la1[11] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+    }
+{if ("" != null) return e;}
+    throw new Error("Missing return statement in function");
+}
+
+  final public ExpressionNode multiplicative_expression() throws ParseException {ExpressionNode e;
+    ExpressionNode f;
+    e = unary_expression();
+    label_6:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+      case 60:
+      case 61:{
+        ;
+        break;
+        }
+      default:
+        jj_la1[12] = jj_gen;
+        break label_6;
+      }
+      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+      case 60:{
+        jj_consume_token(60);
+        f = unary_expression();
+e = new MultiplyNode(e, f);
+        break;
+        }
+      case 61:{
+        jj_consume_token(61);
+        f = unary_expression();
+e = new DivideNode(e, f);
+        break;
+        }
+      default:
+        jj_la1[13] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+    }
+{if ("" != null) return e;}
+    throw new Error("Missing return statement in function");
+}
+
+  final public ExpressionNode unary_expression() throws ParseException {ExpressionNode e;
+    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+    case 59:{
+      jj_consume_token(59);
+      e = unary_expression();
+{if ("" != null) return new NegateNode(e);}
+      break;
+      }
+    case NUMBER:
+    case INTEGER:
+    case FLOAT:
+    case STRING:
+    case ABS:
+    case ASC:
+    case ATN:
+    case CHRS:
+    case COS:
+    case INT:
+    case LEFTS:
+    case MIDS:
+    case NOT:
+    case RIGHTS:
+    case SGN:
+    case SIN:
+    case SQR:
+    case TAN:
+    case VAL:
+    case IDENTIFIER:
+    case 62:{
+      e = unary_expression_not_plus_minus();
+{if ("" != null) return e;}
+      break;
+      }
+    default:
+      jj_la1[14] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+    throw new Error("Missing return statement in function");
+}
+
+  final public ExpressionNode unary_expression_not_plus_minus() throws ParseException {ExpressionNode e;
+    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+    case NOT:{
+      jj_consume_token(NOT);
+      e = unary_expression();
+{if ("" != null) return new NotNode(e);}
+      break;
+      }
+    case NUMBER:
+    case INTEGER:
+    case FLOAT:
+    case STRING:
+    case ABS:
+    case ASC:
+    case ATN:
+    case CHRS:
+    case COS:
+    case INT:
+    case LEFTS:
+    case MIDS:
+    case RIGHTS:
+    case SGN:
+    case SIN:
+    case SQR:
+    case TAN:
+    case VAL:
+    case IDENTIFIER:
+    case 62:{
+      e = primary_expression();
+{if ("" != null) return e;}
+      break;
+      }
+    default:
+      jj_la1[15] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+    throw new Error("Missing return statement in function");
+}
+
+  final public ExpressionNode primary_expression() throws ParseException {ExpressionNode e;
+    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+    case NUMBER:
+    case INTEGER:
+    case FLOAT:
+    case STRING:
+    case IDENTIFIER:{
+      e = literal();
+{if ("" != null) return e;}
+      break;
+      }
+    case 62:{
+      jj_consume_token(62);
+      e = expression();
+      jj_consume_token(63);
+{if ("" != null) return e;}
+      break;
+      }
+    case ABS:
+    case ASC:
+    case ATN:
+    case CHRS:
+    case COS:
+    case INT:
+    case LEFTS:
+    case MIDS:
+    case RIGHTS:
+    case SGN:
+    case SIN:
+    case SQR:
+    case TAN:
+    case VAL:{
+      e = builtin_call();
+{if ("" != null) return e;}
+      break;
+      }
+    default:
+      jj_la1[16] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+    throw new Error("Missing return statement in function");
+}
+
+  final public ExpressionNode literal() throws ParseException {Token t;
+    switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+    case NUMBER:
+    case INTEGER:{
+      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+      case NUMBER:{
+        t = jj_consume_token(NUMBER);
+        break;
+        }
+      case INTEGER:{
+        t = jj_consume_token(INTEGER);
+        break;
+        }
+      default:
+        jj_la1[17] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+{if ("" != null) return new IntegerNode(Integer.parseInt(t.image));}
+      break;
+      }
+    case FLOAT:{
+      t = jj_consume_token(FLOAT);
+{if ("" != null) return new DoubleNode(Double.parseDouble(t.image));}
+      break;
+      }
+    case STRING:{
+      t = jj_consume_token(STRING);
+{if ("" != null) return new StringNode(t.image.substring(1, t.image.length() - 1));}
+      break;
+      }
+    case IDENTIFIER:{
+      t = jj_consume_token(IDENTIFIER);
+{if ("" != null) return new StringNode(t.image);}
+      break;
+      }
+    default:
+      jj_la1[18] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+    throw new Error("Missing return statement in function");
+}
+
+  final public ExpressionNode builtin_call() throws ParseException {ExpressionNode e;
+    ExpressionNode f;
     ExpressionNode g;
-    Token t;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case ABS:{
       jj_consume_token(ABS);
@@ -235,37 +619,8 @@ ExpressionNode expression() throws ParseException {ExpressionNode e;
 {if ("" != null) return new ValNode(e);}
       break;
       }
-    case NUMBER:
-    case INTEGER:{
-      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case NUMBER:{
-        t = jj_consume_token(NUMBER);
-        break;
-        }
-      case INTEGER:{
-        t = jj_consume_token(INTEGER);
-        break;
-        }
-      default:
-        jj_la1[4] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
-{if ("" != null) return new IntegerNode(Integer.parseInt(t.image));}
-      break;
-      }
-    case FLOAT:{
-      t = jj_consume_token(FLOAT);
-{if ("" != null) return new DoubleNode(Double.parseDouble(t.image));}
-      break;
-      }
-    case STRING:{
-      t = jj_consume_token(STRING);
-{if ("" != null) return new StringNode(t.image.substring(1, t.image.length() - 1));}
-      break;
-      }
     default:
-      jj_la1[5] = jj_gen;
+      jj_la1[19] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -281,7 +636,7 @@ ExpressionNode expression() throws ParseException {ExpressionNode e;
   public Token jj_nt;
   private int jj_ntk;
   private int jj_gen;
-  final private int[] jj_la1 = new int[6];
+  final private int[] jj_la1 = new int[20];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static private int[] jj_la1_2;
@@ -291,13 +646,13 @@ ExpressionNode expression() throws ParseException {ExpressionNode e;
 	   jj_la1_init_2();
 	}
 	private static void jj_la1_init_0() {
-	   jj_la1_0 = new int[] {0x10,0x8,0x5,0x0,0x30,0x2240f570,};
+	   jj_la1_0 = new int[] {0x10,0x8,0x5,0x0,0x0,0x400,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x51207b70,0x51207b70,0x11207b70,0x30,0x170,0x11207a00,};
 	}
 	private static void jj_la1_init_1() {
-	   jj_la1_1 = new int[] {0x0,0x0,0x0,0x14,0x0,0x48e80,};
+	   jj_la1_1 = new int[] {0x0,0x0,0x0,0xa,0x1,0x0,0x480000,0x480000,0x1b00000,0x1b00000,0xc000000,0xc000000,0x30000000,0x30000000,0x4a024740,0x42024740,0x42024740,0x0,0x2000000,0x24740,};
 	}
 	private static void jj_la1_init_2() {
-	   jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,};
+	   jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
 	}
 
   /** Constructor with InputStream. */
@@ -311,7 +666,7 @@ ExpressionNode expression() throws ParseException {ExpressionNode e;
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 6; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 20; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -325,7 +680,7 @@ ExpressionNode expression() throws ParseException {ExpressionNode e;
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 6; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 20; i++) jj_la1[i] = -1;
   }
 
   /** Constructor. */
@@ -335,7 +690,7 @@ ExpressionNode expression() throws ParseException {ExpressionNode e;
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 6; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 20; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -353,7 +708,7 @@ ExpressionNode expression() throws ParseException {ExpressionNode e;
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 6; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 20; i++) jj_la1[i] = -1;
   }
 
   /** Constructor with generated Token Manager. */
@@ -362,7 +717,7 @@ ExpressionNode expression() throws ParseException {ExpressionNode e;
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 6; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 20; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -371,7 +726,7 @@ ExpressionNode expression() throws ParseException {ExpressionNode e;
 	 token = new Token();
 	 jj_ntk = -1;
 	 jj_gen = 0;
-	 for (int i = 0; i < 6; i++) jj_la1[i] = -1;
+	 for (int i = 0; i < 20; i++) jj_la1[i] = -1;
   }
 
   private Token jj_consume_token(int kind) throws ParseException {
@@ -427,7 +782,7 @@ ExpressionNode expression() throws ParseException {ExpressionNode e;
 	   la1tokens[jj_kind] = true;
 	   jj_kind = -1;
 	 }
-	 for (int i = 0; i < 6; i++) {
+	 for (int i = 0; i < 20; i++) {
 	   if (jj_la1[i] == jj_gen) {
 		 for (int j = 0; j < 32; j++) {
 		   if ((jj_la1_0[i] & (1<<j)) != 0) {

@@ -1,6 +1,9 @@
 package de.haupz.basicode.ast;
 
 import de.haupz.basicode.interpreter.InterpreterState;
+import de.haupz.basicode.parser.Token;
+
+import java.util.List;
 
 public abstract class ExpressionNode extends BasicNode {
 

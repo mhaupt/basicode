@@ -10,11 +10,6 @@ public class AbsTest extends ExpressionTest {
     }
 
     @Test
-    public void testExtraPositiveInteger() {
-        testExpression("ABS(+23)", 23, Integer.class);
-    }
-
-    @Test
     public void testNegativeInteger() {
         testExpression("ABS(-42)", 42, Integer.class);
     }
@@ -22,11 +17,6 @@ public class AbsTest extends ExpressionTest {
     @Test
     public void testPositiveFloat() {
         testExpression("ABS(2.3)", 2.3, Double.class);
-    }
-
-    @Test
-    public void testExtraPositiveFloat() {
-        testExpression("ABS(+2.3)", 2.3, Double.class);
     }
 
     @Test
@@ -38,8 +28,6 @@ public class AbsTest extends ExpressionTest {
     public void testZero() {
         testExpression("ABS(0)", 0, Integer.class);
         testExpression("ABS(0.0)", 0.0, Double.class);
-        testExpression("ABS(+0)", 0, Integer.class);
-        testExpression("ABS(+0.0)", 0.0, Double.class);
         testExpression("ABS(-0)", 0, Integer.class);
         testExpression("ABS(-0.0)", 0.0, Double.class);
     }

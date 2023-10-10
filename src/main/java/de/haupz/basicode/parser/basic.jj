@@ -26,12 +26,10 @@ TOKEN: {
 |   < COLON: ":" >
 // numbers and other values
 |   < NUMBER: (<DIGIT>)+ >
-|   < INTEGER: (<PLUS>|<MINUS>)? <NUMBER> >
-|   < FLOAT: (<PLUS>|<MINUS>)? <NUMBER> "." <NUMBER> >
+|   < INTEGER: ("-")? <NUMBER> >
+|   < FLOAT: ("-")? <NUMBER> "." <NUMBER> >
 |   < DIGIT: ["0"-"9"] >
 |   < STRING: "\"" (~["\"","\n"])* "\"" >
-// identifiers
-|   < LETTER: ["a"-"z","A"-"Z"] >
 // keywords
 |   < ABS: "ABS" > | < AND: "AND" > | < ASC: "ASC" > | < ATN: "ATN" >
 |   < CHRS: "CHR$" > | < COS: "COS" >
@@ -51,10 +49,6 @@ TOKEN: {
 |   < TAB: "TAB" > | < TAN: "TAN" > | < THEN: "THEN" > | < TO: "TO" >
 |   < VAL: "VAL" >
 // operands
-|   < PLUS: "+" >
-|   < MINUS: "-" >
-|   < TIMES: "*" >
-|   < DIV: "/" >
 |   < CARET: "^" >
 |   < EQ: "=" >
 |   < LT: "<" >
@@ -62,6 +56,8 @@ TOKEN: {
 |   < NEQ: "<>" >
 |   < LEQ: "<=" >
 |   < GEQ: ">=" >
+// identifiers
+|   < IDENTIFIER: ["a"-"z","A"-"Z"] ["a"-"z","A"-"Z","0"-"9"] >
 }
 
 // Parser.
@@ -124,8 +120,142 @@ ExpressionNode expression():
 {
     ExpressionNode e;
     ExpressionNode f;
-    ExpressionNode g;
+    List<ExpressionNode> l = new ArrayList<>();
+}
+{
+    e = and_expression() ( <OR> f = and_expression() { l.add(f); } )*
+    { return l.isEmpty() ? e : new OrNode(e, l); }
+}
+
+ExpressionNode and_expression():
+{
+    ExpressionNode e;
+    ExpressionNode f;
+    List<ExpressionNode> l = new ArrayList<>();
+}
+{
+    e = equality_expression() ( <AND> f = equality_expression() { l.add(f); } )*
+    { return l.isEmpty() ? e : new AndNode(e, l); }
+}
+
+ExpressionNode equality_expression():
+{
+    ExpressionNode e;
+    ExpressionNode f = null;
+    Token t = null;
+}
+{
+    e = relational_expression() ( (t=<EQ>|t=<NEQ>) f = relational_expression() )?
+    {
+        if (null == f) {
+            return e;
+        } else if (t.kind == EQ) {
+            return new EqNode(e, f);
+        } else if (t.kind == NEQ) {
+            return new NeqNode(e, f);
+        } else {
+            throw new IllegalStateException("unexpected token: " + t.image);
+        }
+    }
+}
+
+ExpressionNode relational_expression():
+{
+    ExpressionNode e;
+    ExpressionNode f = null;
+    Token t = null;
+}
+{
+    e = additive_expression() ( (t=<LT>|t=<LEQ>|t=<GT>|t=<GEQ>) f = additive_expression() )?
+    {
+        if (null == f) {
+            return e;
+        } else if (t.kind == LT) {
+            return new LtNode(e, f);
+        } else if (t.kind == LEQ) {
+            return new LeqNode(e, f);
+        } else if (t.kind == GT) {
+            return new GtNode(e, f);
+        } else if (t.kind == GEQ) {
+            return new GeqNode(e, f);
+        } else {
+            throw new IllegalStateException("unexpected token: " + t.image);
+        }
+    }
+}
+
+ExpressionNode additive_expression():
+{
+    ExpressionNode e;
+    ExpressionNode f;
+}
+{
+    e = multiplicative_expression()
+    (
+        "+" f = multiplicative_expression() { e = new AddNode(e, f); }
+    |   "-" f = multiplicative_expression() { e = new SubtractNode(e, f); }
+    )*
+    { return e; }
+}
+
+ExpressionNode multiplicative_expression():
+{
+    ExpressionNode e;
+    ExpressionNode f;
+}
+{
+    e = unary_expression()
+    (
+        "*" f = unary_expression() { e = new MultiplyNode(e, f); }
+    |   "/" f = unary_expression() { e = new DivideNode(e, f); }
+    )*
+    { return e; }
+}
+
+ExpressionNode unary_expression():
+{
+    ExpressionNode e;
+}
+{
+    "-" e = unary_expression() { return new NegateNode(e); }
+|   e = unary_expression_not_plus_minus() { return e; }
+}
+
+ExpressionNode unary_expression_not_plus_minus():
+{
+    ExpressionNode e;
+}
+{
+    <NOT> e = unary_expression() { return new NotNode(e); }
+|   e = primary_expression() { return e; }
+}
+
+ExpressionNode primary_expression():
+{
+    ExpressionNode e;
+}
+{
+    e = literal() { return e; }
+|   "(" e = expression() ")" { return e; }
+|   e = builtin_call() { return e; }
+}
+
+ExpressionNode literal():
+{
     Token t;
+}
+{
+    (t = <NUMBER> | t = <INTEGER>) { return new IntegerNode(Integer.parseInt(t.image)); }
+|   t = <FLOAT> { return new DoubleNode(Double.parseDouble(t.image)); }
+|   t = <STRING> { return new StringNode(t.image.substring(1, t.image.length() - 1)); }
+|   t = <IDENTIFIER> { return new StringNode(t.image); }
+}
+
+ExpressionNode builtin_call():
+{
+    ExpressionNode e;
+    ExpressionNode f;
+    ExpressionNode g;
 }
 {
     <ABS> "(" e = expression() ")" { return new AbsNode(e); }
@@ -142,7 +272,4 @@ ExpressionNode expression():
 |   <SQR> "(" e = expression() ")" { return new SqrNode(e); }
 |   <TAN> "(" e = expression() ")" { return new TanNode(e); }
 |   <VAL> "(" e = expression() ")" { return new ValNode(e); }
-|   (t = <NUMBER> | t = <INTEGER>) { return new IntegerNode(Integer.parseInt(t.image)); }
-|   t = <FLOAT> { return new DoubleNode(Double.parseDouble(t.image)); }
-|   t = <STRING> { return new StringNode(t.image.substring(1, t.image.length() - 1)); }
 }
