@@ -28,7 +28,7 @@ public abstract class TypeAdjustingNode extends ExpressionNode {
                 value2 = ((Integer) value2).doubleValue();
             }
             if (class2.equals(Double.class) && class1.equals(Integer.class)) {
-                value1 = ((Integer) value2).doubleValue();
+                value1 = ((Integer) value1).doubleValue();
             }
         }
         Object a = value1;

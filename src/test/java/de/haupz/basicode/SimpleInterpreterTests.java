@@ -90,4 +90,9 @@ public class SimpleInterpreterTests {
         testInterpreter("10 PRINT 23", "23\n");
     }
 
+    @Test
+    public void testExpression() {
+        testInterpreter("10 PRINT 3+4", "7\n");
+    }
+
 }
