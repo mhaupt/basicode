@@ -2,20 +2,27 @@ package de.haupz.basicode.ast;
 
 import de.haupz.basicode.interpreter.InterpreterState;
 
-public class SubtractNode extends ExpressionNode {
+import java.util.Optional;
+
+public class SubtractNode extends TypeAdjustingNode {
 
     private ExpressionNode expression1;
 
     private ExpressionNode expression2;
 
     public SubtractNode(ExpressionNode expression1, ExpressionNode expression2) {
-        this.expression1 = expression1;
-        this.expression2 = expression2;
+        super(expression1, expression2);
     }
 
     @Override
-    public Object eval(InterpreterState state) {
-        throw new IllegalStateException("not yet implemented");
+    Optional<Object> evalWithTypes(Object value1, Object value2) {
+        if (value1 instanceof Integer i && value2 instanceof Integer j) {
+            return Optional.of(i - j);
+        }
+        if (value1 instanceof Double d && value2 instanceof Double e) {
+            return Optional.of(d - e);
+        }
+        return Optional.empty();
     }
 
 }

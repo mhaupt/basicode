@@ -26,8 +26,8 @@ TOKEN: {
 |   < COLON: ":" >
 // numbers and other values
 |   < NUMBER: (<DIGIT>)+ >
-|   < INTEGER: ("-")? <NUMBER> >
-|   < FLOAT: ("-")? <NUMBER> "." <NUMBER> >
+|   < INTEGER: <NUMBER> >
+|   < FLOAT: <NUMBER> "." <NUMBER> >
 |   < DIGIT: ["0"-"9"] >
 |   < STRING: "\"" (~["\"","\n"])* "\"" >
 // keywords
