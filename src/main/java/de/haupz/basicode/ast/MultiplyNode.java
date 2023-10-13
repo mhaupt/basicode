@@ -6,10 +6,6 @@ import java.util.Optional;
 
 public class MultiplyNode extends TypeAdjustingNode {
 
-    private ExpressionNode expression1;
-
-    private ExpressionNode expression2;
-
     public MultiplyNode(ExpressionNode expression1, ExpressionNode expression2) {
         super(expression1, expression2);
     }

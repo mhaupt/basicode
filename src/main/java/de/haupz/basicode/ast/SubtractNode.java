@@ -6,10 +6,6 @@ import java.util.Optional;
 
 public class SubtractNode extends TypeAdjustingNode {
 
-    private ExpressionNode expression1;
-
-    private ExpressionNode expression2;
-
     public SubtractNode(ExpressionNode expression1, ExpressionNode expression2) {
         super(expression1, expression2);
     }
