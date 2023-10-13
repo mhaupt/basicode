@@ -160,17 +160,17 @@ l.add(f);
     ExpressionNode f;
     e = relational_expression();
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-    case 56:
-    case 57:{
+    case 52:
+    case 53:{
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case 56:{
-        jj_consume_token(56);
+      case 52:{
+        jj_consume_token(52);
         f = relational_expression();
 {if ("" != null) return new EqNode(e, f);}
         break;
         }
-      case 57:{
-        jj_consume_token(57);
+      case 53:{
+        jj_consume_token(53);
         f = relational_expression();
 {if ("" != null) return new NeqNode(e, f);}
         break;
@@ -195,25 +195,33 @@ l.add(f);
     Token t = null;
     e = additive_expression();
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-    case LT:
-    case GT:
-    case LEQ:
-    case GEQ:{
+    case 54:
+    case 55:
+    case 56:
+    case 57:{
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case LT:{
-        t = jj_consume_token(LT);
+      case 54:{
+        jj_consume_token(54);
+        f = additive_expression();
+{if ("" != null) return new LtNode(e, f);}
         break;
         }
-      case LEQ:{
-        t = jj_consume_token(LEQ);
+      case 55:{
+        jj_consume_token(55);
+        f = additive_expression();
+{if ("" != null) return new LeqNode(e, f);}
         break;
         }
-      case GT:{
-        t = jj_consume_token(GT);
+      case 56:{
+        jj_consume_token(56);
+        f = additive_expression();
+{if ("" != null) return new GtNode(e, f);}
         break;
         }
-      case GEQ:{
-        t = jj_consume_token(GEQ);
+      case 57:{
+        jj_consume_token(57);
+        f = additive_expression();
+{if ("" != null) return new GeqNode(e, f);}
         break;
         }
       default:
@@ -221,26 +229,13 @@ l.add(f);
         jj_consume_token(-1);
         throw new ParseException();
       }
-      f = additive_expression();
       break;
       }
     default:
       jj_la1[9] = jj_gen;
       ;
     }
-if (null == f) {
-            {if ("" != null) return e;}
-        } else if (t.kind == LT) {
-            {if ("" != null) return new LtNode(e, f);}
-        } else if (t.kind == LEQ) {
-            {if ("" != null) return new LeqNode(e, f);}
-        } else if (t.kind == GT) {
-            {if ("" != null) return new GtNode(e, f);}
-        } else if (t.kind == GEQ) {
-            {if ("" != null) return new GeqNode(e, f);}
-        } else {
-            {if (true) throw new IllegalStateException("unexpected token: " + t.image);}
-        }
+{if ("" != null) return e;}
     throw new Error("Missing return statement in function");
 }
 
@@ -643,7 +638,7 @@ e = new DivideNode(e, f);
 	   jj_la1_0 = new int[] {0x10,0x8,0x5,0x0,0x0,0x400,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x51207b70,0x51207b70,0x11207b70,0x30,0x170,0x11207a00,};
 	}
 	private static void jj_la1_init_1() {
-	   jj_la1_1 = new int[] {0x0,0x0,0x0,0xa,0x1,0x0,0x3000000,0x3000000,0x780000,0x780000,0xc000000,0xc000000,0x30000000,0x30000000,0x48824740,0x40824740,0x40824740,0x0,0x800000,0x24740,};
+	   jj_la1_1 = new int[] {0x0,0x0,0x0,0xa,0x1,0x0,0x300000,0x300000,0x3c00000,0x3c00000,0xc000000,0xc000000,0x30000000,0x30000000,0x480a4740,0x400a4740,0x400a4740,0x0,0x80000,0x24740,};
 	}
 	private static void jj_la1_init_2() {
 	   jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};

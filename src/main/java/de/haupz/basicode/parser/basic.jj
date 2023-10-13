@@ -50,10 +50,6 @@ TOKEN: {
 |   < VAL: "VAL" >
 // operands
 |   < CARET: "^" >
-|   < LT: "<" >
-|   < GT: ">" >
-|   < LEQ: "<=" >
-|   < GEQ: ">=" >
 // identifiers
 |   < IDENTIFIER: ["a"-"z","A"-"Z"] ["a"-"z","A"-"Z","0"-"9"] >
 }
@@ -157,22 +153,14 @@ ExpressionNode relational_expression():
     Token t = null;
 }
 {
-    e = additive_expression() ( (t=<LT>|t=<LEQ>|t=<GT>|t=<GEQ>) f = additive_expression() )?
-    {
-        if (null == f) {
-            return e;
-        } else if (t.kind == LT) {
-            return new LtNode(e, f);
-        } else if (t.kind == LEQ) {
-            return new LeqNode(e, f);
-        } else if (t.kind == GT) {
-            return new GtNode(e, f);
-        } else if (t.kind == GEQ) {
-            return new GeqNode(e, f);
-        } else {
-            throw new IllegalStateException("unexpected token: " + t.image);
-        }
-    }
+    e = additive_expression()
+    (
+        "<" f = additive_expression() { return new LtNode(e, f); }
+    |   "<=" f = additive_expression() { return new LeqNode(e, f); }
+    |   ">" f = additive_expression() { return new GtNode(e, f); }
+    |    ">=" f = additive_expression() { return new GeqNode(e, f); }
+    )?
+    { return e; }
 }
 
 ExpressionNode additive_expression():
