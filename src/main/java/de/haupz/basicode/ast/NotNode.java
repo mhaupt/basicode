@@ -10,7 +10,13 @@ public class NotNode extends WrappingExpressionNode {
 
     @Override
     Optional<Object> evalWithTypes(Object value) {
-        throw new IllegalStateException("not yet implemented");
+        if (value instanceof Integer i) {
+            return Optional.of(~i);
+        }
+        if (value instanceof Double d) {
+            return Optional.of(~d.intValue());
+        }
+        return Optional.empty();
     }
 
 }

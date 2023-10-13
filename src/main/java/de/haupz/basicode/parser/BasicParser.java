@@ -112,7 +112,6 @@ StatementNode statement() throws ParseException {Token t;
   final public 
 ExpressionNode expression() throws ParseException {ExpressionNode e;
     ExpressionNode f;
-    List<ExpressionNode> l = new ArrayList<>();
     e = and_expression();
     label_3:
     while (true) {
@@ -127,15 +126,14 @@ ExpressionNode expression() throws ParseException {ExpressionNode e;
       }
       jj_consume_token(OR);
       f = and_expression();
-l.add(f);
+e = new OrNode(e, f);
     }
-{if ("" != null) return l.isEmpty() ? e : new OrNode(e, l);}
+{if ("" != null) return e;}
     throw new Error("Missing return statement in function");
 }
 
   final public ExpressionNode and_expression() throws ParseException {ExpressionNode e;
     ExpressionNode f;
-    List<ExpressionNode> l = new ArrayList<>();
     e = equality_expression();
     label_4:
     while (true) {
@@ -150,9 +148,9 @@ l.add(f);
       }
       jj_consume_token(AND);
       f = equality_expression();
-l.add(f);
+e = new AndNode(e, f);
     }
-{if ("" != null) return l.isEmpty() ? e : new AndNode(e, l);}
+{if ("" != null) return e;}
     throw new Error("Missing return statement in function");
 }
 
@@ -191,8 +189,7 @@ l.add(f);
 }
 
   final public ExpressionNode relational_expression() throws ParseException {ExpressionNode e;
-    ExpressionNode f = null;
-    Token t = null;
+    ExpressionNode f;
     e = additive_expression();
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case 53:

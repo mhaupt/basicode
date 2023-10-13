@@ -112,22 +112,20 @@ ExpressionNode expression():
 {
     ExpressionNode e;
     ExpressionNode f;
-    List<ExpressionNode> l = new ArrayList<>();
 }
 {
-    e = and_expression() ( <OR> f = and_expression() { l.add(f); } )*
-    { return l.isEmpty() ? e : new OrNode(e, l); }
+    e = and_expression() ( <OR> f = and_expression() { e = new OrNode(e, f); } )*
+    { return e; }
 }
 
 ExpressionNode and_expression():
 {
     ExpressionNode e;
     ExpressionNode f;
-    List<ExpressionNode> l = new ArrayList<>();
 }
 {
-    e = equality_expression() ( <AND> f = equality_expression() { l.add(f); } )*
-    { return l.isEmpty() ? e : new AndNode(e, l); }
+    e = equality_expression() ( <AND> f = equality_expression() { e = new AndNode(e, f); } )*
+    { return e; }
 }
 
 ExpressionNode equality_expression():
@@ -147,8 +145,7 @@ ExpressionNode equality_expression():
 ExpressionNode relational_expression():
 {
     ExpressionNode e;
-    ExpressionNode f = null;
-    Token t = null;
+    ExpressionNode f;
 }
 {
     e = additive_expression()
