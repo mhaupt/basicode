@@ -107,9 +107,7 @@ public interface BasicParserConstants {
   /** RegularExpression Id. */
   int VAL = 49;
   /** RegularExpression Id. */
-  int CARET = 50;
-  /** RegularExpression Id. */
-  int IDENTIFIER = 51;
+  int IDENTIFIER = 50;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -166,7 +164,6 @@ public interface BasicParserConstants {
     "\"THEN\"",
     "\"TO\"",
     "\"VAL\"",
-    "\"^\"",
     "<IDENTIFIER>",
     "\"=\"",
     "\"<>\"",
@@ -178,6 +175,7 @@ public interface BasicParserConstants {
     "\"-\"",
     "\"*\"",
     "\"/\"",
+    "\"^\"",
     "\"(\"",
     "\")\"",
     "\",\"",

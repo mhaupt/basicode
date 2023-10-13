@@ -48,8 +48,6 @@ TOKEN: {
 |   < SGN: "SGN" > | < SIN: "SIN" > | < SQR: "SQR" > | < STEP: "STEP" > | < STOP: "STOP" >
 |   < TAB: "TAB" > | < TAN: "TAN" > | < THEN: "THEN" > | < TO: "TO" >
 |   < VAL: "VAL" >
-// operands
-|   < CARET: "^" >
 // identifiers
 |   < IDENTIFIER: ["a"-"z","A"-"Z"] ["a"-"z","A"-"Z","0"-"9"] >
 }
@@ -183,10 +181,23 @@ ExpressionNode multiplicative_expression():
     ExpressionNode f;
 }
 {
+    e = power_expression()
+    (
+        "*" f = power_expression() { e = new MultiplyNode(e, f); }
+    |   "/" f = power_expression() { e = new DivideNode(e, f); }
+    )*
+    { return e; }
+}
+
+ExpressionNode power_expression():
+{
+    ExpressionNode e;
+    ExpressionNode f;
+}
+{
     e = unary_expression()
     (
-        "*" f = unary_expression() { e = new MultiplyNode(e, f); }
-    |   "/" f = unary_expression() { e = new DivideNode(e, f); }
+        "^" f = unary_expression() { e = new PowerNode(e, f); }
     )*
     { return e; }
 }
