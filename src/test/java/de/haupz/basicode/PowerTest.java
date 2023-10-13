@@ -10,6 +10,7 @@ public class PowerTest extends ExpressionTest {
         testExpression("2^-2", 0.25, Double.class);
         testExpression("-2^2", 4, Integer.class);
         testExpression("-2^3", -8, Integer.class);
+        testExpression("2^3^4", 4096, Integer.class);
     }
 
     @Test
@@ -18,12 +19,16 @@ public class PowerTest extends ExpressionTest {
         testExpression("2.0^-2.0", 0.25, Double.class);
         testExpression("-2.0^2.0", 4.0, Double.class);
         testExpression("-2.0^3.0", -8.0, Double.class);
+        testExpression("2.0^3.0^4.0", 4096.0, Double.class);
     }
 
     @Test
     public void testCoercion() {
         testExpression("2^3.0", 8.0, Double.class);
         testExpression("2.0^3", 8.0, Double.class);
+        testExpression("2.0^3^4", 4096.0, Double.class);
+        testExpression("2^3.0^4", 4096.0, Double.class);
+        testExpression("2^3^4.0", 4096.0, Double.class);
     }
 
     @Test

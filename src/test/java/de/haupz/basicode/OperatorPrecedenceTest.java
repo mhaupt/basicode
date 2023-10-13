@@ -28,4 +28,9 @@ public class OperatorPrecedenceTest extends ExpressionTest {
         testExpression("2*(3-4)", -2, Integer.class);
     }
 
+    @Test
+    public void testPowerPrecedence() {
+        testExpression("2+2^3+2", 12, Integer.class);
+    }
+
 }
