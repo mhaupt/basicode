@@ -50,10 +50,8 @@ TOKEN: {
 |   < VAL: "VAL" >
 // operands
 |   < CARET: "^" >
-|   < EQ: "=" >
 |   < LT: "<" >
 |   < GT: ">" >
-|   < NEQ: "<>" >
 |   < LEQ: "<=" >
 |   < GEQ: ">=" >
 // identifiers
@@ -141,22 +139,15 @@ ExpressionNode and_expression():
 ExpressionNode equality_expression():
 {
     ExpressionNode e;
-    ExpressionNode f = null;
-    Token t = null;
+    ExpressionNode f;
 }
 {
-    e = relational_expression() ( (t=<EQ>|t=<NEQ>) f = relational_expression() )?
-    {
-        if (null == f) {
-            return e;
-        } else if (t.kind == EQ) {
-            return new EqNode(e, f);
-        } else if (t.kind == NEQ) {
-            return new NeqNode(e, f);
-        } else {
-            throw new IllegalStateException("unexpected token: " + t.image);
-        }
-    }
+    e = relational_expression()
+    (
+        "=" f = relational_expression() { return new EqNode(e, f); }
+    |   "<>" f = relational_expression() { return new NeqNode(e, f); }
+    )?
+    { return e; }
 }
 
 ExpressionNode relational_expression():

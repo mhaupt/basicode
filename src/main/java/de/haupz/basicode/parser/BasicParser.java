@@ -157,19 +157,22 @@ l.add(f);
 }
 
   final public ExpressionNode equality_expression() throws ParseException {ExpressionNode e;
-    ExpressionNode f = null;
-    Token t = null;
+    ExpressionNode f;
     e = relational_expression();
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-    case EQ:
-    case NEQ:{
+    case 56:
+    case 57:{
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-      case EQ:{
-        t = jj_consume_token(EQ);
+      case 56:{
+        jj_consume_token(56);
+        f = relational_expression();
+{if ("" != null) return new EqNode(e, f);}
         break;
         }
-      case NEQ:{
-        t = jj_consume_token(NEQ);
+      case 57:{
+        jj_consume_token(57);
+        f = relational_expression();
+{if ("" != null) return new NeqNode(e, f);}
         break;
         }
       default:
@@ -177,22 +180,13 @@ l.add(f);
         jj_consume_token(-1);
         throw new ParseException();
       }
-      f = relational_expression();
       break;
       }
     default:
       jj_la1[7] = jj_gen;
       ;
     }
-if (null == f) {
-            {if ("" != null) return e;}
-        } else if (t.kind == EQ) {
-            {if ("" != null) return new EqNode(e, f);}
-        } else if (t.kind == NEQ) {
-            {if ("" != null) return new NeqNode(e, f);}
-        } else {
-            {if (true) throw new IllegalStateException("unexpected token: " + t.image);}
-        }
+{if ("" != null) return e;}
     throw new Error("Missing return statement in function");
 }
 
@@ -649,7 +643,7 @@ e = new DivideNode(e, f);
 	   jj_la1_0 = new int[] {0x10,0x8,0x5,0x0,0x0,0x400,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x51207b70,0x51207b70,0x11207b70,0x30,0x170,0x11207a00,};
 	}
 	private static void jj_la1_init_1() {
-	   jj_la1_1 = new int[] {0x0,0x0,0x0,0xa,0x1,0x0,0x480000,0x480000,0x1b00000,0x1b00000,0xc000000,0xc000000,0x30000000,0x30000000,0x4a024740,0x42024740,0x42024740,0x0,0x2000000,0x24740,};
+	   jj_la1_1 = new int[] {0x0,0x0,0x0,0xa,0x1,0x0,0x3000000,0x3000000,0x780000,0x780000,0xc000000,0xc000000,0x30000000,0x30000000,0x48824740,0x40824740,0x40824740,0x0,0x800000,0x24740,};
 	}
 	private static void jj_la1_init_2() {
 	   jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};

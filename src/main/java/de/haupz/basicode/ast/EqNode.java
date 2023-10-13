@@ -1,21 +1,25 @@
 package de.haupz.basicode.ast;
 
-import de.haupz.basicode.interpreter.InterpreterState;
+import java.util.Optional;
 
-public class EqNode extends ExpressionNode {
-
-    private ExpressionNode expression1;
-
-    private ExpressionNode expression2;
+public class EqNode extends TypeAdjustingNode {
 
     public EqNode(ExpressionNode expression1, ExpressionNode expression2) {
-        this.expression1 = expression1;
-        this.expression2 = expression2;
+        super(expression1, expression2);
     }
 
     @Override
-    public Object eval(InterpreterState state) {
-        throw new IllegalStateException("not yet implemented");
+    Optional<Object> evalWithTypes(Object value1, Object value2) {
+        if (value1 instanceof Integer i && value2 instanceof Integer j) {
+            return Optional.of(i.equals(j) ? -1 : 0);
+        }
+        if (value1 instanceof Double d && value2 instanceof Double e) {
+            return Optional.of(d.equals(e) ? -1 : 0);
+        }
+        if (value1 instanceof String s && value2 instanceof String t) {
+            return Optional.of(s.equals(t) ? -1 : 0);
+        }
+        return Optional.empty();
     }
 
 }

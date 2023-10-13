@@ -109,19 +109,15 @@ public interface BasicParserConstants {
   /** RegularExpression Id. */
   int CARET = 50;
   /** RegularExpression Id. */
-  int EQ = 51;
+  int LT = 51;
   /** RegularExpression Id. */
-  int LT = 52;
+  int GT = 52;
   /** RegularExpression Id. */
-  int GT = 53;
+  int LEQ = 53;
   /** RegularExpression Id. */
-  int NEQ = 54;
+  int GEQ = 54;
   /** RegularExpression Id. */
-  int LEQ = 55;
-  /** RegularExpression Id. */
-  int GEQ = 56;
-  /** RegularExpression Id. */
-  int IDENTIFIER = 57;
+  int IDENTIFIER = 55;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -179,13 +175,13 @@ public interface BasicParserConstants {
     "\"TO\"",
     "\"VAL\"",
     "\"^\"",
-    "\"=\"",
     "\"<\"",
     "\">\"",
-    "\"<>\"",
     "\"<=\"",
     "\">=\"",
     "<IDENTIFIER>",
+    "\"=\"",
+    "\"<>\"",
     "\"+\"",
     "\"-\"",
     "\"*\"",
