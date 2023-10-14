@@ -499,7 +499,7 @@ e = new PowerNode(e, f);
       }
     case IDENTIFIER:{
       t = jj_consume_token(IDENTIFIER);
-{if ("" != null) return new StringNode(t.image);}
+{if ("" != null) return new VarNode(t.image);}
       break;
       }
     default:

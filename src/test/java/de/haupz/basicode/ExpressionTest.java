@@ -4,6 +4,7 @@ import de.haupz.basicode.ast.ExpressionNode;
 import de.haupz.basicode.interpreter.InterpreterState;
 import de.haupz.basicode.parser.BasicParser;
 import de.haupz.basicode.parser.ParseException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -13,6 +14,15 @@ import java.io.StringReader;
 import static org.junit.jupiter.api.Assertions.*;
 
 public abstract class ExpressionTest {
+
+    InterpreterState state;
+
+    @BeforeEach
+    void setUp() {
+        ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
+        PrintStream out = new PrintStream(bytesOut, true);
+        state = new InterpreterState(out);
+    }
 
     ExpressionNode parseExpression(String expression) {
         BasicParser parser = new BasicParser(new StringReader(expression));
@@ -25,14 +35,8 @@ public abstract class ExpressionTest {
         return expr;
     }
 
-    InterpreterState getState() {
-        ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
-        PrintStream out = new PrintStream(bytesOut, true);
-        return new InterpreterState(out);
-    }
-
     void testExpression(String expression, Object expectedResult, Class<?> expectedClass) {
-        Object actualResult = parseExpression(expression).eval(getState());
+        Object actualResult = parseExpression(expression).eval(state);
         assertEquals(expectedClass, actualResult.getClass());
         if (expectedClass == Double.class) {
             assertEquals((double) expectedResult, (double) actualResult, 0.000001);
@@ -42,7 +46,7 @@ public abstract class ExpressionTest {
     }
 
     void testExpressionThrows(String expression, Class<? extends Throwable> exceptionClass) {
-        assertThrowsExactly(exceptionClass, () -> parseExpression(expression).eval(getState()));
+        assertThrowsExactly(exceptionClass, () -> parseExpression(expression).eval(state));
     }
 
 }

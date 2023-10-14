@@ -95,4 +95,14 @@ public class SimpleInterpreterTests {
         testInterpreter("10 PRINT 3+4", "7\n");
     }
 
+    @Test
+    public void testAssignments() {
+        testInterpreter("""
+                10 AA=23
+                20 BB=42
+                30 CC=AA+BB
+                40 PRINT CC
+                """, "65\n");
+    }
+
 }

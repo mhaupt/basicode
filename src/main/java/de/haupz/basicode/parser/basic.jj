@@ -236,7 +236,7 @@ ExpressionNode literal():
     (t = <NUMBER> | t = <INTEGER>) { return new IntegerNode(Integer.parseInt(t.image)); }
 |   t = <FLOAT> { return new DoubleNode(Double.parseDouble(t.image)); }
 |   t = <STRING> { return new StringNode(t.image.substring(1, t.image.length() - 1)); }
-|   t = <IDENTIFIER> { return new StringNode(t.image); }
+|   t = <IDENTIFIER> { return new VarNode(t.image); }
 }
 
 ExpressionNode builtin_call():
