@@ -101,6 +101,7 @@ StatementNode statement():
 }
 {
     t = <REM> { return new RemNode(t.image); }
+|   t = <IDENTIFIER> "=" e = expression() { return new LetNode(t.image, e); }
 |   <PRINT> e = expression() { return new PrintNode(e); }
 }
 
