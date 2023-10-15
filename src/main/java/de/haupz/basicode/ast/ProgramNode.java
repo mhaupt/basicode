@@ -10,8 +10,6 @@ public class ProgramNode extends BasicNode {
 
     private final List<LineNode> lines;
 
-    private int lineIndex = 0;
-
     LineNode currentLine;
 
     private Map<Integer, Integer> jumpTable = new HashMap<>();
@@ -25,7 +23,7 @@ public class ProgramNode extends BasicNode {
 
     @Override
     public void run(InterpreterState state) {
-        currentLine = lines.get(lineIndex);
+        currentLine = lines.get(state.getLineIndex());
         while (!state.shouldEnd()) {
             currentLine.run(state);
             if (state.isJumpNext()) {
@@ -38,18 +36,18 @@ public class ProgramNode extends BasicNode {
 
     private void resolveJump(InterpreterState state) {
         try {
-            lineIndex = jumpTable.get(state.getJumpTarget());
+            state.setNextLine(jumpTable.get(state.getJumpTarget()));
         } catch (NullPointerException npe) {
             throw new IllegalStateException("line not found: " + state.getJumpTarget());
         }
-        currentLine = lines.get(lineIndex);
+        currentLine = lines.get(state.getLineIndex());
         state.jumpDone();
     }
 
     private void advanceLine(InterpreterState state) {
-        ++lineIndex;
-        if (lineIndex < lines.size()) {
-            currentLine = lines.get(lineIndex);
+        state.incLineIndex();
+        if (state.getLineIndex() < lines.size()) {
+            currentLine = lines.get(state.getLineIndex());
         } else {
             state.terminate();
         }
