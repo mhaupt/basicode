@@ -134,4 +134,13 @@ public class SimpleInterpreterTests {
                 """);
     }
 
+    @Test
+    public void testEnd() {
+        testInterpreter("""
+                10 PRINT "Hello."
+                20 END
+                30 PRINT "Invisible."
+                """, "Hello.\n");
+    }
+
 }

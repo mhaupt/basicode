@@ -105,6 +105,7 @@ StatementNode statement():
 |   t = <IDENTIFIER> "=" e = expression() { return new LetNode(t.image, e); }
 |   <PRINT> e = expression() { return new PrintNode(e); }
 |   <GOTO> n = lineNumber() { return new GotoNode(n); }
+|   <END> { return new EndNode(); }
 }
 
 //
