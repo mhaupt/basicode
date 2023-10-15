@@ -2,7 +2,9 @@ package de.haupz.basicode.ast;
 
 import de.haupz.basicode.interpreter.InterpreterState;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ProgramNode extends BasicNode {
 
@@ -12,8 +14,13 @@ public class ProgramNode extends BasicNode {
 
     LineNode currentLine;
 
+    private Map<Integer, Integer> jumpTable = new HashMap<>();
+
     public ProgramNode(List<LineNode> lines) {
         this.lines = List.copyOf(lines);
+        for (int i = 0; i < lines.size(); ++i) {
+            jumpTable.put(lines.get(i).getLineNumber(), i);
+        }
     }
 
     @Override
@@ -30,15 +37,13 @@ public class ProgramNode extends BasicNode {
     }
 
     private void resolveJump(InterpreterState state) {
-        for (int idx = 0; idx < lines.size(); ++idx) {
-            if (state.getJumpTarget() == lines.get(idx).getLineNumber()) {
-                lineIndex = idx;
-                currentLine = lines.get(idx);
-                state.jumpDone();
-                return;
-            }
+        try {
+            lineIndex = jumpTable.get(state.getJumpTarget());
+        } catch (NullPointerException npe) {
+            throw new IllegalStateException("line not found: " + state.getJumpTarget());
         }
-        throw new IllegalStateException("line not found: " + state.getJumpTarget());
+        currentLine = lines.get(lineIndex);
+        state.jumpDone();
     }
 
     private void advanceLine(InterpreterState state) {
