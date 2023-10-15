@@ -10,8 +10,6 @@ public class LineNode extends BasicNode {
 
     private final List<StatementNode> statements;
 
-    private int statementIndex = 0;
-
     private StatementNode currentStatement;
 
     public LineNode(int lineNumber, List<StatementNode> statements) {
@@ -21,12 +19,12 @@ public class LineNode extends BasicNode {
 
     @Override
     public void run(InterpreterState state) {
-        currentStatement = statements.get(statementIndex);
+        currentStatement = statements.get(state.getStatementIndex());
         while (!state.shouldEnd() && !state.isJumpNext()) {
             currentStatement.run(state);
-            ++statementIndex;
-            if (statementIndex < statements.size()) {
-                currentStatement = statements.get(statementIndex);
+            state.incStatementIndex();
+            if (state.getStatementIndex() < statements.size()) {
+                currentStatement = statements.get(state.getStatementIndex());
             } else {
                 return;
             }

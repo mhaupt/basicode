@@ -13,6 +13,8 @@ public class InterpreterState {
 
     private int lineIndex = 0;
 
+    private int statementIndex = 0;
+
     private boolean end = false;
 
     private boolean jump = false;
@@ -73,6 +75,18 @@ public class InterpreterState {
 
     public void setNextLine(int nextLine) {
         lineIndex = nextLine;
+    }
+
+    public int getStatementIndex() {
+        return statementIndex;
+    }
+
+    public void incStatementIndex() {
+        ++statementIndex;
+    }
+
+    public void setNextStatement(int nextStmt) {
+        statementIndex = nextStmt;
     }
 
 }

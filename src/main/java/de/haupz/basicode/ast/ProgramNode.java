@@ -41,11 +41,13 @@ public class ProgramNode extends BasicNode {
             throw new IllegalStateException("line not found: " + state.getJumpTarget());
         }
         currentLine = lines.get(state.getLineIndex());
+        state.setNextStatement(0);
         state.jumpDone();
     }
 
     private void advanceLine(InterpreterState state) {
         state.incLineIndex();
+        state.setNextStatement(0);
         if (state.getLineIndex() < lines.size()) {
             currentLine = lines.get(state.getLineIndex());
         } else {
