@@ -86,6 +86,7 @@ statements.add(st);
   final public 
 StatementNode statement() throws ParseException {Token t;
     ExpressionNode e;
+    int n;
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case REM:{
       t = jj_consume_token(REM);
@@ -103,6 +104,12 @@ StatementNode statement() throws ParseException {Token t;
       jj_consume_token(PRINT);
       e = expression();
 {if ("" != null) return new PrintNode(e);}
+      break;
+      }
+    case GOTO:{
+      jj_consume_token(GOTO);
+      n = lineNumber();
+{if ("" != null) return new GotoNode(n);}
       break;
       }
     default:
@@ -661,7 +668,7 @@ e = new PowerNode(e, f);
 	   jj_la1_init_2();
 	}
 	private static void jj_la1_init_0() {
-	   jj_la1_0 = new int[] {0x10,0x8,0x5,0x0,0x0,0x400,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x51207b70,0x51207b70,0x11207b70,0x30,0x170,0x11207a00,};
+	   jj_la1_0 = new int[] {0x10,0x8,0x5,0x100000,0x0,0x400,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x51207b70,0x51207b70,0x11207b70,0x30,0x170,0x11207a00,};
 	}
 	private static void jj_la1_init_1() {
 	   jj_la1_1 = new int[] {0x0,0x0,0x0,0x4000a,0x1,0x0,0x180000,0x180000,0x1e00000,0x1e00000,0x6000000,0x6000000,0x18000000,0x18000000,0x20000000,0x44064740,0x40064740,0x40064740,0x0,0x40000,0x24740,};

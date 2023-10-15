@@ -9,4 +9,4 @@ You'll need Java 17 and Maven. Just run `mvn package` to build everything and ru
 
 ## Licence
 
-This project is under the [MIT License](https://mit-license.org/), non-contagious, well-intentioned, and harmless.
+This project is under the [MIT Licence](https://mit-license.org/), non-contagious, well-intentioned, and harmless.

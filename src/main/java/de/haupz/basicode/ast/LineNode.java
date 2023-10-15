@@ -10,6 +10,10 @@ public class LineNode extends BasicNode {
 
     private final List<StatementNode> statements;
 
+    private int statementIndex = 0;
+
+    private StatementNode currentStatement;
+
     public LineNode(int lineNumber, List<StatementNode> statements) {
         this.lineNumber = lineNumber;
         this.statements = List.copyOf(statements);
@@ -17,12 +21,25 @@ public class LineNode extends BasicNode {
 
     @Override
     public void run(InterpreterState state) {
-        statements.forEach(st -> st.run(state));
+        currentStatement = statements.get(statementIndex);
+        while (!state.shouldEnd() && !state.isJumpNext()) {
+            currentStatement.run(state);
+            ++statementIndex;
+            if (statementIndex < statements.size()) {
+                currentStatement = statements.get(statementIndex);
+            } else {
+                return;
+            }
+        }
     }
 
     @Override
     public Object eval(InterpreterState state) {
         throw new IllegalStateException("a LineNode should not be evaluated");
+    }
+
+    public int getLineNumber() {
+        return lineNumber;
     }
 
 }
