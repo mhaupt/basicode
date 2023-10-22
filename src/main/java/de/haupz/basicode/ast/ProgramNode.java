@@ -2,6 +2,7 @@ package de.haupz.basicode.ast;
 
 import de.haupz.basicode.interpreter.InterpreterState;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,49 +11,43 @@ public class ProgramNode extends BasicNode {
 
     private final List<LineNode> lines;
 
-    LineNode currentLine;
+    private List<StatementNode> statements = new ArrayList<>();
 
-    private Map<Integer, Integer> jumpTable = new HashMap<>();
+    private Map<Integer, Integer> lineNumberToStatementIndex = new HashMap<>();
 
     public ProgramNode(List<LineNode> lines) {
         this.lines = List.copyOf(lines);
-        for (int i = 0; i < lines.size(); ++i) {
-            jumpTable.put(lines.get(i).getLineNumber(), i);
-        }
+        lines.forEach(line -> {
+            // A new line: the index of its first statement is the current size of the statements array.
+            lineNumberToStatementIndex.put(line.getLineNumber(), statements.size());
+            statements.addAll(List.copyOf(line.getStatements()));
+        });
     }
 
     @Override
     public void run(InterpreterState state) {
-        currentLine = lines.get(state.getLineIndex());
+        StatementNode statement;
         while (!state.shouldEnd()) {
-            currentLine.run(state);
+            statement = statements.get(state.getStatementIndex());
+            statement.run(state);
             if (state.isJumpNext()) {
                 resolveJump(state);
             } else {
-                advanceLine(state);
+                state.incStatementIndex();
+                if (state.getStatementIndex() >= statements.size()) {
+                    state.terminate();
+                }
             }
         }
     }
 
     private void resolveJump(InterpreterState state) {
         try {
-            state.setNextLine(jumpTable.get(state.getJumpTarget()));
+            state.setNextStatement(lineNumberToStatementIndex.get(state.getJumpTarget()));
         } catch (NullPointerException npe) {
             throw new IllegalStateException("line not found: " + state.getJumpTarget());
         }
-        currentLine = lines.get(state.getLineIndex());
-        state.setNextStatement(0);
         state.jumpDone();
-    }
-
-    private void advanceLine(InterpreterState state) {
-        state.incLineIndex();
-        state.setNextStatement(0);
-        if (state.getLineIndex() < lines.size()) {
-            currentLine = lines.get(state.getLineIndex());
-        } else {
-            state.terminate();
-        }
     }
 
     @Override

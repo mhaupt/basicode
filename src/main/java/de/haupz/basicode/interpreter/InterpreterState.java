@@ -11,8 +11,6 @@ public class InterpreterState {
 
     private final Map<String, Object> vars = new HashMap<>();
 
-    private int lineIndex = 0;
-
     private int statementIndex = 0;
 
     private boolean end = false;
@@ -63,18 +61,6 @@ public class InterpreterState {
 
     public void setJumpTarget(int target) {
         jumpTarget = target;
-    }
-
-    public int getLineIndex() {
-        return lineIndex;
-    }
-
-    public void incLineIndex() {
-        ++lineIndex;
-    }
-
-    public void setNextLine(int nextLine) {
-        lineIndex = nextLine;
     }
 
     public int getStatementIndex() {
