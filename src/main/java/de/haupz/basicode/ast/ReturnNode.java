@@ -8,7 +8,7 @@ public class ReturnNode extends StatementNode {
 
     @Override
     public void run(InterpreterState state) {
-        throw new IllegalStateException("not yet implemented");
+        state.requestReturn();
     }
 
 }

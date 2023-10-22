@@ -4,6 +4,7 @@ import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Stack;
 
 public class InterpreterState {
 
@@ -11,11 +12,15 @@ public class InterpreterState {
 
     private final Map<String, Object> vars = new HashMap<>();
 
+    private final Stack<Integer> callStack = new Stack<>();
+
     private int statementIndex = 0;
 
     private boolean end = false;
 
     private boolean jump = false;
+
+    private boolean ret = false;
 
     private int jumpTarget;
 
@@ -59,6 +64,18 @@ public class InterpreterState {
         return jumpTarget;
     }
 
+    public void requestReturn() {
+        ret = true;
+    }
+
+    public void returnDone() {
+        ret = false;
+    }
+
+    public boolean isReturnNext() {
+        return ret;
+    }
+
     public void setJumpTarget(int target) {
         jumpTarget = target;
     }
@@ -73,6 +90,14 @@ public class InterpreterState {
 
     public void setNextStatement(int nextStmt) {
         statementIndex = nextStmt;
+    }
+
+    public void pushReturnIndex() {
+        callStack.push(statementIndex + 1);
+    }
+
+    public int getReturnIndex() {
+        return callStack.pop();
     }
 
 }

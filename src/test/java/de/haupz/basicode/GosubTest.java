@@ -1,9 +1,7 @@
 package de.haupz.basicode;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-@Disabled
 public class GosubTest extends InterpreterTest {
 
     @Test

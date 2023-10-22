@@ -12,7 +12,9 @@ public class GosubNode extends StatementNode {
 
     @Override
     public void run(InterpreterState state) {
-        throw new IllegalStateException("not yet implemented");
+        state.pushReturnIndex();
+        state.setJumpTarget(target);
+        state.requestJump();
     }
 
 }

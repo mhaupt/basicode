@@ -13,7 +13,6 @@ public class GotoNode extends StatementNode {
     @Override
     public void run(InterpreterState state) {
         state.setJumpTarget(target);
-        state.setNextStatement(0);
         state.requestJump();
     }
 

@@ -32,6 +32,9 @@ public class ProgramNode extends BasicNode {
             statement.run(state);
             if (state.isJumpNext()) {
                 resolveJump(state);
+            } else if (state.isReturnNext()) {
+                state.setNextStatement(state.getReturnIndex());
+                state.returnDone();
             } else {
                 state.incStatementIndex();
                 if (state.getStatementIndex() >= statements.size()) {
