@@ -16,7 +16,17 @@ public class LetNode extends StatementNode {
     @Override
     public void run(InterpreterState state) {
         Object value = expression.eval(state);
+        if (value instanceof String && !isString()) {
+            throw new IllegalStateException("can't assign a string to a variable named " + id);
+        }
+        if (!(value instanceof String) && isString()) {
+            throw new IllegalStateException("can't assign a non-string to a variable named " + id);
+        }
         state.setVar(id, value);
+    }
+
+    boolean isString() {
+        return id.endsWith("$");
     }
 
 }

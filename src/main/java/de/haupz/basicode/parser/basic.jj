@@ -49,7 +49,7 @@ TOKEN: {
 |   < TAB: "TAB" > | < TAN: "TAN" > | < THEN: "THEN" > | < TO: "TO" >
 |   < VAL: "VAL" >
 // identifiers
-|   < IDENTIFIER: ["a"-"z","A"-"Z"] ["a"-"z","A"-"Z","0"-"9"] >
+|   < IDENTIFIER: ["a"-"z","A"-"Z"] (["a"-"z","A"-"Z","0"-"9"])? ("$")? >
 }
 
 // Parser.

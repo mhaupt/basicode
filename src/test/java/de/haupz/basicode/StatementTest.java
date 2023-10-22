@@ -1,6 +1,5 @@
 package de.haupz.basicode;
 
-import de.haupz.basicode.ast.ProgramNode;
 import de.haupz.basicode.ast.StatementNode;
 import de.haupz.basicode.interpreter.InterpreterState;
 import de.haupz.basicode.parser.BasicParser;

@@ -28,8 +28,8 @@ public class LetTest extends StatementTest {
 
     @Test
     public void setVarString() {
-        run("AA=\"Hello.\"");
-        Optional<Object> v = state.getVar("AA");
+        run("AA$=\"Hello.\"");
+        Optional<Object> v = state.getVar("AA$");
         assertTrue(v.isPresent());
         assertEquals(String.class, v.get().getClass());
         assertEquals("Hello.", v.get());
@@ -42,6 +42,12 @@ public class LetTest extends StatementTest {
         assertTrue(v.isPresent());
         assertEquals(Integer.class, v.get().getClass());
         assertEquals(9, v.get());
+    }
+
+    @Test
+    public void wrongAssignment() {
+        assertThrows(IllegalStateException.class, () -> run("A = \"oops\""));
+        assertThrows(IllegalStateException.class, () -> run("A$ = 23"));
     }
 
 }
