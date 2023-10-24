@@ -98,6 +98,7 @@ StatementNode statement():
 {
     Token t;
     ExpressionNode e;
+    StatementNode s;
     int n;
 }
 {
@@ -106,8 +107,30 @@ StatementNode statement():
 |   <PRINT> e = expression() { return new PrintNode(e); }
 |   <GOTO> n = lineNumber() { return new GotoNode(n); }
 |   <GOSUB> n = lineNumber() { return new GosubNode(n); }
+|   s = dimStatement() { return s; }
 |   <RETURN> { return new ReturnNode(); }
 |   <END> { return new EndNode(); }
+}
+
+StatementNode dimStatement():
+{
+    DimCreateNode d;
+    List<DimCreateNode> dims = new ArrayList<>();
+}
+{
+    <DIM> d = oneDim() { dims.add(d); } ("," d = oneDim() { dims.add(d); })*
+    { return new DimNode(dims); }
+}
+
+DimCreateNode oneDim():
+{
+    Token t;
+    ExpressionNode d1 = null;
+    ExpressionNode d2 = null;
+}
+{
+    t = <IDENTIFIER> "(" d1 = expression() ("," d2 = expression())? ")"
+    { return new DimCreateNode(t.image, d1, d2); }
 }
 
 //

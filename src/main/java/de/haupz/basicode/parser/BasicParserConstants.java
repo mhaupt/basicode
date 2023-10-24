@@ -166,6 +166,9 @@ public interface BasicParserConstants {
     "\"VAL\"",
     "<IDENTIFIER>",
     "\"=\"",
+    "\",\"",
+    "\"(\"",
+    "\")\"",
     "\"<>\"",
     "\"<\"",
     "\"<=\"",
@@ -176,9 +179,6 @@ public interface BasicParserConstants {
     "\"*\"",
     "\"/\"",
     "\"^\"",
-    "\"(\"",
-    "\")\"",
-    "\",\"",
   };
 
 }
