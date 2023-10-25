@@ -95,10 +95,8 @@ StatementNode statement() throws ParseException {Token t;
       break;
       }
     case IDENTIFIER:{
-      t = jj_consume_token(IDENTIFIER);
-      jj_consume_token(51);
-      e = expression();
-{if ("" != null) return new LetNode(t.image, e);}
+      s = assignment();
+{if ("" != null) return s;}
       break;
       }
     case PRINT:{
@@ -139,6 +137,15 @@ StatementNode statement() throws ParseException {Token t;
       jj_consume_token(-1);
       throw new ParseException();
     }
+    throw new Error("Missing return statement in function");
+}
+
+  final public StatementNode assignment() throws ParseException {Token t;
+    ExpressionNode e;
+    t = jj_consume_token(IDENTIFIER);
+    jj_consume_token(51);
+    e = expression();
+{if ("" != null) return new LetNode(t.image, e);}
     throw new Error("Missing return statement in function");
 }
 

@@ -103,13 +103,22 @@ StatementNode statement():
 }
 {
     t = <REM> { return new RemNode(t.image); }
-|   t = <IDENTIFIER> "=" e = expression() { return new LetNode(t.image, e); }
+|   s = assignment() { return s; }
 |   <PRINT> e = expression() { return new PrintNode(e); }
 |   <GOTO> n = lineNumber() { return new GotoNode(n); }
 |   <GOSUB> n = lineNumber() { return new GosubNode(n); }
 |   s = dimStatement() { return s; }
 |   <RETURN> { return new ReturnNode(); }
 |   <END> { return new EndNode(); }
+}
+
+StatementNode assignment():
+{
+    Token t;
+    ExpressionNode e;
+}
+{
+    t = <IDENTIFIER> "=" e = expression() { return new LetNode(t.image, e); }
 }
 
 StatementNode dimStatement():
