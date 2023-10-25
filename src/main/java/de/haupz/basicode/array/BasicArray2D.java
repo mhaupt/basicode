@@ -22,4 +22,14 @@ public class BasicArray2D extends BasicArray {
         return dim2;
     }
 
+    @Override
+    public boolean is2D() {
+        return true;
+    }
+
+    @Override
+    public Object at(int a, int b) {
+        return data[a * dim1 + b];
+    }
+
 }

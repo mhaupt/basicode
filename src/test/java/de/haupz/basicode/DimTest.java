@@ -94,4 +94,40 @@ public class DimTest extends StatementTest {
         assertThrows(IllegalStateException.class, () -> run("DIM A(2,-1)"));
     }
 
+    @Test
+    public void testAccess1DNonString() {
+        run("DIM A(7)");
+        run("AA=A(1)");
+        Optional<Object> aa = state.getVar("AA");
+        assertTrue(aa.isPresent());
+        assertEquals(0, aa.get());
+    }
+
+    @Test
+    public void testAccess1DString() {
+        run("DIM A$(7)");
+        run("AA$=A$(1)");
+        Optional<Object> aa = state.getVar("AA$");
+        assertTrue(aa.isPresent());
+        assertEquals("", aa.get());
+    }
+
+    @Test
+    public void testAccess2DNonString() {
+        run("DIM A(2,3)");
+        run("AA=A(1,1)");
+        Optional<Object> aa = state.getVar("AA");
+        assertTrue(aa.isPresent());
+        assertEquals(0, aa.get());
+    }
+
+    @Test
+    public void testAccess2DString() {
+        run("DIM A$(2,3)");
+        run("AA$=A$(1,1)");
+        Optional<Object> aa = state.getVar("AA$");
+        assertTrue(aa.isPresent());
+        assertEquals("", aa.get());
+    }
+
 }

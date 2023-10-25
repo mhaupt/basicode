@@ -50,4 +50,28 @@ public class LetTest extends StatementTest {
         assertThrows(IllegalStateException.class, () -> run("A$ = 23"));
     }
 
+    @Test
+    public void multipleAssignments() {
+        run("A=7");
+        run("B=8");
+        Optional<Object> a = state.getVar("A");
+        Optional<Object> b = state.getVar("B");
+        assertTrue(a.isPresent());
+        assertTrue(b.isPresent());
+        assertEquals(7, a.get());
+        assertEquals(8, b.get());
+    }
+
+    @Test
+    public void testSamePrefix() {
+        run("A=7");
+        run("AA=8");
+        Optional<Object> a = state.getVar("A");
+        Optional<Object> aa = state.getVar("AA");
+        assertTrue(a.isPresent());
+        assertTrue(aa.isPresent());
+        assertEquals(7, a.get());
+        assertEquals(8, aa.get());
+    }
+
 }

@@ -19,4 +19,15 @@ public class BasicArray1D extends BasicArray {
         throw new IllegalStateException("1D array has no second dimension");
     }
 
+    @Override
+    public boolean is1D() {
+        return true;
+    }
+
+    @Override
+    public Object at(int a, int b) {
+        // ignore b
+        return data[a];
+    }
+
 }

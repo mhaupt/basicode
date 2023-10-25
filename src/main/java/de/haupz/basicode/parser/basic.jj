@@ -249,11 +249,13 @@ ExpressionNode unary_expression_not_plus_minus():
 ExpressionNode primary_expression():
 {
     ExpressionNode e;
+    Token t;
 }
 {
     e = literal() { return e; }
 |   "(" e = expression() ")" { return e; }
 |   e = builtin_call() { return e; }
+|   e = varOrDimAccess() { return e; }
 }
 
 ExpressionNode literal():
@@ -264,7 +266,17 @@ ExpressionNode literal():
     (t = <NUMBER> | t = <INTEGER>) { return new IntegerNode(Integer.parseInt(t.image)); }
 |   t = <FLOAT> { return new DoubleNode(Double.parseDouble(t.image)); }
 |   t = <STRING> { return new StringNode(t.image.substring(1, t.image.length() - 1)); }
-|   t = <IDENTIFIER> { return new VarNode(t.image); }
+}
+
+ExpressionNode varOrDimAccess():
+{
+    Token t;
+    ExpressionNode e = null;
+    ExpressionNode f = null;
+}
+{
+    t = <IDENTIFIER> ( "(" e = expression() ("," f = expression())? ")" { return new DimAccessNode(t.image, e, f); } )?
+    { return new VarNode(t.image); }
 }
 
 ExpressionNode builtin_call():
