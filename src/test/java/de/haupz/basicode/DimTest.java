@@ -130,4 +130,84 @@ public class DimTest extends StatementTest {
         assertEquals("", aa.get());
     }
 
+    @Test
+    public void testReadOutOfBounds1D() {
+        run("DIM A(7)");
+        assertThrows(IllegalStateException.class, () -> run("AA=A(8)"));
+    }
+
+    @Test
+    public void testReadOutOfBounds2D() {
+        run("DIM A(7,8)");
+        assertThrows(IllegalStateException.class, () -> run("AA=A(4,9)"));
+        assertThrows(IllegalStateException.class, () -> run("AA=A(9,4)"));
+        assertThrows(IllegalStateException.class, () -> run("AA=A(9,9)"));
+    }
+
+    @Test
+    public void testWriteNonString1D() {
+        run("DIM A(7)");
+        run("A(1)=23");
+        run("AA=A(1)");
+        Optional<Object> aa = state.getVar("AA");
+        assertTrue(aa.isPresent());
+        assertEquals(23, aa.get());
+    }
+
+    @Test
+    public void testWriteString1D() {
+        run("DIM A$(7)");
+        run("A$(1)=\"Hello.\"");
+        run("AA$=A$(1)");
+        Optional<Object> aa = state.getVar("AA$");
+        assertTrue(aa.isPresent());
+        assertEquals("Hello.", aa.get());
+    }
+
+    @Test
+    public void testWriteNonString2D() {
+        run("DIM A(7,8)");
+        run("A(1,1)=23");
+        run("AA=A(1,1)");
+        Optional<Object> aa = state.getVar("AA");
+        assertTrue(aa.isPresent());
+        assertEquals(23, aa.get());
+    }
+
+    @Test
+    public void testWriteString2D() {
+        run("DIM A$(7,8)");
+        run("A$(1,1)=\"Hello.\"");
+        run("AA$=A$(1,1)");
+        Optional<Object> aa = state.getVar("AA$");
+        assertTrue(aa.isPresent());
+        assertEquals("Hello.", aa.get());
+    }
+
+    @Test
+    public void testWriteOutOfBounds1D() {
+        run("DIM A(7)");
+        assertThrows(IllegalStateException.class, () -> run("A(8)=23"));
+    }
+
+    @Test
+    public void testWriteOutOfBounds2D() {
+        run("DIM A(7,8)");
+        assertThrows(IllegalStateException.class, () -> run("A(4,9)=23"));
+        assertThrows(IllegalStateException.class, () -> run("A(9,4)=23"));
+        assertThrows(IllegalStateException.class, () -> run("A(9,9)=23"));
+    }
+
+    @Test
+    public void testWriteWrongTypeNonString() {
+        run("DIM A(7)");
+        assertThrows(IllegalStateException.class, () -> run("A(1)=\"boop\""));
+    }
+
+    @Test
+    public void testWriteWrongTypeString() {
+        run("DIM A$(7)");
+        assertThrows(IllegalStateException.class, () -> run("A$(1)=23"));
+    }
+
 }

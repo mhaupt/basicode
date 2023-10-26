@@ -27,7 +27,22 @@ public class BasicArray1D extends BasicArray {
     @Override
     public Object at(int a, int b) {
         // ignore b
+        checkBoundary(a);
         return data[a];
+    }
+
+
+    @Override
+    public void setAt(int a, int b, Object v) {
+        // ignore b
+        checkBoundary(a);
+        data[a] = v;
+    }
+
+    private void checkBoundary(int a) {
+        if (a >= dim) {
+            throw new IllegalStateException(String.format("out of bounds access (%d) in 1D array [%d]", a, dim));
+        }
     }
 
 }

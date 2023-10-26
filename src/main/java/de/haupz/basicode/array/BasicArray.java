@@ -35,4 +35,6 @@ public abstract class BasicArray {
 
     public abstract Object at(int a, int b);
 
+    public abstract void setAt(int a, int b, Object v);
+
 }

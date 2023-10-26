@@ -115,10 +115,16 @@ StatementNode statement():
 StatementNode assignment():
 {
     Token t;
-    ExpressionNode e;
+    boolean isArrayAssignment = false;
+    ExpressionNode e = null;
+    ExpressionNode f = null;
+    ExpressionNode g = null;
 }
 {
-    t = <IDENTIFIER> "=" e = expression() { return new LetNode(t.image, e); }
+    t = <IDENTIFIER>
+    ( "(" e = expression() ("," f = expression())? ")" { isArrayAssignment = true; } )?
+    "=" g = expression()
+    { return isArrayAssignment ? new LetArrayNode(t.image, e, f, g) : new LetNode(t.image, g); }
 }
 
 StatementNode dimStatement():
