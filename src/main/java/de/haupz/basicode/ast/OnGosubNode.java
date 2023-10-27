@@ -14,8 +14,8 @@ public class OnGosubNode extends DependentJumpNode {
     public void run(InterpreterState state) {
         int target = computeTarget(state);
         state.pushReturnIndex();
-        state.setJumpTarget(target);
-        state.requestJump();
+        state.setLineJumpTarget(target);
+        state.requestLineJump();
     }
 
 }

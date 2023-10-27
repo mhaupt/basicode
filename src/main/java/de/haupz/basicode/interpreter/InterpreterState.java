@@ -14,15 +14,23 @@ public class InterpreterState {
 
     private final Stack<Integer> callStack = new Stack<>();
 
+    public record For(int startIndex, Number end, Number step, boolean isIntIterator) {}
+
+    private final Map<String, For> runningForLoops = new HashMap<>();
+
     private int statementIndex = 0;
 
     private boolean end = false;
 
-    private boolean jump = false;
+    private boolean lineJump = false;
 
     private boolean ret = false;
 
-    private int jumpTarget;
+    private boolean backedge = false;
+
+    private int lineJumpTarget;
+
+    private int backedgeTarget;
 
     public InterpreterState(PrintStream out) {
         this.out = out;
@@ -48,20 +56,20 @@ public class InterpreterState {
         return end;
     }
 
-    public boolean isJumpNext() {
-        return jump;
+    public boolean isLineJumpNext() {
+        return lineJump;
     }
 
-    public void requestJump() {
-        jump = true;
+    public void requestLineJump() {
+        lineJump = true;
     }
 
-    public void jumpDone() {
-        jump = false;
+    public void lineJumpDone() {
+        lineJump = false;
     }
 
-    public int getJumpTarget() {
-        return jumpTarget;
+    public int getLineJumpTarget() {
+        return lineJumpTarget;
     }
 
     public void requestReturn() {
@@ -76,8 +84,8 @@ public class InterpreterState {
         return ret;
     }
 
-    public void setJumpTarget(int target) {
-        jumpTarget = target;
+    public void setLineJumpTarget(int target) {
+        lineJumpTarget = target;
     }
 
     public int getStatementIndex() {
@@ -98,6 +106,42 @@ public class InterpreterState {
 
     public int getReturnIndex() {
         return callStack.pop();
+    }
+
+    public boolean isRunningLoop(String id) {
+        return runningForLoops.containsKey(id);
+    }
+
+    public void startLoop(String id, Number end, Number step, boolean isIntIterator) {
+        runningForLoops.put(id, new For(statementIndex, end, step, isIntIterator));
+    }
+
+    public void stopLoop(String id) {
+        runningForLoops.remove(id);
+    }
+
+    public For getLoop(String id) {
+        return runningForLoops.get(id);
+    }
+
+    public void requestBackedge() {
+        backedge = true;
+    }
+
+    public void backedgeDone() {
+        backedge = false;
+    }
+
+    public boolean isBackedgeNext() {
+        return backedge;
+    }
+
+    public void setBackedgeTarget(int b) {
+        backedgeTarget = b;
+    }
+
+    public int getBackedgeTarget() {
+        return backedgeTarget;
     }
 
 }

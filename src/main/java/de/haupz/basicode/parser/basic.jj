@@ -107,9 +107,11 @@ StatementNode statement():
 |   <PRINT> e = expression() { return new PrintNode(e); }
 |   <GOTO> n = lineNumber() { return new GotoNode(n); }
 |   <GOSUB> n = lineNumber() { return new GosubNode(n); }
+|   <RETURN> { return new ReturnNode(); }
 |   s = dependent_jump() { return s; }
 |   s = dim_statement() { return s; }
-|   <RETURN> { return new ReturnNode(); }
+|   s = for_statement() { return s; }
+|   <NEXT> t = <IDENTIFIER> { return new NextNode(t.image); }
 |   <END> { return new EndNode(); }
 }
 
@@ -161,6 +163,18 @@ StatementNode dependent_jump():
     ( <GOTO> | <GOSUB> { isGosub = true; } )
     n = lineNumber() { targets.add(n); } ( "," n = lineNumber() { targets.add(n); } )*
     { return isGosub ? new OnGosubNode(e, targets) : new OnGotoNode(e, targets); }
+}
+
+StatementNode for_statement():
+{
+    Token t;
+    ExpressionNode e;
+    ExpressionNode f;
+    ExpressionNode g = null;
+}
+{
+    <FOR> t = <IDENTIFIER> "=" e = expression() <TO> f = expression() ( <STEP> g = expression() )?
+    { return new ForNode(t.image, e, f, g); }
 }
 
 //

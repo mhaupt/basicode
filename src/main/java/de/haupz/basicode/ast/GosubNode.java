@@ -13,8 +13,8 @@ public class GosubNode extends StatementNode {
     @Override
     public void run(InterpreterState state) {
         state.pushReturnIndex();
-        state.setJumpTarget(target);
-        state.requestJump();
+        state.setLineJumpTarget(target);
+        state.requestLineJump();
     }
 
 }

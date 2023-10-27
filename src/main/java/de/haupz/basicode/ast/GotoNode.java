@@ -12,8 +12,8 @@ public class GotoNode extends StatementNode {
 
     @Override
     public void run(InterpreterState state) {
-        state.setJumpTarget(target);
-        state.requestJump();
+        state.setLineJumpTarget(target);
+        state.requestLineJump();
     }
 
 }

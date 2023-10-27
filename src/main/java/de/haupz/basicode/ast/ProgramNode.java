@@ -30,11 +30,14 @@ public class ProgramNode extends BasicNode {
         while (!state.shouldEnd()) {
             statement = statements.get(state.getStatementIndex());
             statement.run(state);
-            if (state.isJumpNext()) {
+            if (state.isLineJumpNext()) {
                 resolveJump(state);
             } else if (state.isReturnNext()) {
                 state.setNextStatement(state.getReturnIndex());
                 state.returnDone();
+            } else if (state.isBackedgeNext()) {
+                state.setNextStatement(state.getBackedgeTarget());
+                state.backedgeDone();
             } else {
                 state.incStatementIndex();
                 if (state.getStatementIndex() >= statements.size()) {
@@ -46,11 +49,11 @@ public class ProgramNode extends BasicNode {
 
     private void resolveJump(InterpreterState state) {
         try {
-            state.setNextStatement(lineNumberToStatementIndex.get(state.getJumpTarget()));
+            state.setNextStatement(lineNumberToStatementIndex.get(state.getLineJumpTarget()));
         } catch (NullPointerException npe) {
-            throw new IllegalStateException("line not found: " + state.getJumpTarget());
+            throw new IllegalStateException("line not found: " + state.getLineJumpTarget());
         }
-        state.jumpDone();
+        state.lineJumpDone();
     }
 
     @Override
