@@ -112,6 +112,7 @@ StatementNode statement():
 |   s = dim_statement() { return s; }
 |   s = for_statement() { return s; }
 |   <NEXT> t = <IDENTIFIER> { return new NextNode(t.image); }
+|   s = if_statement() { return s; }
 |   <END> { return new EndNode(); }
 }
 
@@ -175,6 +176,22 @@ StatementNode for_statement():
 {
     <FOR> t = <IDENTIFIER> "=" e = expression() <TO> f = expression() ( <STEP> g = expression() )?
     { return new ForNode(t.image, e, f, g); }
+}
+
+StatementNode if_statement():
+{
+    ExpressionNode e;
+    int l = -1;
+    StatementNode s;
+    List<StatementNode> thenStatements = new ArrayList<>();
+}
+{
+    <IF> e = expression() <THEN>
+    (
+        l = lineNumber() { thenStatements.add(new GotoNode(l)); }
+    | ( s = statement() { thenStatements.add(s); } ( ":" s = statement() { thenStatements.add(s); } )* )
+    )
+    { return new IfThenNode(e, thenStatements); }
 }
 
 //
