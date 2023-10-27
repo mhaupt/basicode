@@ -107,6 +107,7 @@ StatementNode statement():
 |   <PRINT> e = expression() { return new PrintNode(e); }
 |   <GOTO> n = lineNumber() { return new GotoNode(n); }
 |   <GOSUB> n = lineNumber() { return new GosubNode(n); }
+|   s = dependentJump() { return s; }
 |   s = dimStatement() { return s; }
 |   <RETURN> { return new ReturnNode(); }
 |   <END> { return new EndNode(); }
@@ -146,6 +147,20 @@ DimCreateNode oneDim():
 {
     t = <IDENTIFIER> "(" d1 = expression() ("," d2 = expression())? ")"
     { return new DimCreateNode(t.image, d1, d2); }
+}
+
+StatementNode dependentJump():
+{
+    ExpressionNode e;
+    boolean isGosub = false;
+    List<Integer> targets = new ArrayList<>();
+    int n;
+}
+{
+    <ON> e = expression()
+    ( <GOTO> | <GOSUB> { isGosub = true; } )
+    n = lineNumber() { targets.add(n); } ( "," n = lineNumber() { targets.add(n); } )*
+    { return isGosub ? new OnGosubNode(e, targets) : new OnGotoNode(e, targets); }
 }
 
 //
