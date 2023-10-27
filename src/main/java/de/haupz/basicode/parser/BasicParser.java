@@ -118,12 +118,12 @@ StatementNode statement() throws ParseException {Token t;
       break;
       }
     case ON:{
-      s = dependentJump();
+      s = dependent_jump();
 {if ("" != null) return s;}
       break;
       }
     case DIM:{
-      s = dimStatement();
+      s = dim_statement();
 {if ("" != null) return s;}
       break;
       }
@@ -179,10 +179,10 @@ isArrayAssignment = true;
     throw new Error("Missing return statement in function");
 }
 
-  final public StatementNode dimStatement() throws ParseException {DimCreateNode d;
+  final public StatementNode dim_statement() throws ParseException {DimCreateNode d;
     List<DimCreateNode> dims = new ArrayList<>();
     jj_consume_token(DIM);
-    d = oneDim();
+    d = one_dim();
 dims.add(d);
     label_3:
     while (true) {
@@ -196,14 +196,14 @@ dims.add(d);
         break label_3;
       }
       jj_consume_token(52);
-      d = oneDim();
+      d = one_dim();
 dims.add(d);
     }
 {if ("" != null) return new DimNode(dims);}
     throw new Error("Missing return statement in function");
 }
 
-  final public DimCreateNode oneDim() throws ParseException {Token t;
+  final public DimCreateNode one_dim() throws ParseException {Token t;
     ExpressionNode d1 = null;
     ExpressionNode d2 = null;
     t = jj_consume_token(IDENTIFIER);
@@ -224,7 +224,7 @@ dims.add(d);
     throw new Error("Missing return statement in function");
 }
 
-  final public StatementNode dependentJump() throws ParseException {ExpressionNode e;
+  final public StatementNode dependent_jump() throws ParseException {ExpressionNode e;
     boolean isGosub = false;
     List<Integer> targets = new ArrayList<>();
     int n;

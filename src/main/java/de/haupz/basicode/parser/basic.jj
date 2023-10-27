@@ -107,8 +107,8 @@ StatementNode statement():
 |   <PRINT> e = expression() { return new PrintNode(e); }
 |   <GOTO> n = lineNumber() { return new GotoNode(n); }
 |   <GOSUB> n = lineNumber() { return new GosubNode(n); }
-|   s = dependentJump() { return s; }
-|   s = dimStatement() { return s; }
+|   s = dependent_jump() { return s; }
+|   s = dim_statement() { return s; }
 |   <RETURN> { return new ReturnNode(); }
 |   <END> { return new EndNode(); }
 }
@@ -128,17 +128,17 @@ StatementNode assignment():
     { return isArrayAssignment ? new LetArrayNode(t.image, e, f, g) : new LetNode(t.image, g); }
 }
 
-StatementNode dimStatement():
+StatementNode dim_statement():
 {
     DimCreateNode d;
     List<DimCreateNode> dims = new ArrayList<>();
 }
 {
-    <DIM> d = oneDim() { dims.add(d); } ("," d = oneDim() { dims.add(d); })*
+    <DIM> d = one_dim() { dims.add(d); } ("," d = one_dim() { dims.add(d); })*
     { return new DimNode(dims); }
 }
 
-DimCreateNode oneDim():
+DimCreateNode one_dim():
 {
     Token t;
     ExpressionNode d1 = null;
@@ -149,7 +149,7 @@ DimCreateNode oneDim():
     { return new DimCreateNode(t.image, d1, d2); }
 }
 
-StatementNode dependentJump():
+StatementNode dependent_jump():
 {
     ExpressionNode e;
     boolean isGosub = false;
