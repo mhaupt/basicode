@@ -18,7 +18,7 @@ public abstract class StatementTest {
     void setUp() {
         ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
         PrintStream out = new PrintStream(bytesOut, true);
-        state = new InterpreterState(out);
+        state = new InterpreterState(null, out);
     }
 
     void run(String source) {

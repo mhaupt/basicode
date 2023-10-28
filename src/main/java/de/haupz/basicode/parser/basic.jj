@@ -11,7 +11,9 @@ import java.util.List;
 
 import de.haupz.basicode.ast.*;
 
-public class BasicParser {}
+public class BasicParser {
+    List<Object> dataList = new ArrayList<>();
+}
 PARSER_END(BasicParser)
 
 // Lexer.
@@ -65,7 +67,7 @@ ProgramNode program():
 }
 {
     (l = line() { lines.add(l); })*
-    { return new ProgramNode(lines); }
+    { return new ProgramNode(lines, dataList); }
 }
 
 LineNode line():
@@ -76,8 +78,10 @@ LineNode line():
 }
 {
     num = lineNumber()
-    st = statement() { statements.add(st); }
-    (<COLON> st = statement() { statements.add(st); })*
+    (
+        st = data_line() { statements.add(st); }
+    |   st = statement() { statements.add(st); } (<COLON> st = statement() { statements.add(st); })*
+    )
     (<EOL>|<EOF>)
     { return new LineNode(num, statements); }
 }
@@ -113,7 +117,32 @@ StatementNode statement():
 |   s = for_statement() { return s; }
 |   <NEXT> t = <IDENTIFIER> { return new NextNode(t.image); }
 |   s = if_statement() { return s; }
+|   s = read_statement() { return s; }
+|   <RESTORE> { return new RestoreNode(); }
 |   <END> { return new EndNode(); }
+}
+
+StatementNode data_line():
+{
+    Object l;
+    List<Object> items = new ArrayList<>();
+}
+{
+    <DATA> l = data_literal() { items.add(l); } ( "," l = data_literal() { items.add(l); } )*
+    {
+        dataList.addAll(items);
+        return new DataNode(items);
+    }
+}
+
+Object data_literal():
+{
+    Token t;
+}
+{
+    (t = <NUMBER> | t = <INTEGER>) { return Integer.parseInt(t.image); }
+|   t = <FLOAT> { return Double.parseDouble(t.image); }
+|   t = <STRING> { return t.image.substring(1, t.image.length() - 1); }
 }
 
 StatementNode assignment():
@@ -192,6 +221,16 @@ StatementNode if_statement():
     | ( s = statement() { thenStatements.add(s); } ( ":" s = statement() { thenStatements.add(s); } )* )
     )
     { return new IfThenNode(e, thenStatements); }
+}
+
+StatementNode read_statement():
+{
+    Token t;
+    List<String> ids = new ArrayList<>();
+}
+{
+    <READ> t = <IDENTIFIER> { ids.add(t.image); } ( "," t = <IDENTIFIER> { ids.add(t.image); } )*
+    { return new ReadNode(ids); }
 }
 
 //

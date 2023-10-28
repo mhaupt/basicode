@@ -14,7 +14,8 @@ public class Main {
         System.out.println("--------------------------------------------------------------------------------");
         final var parser = new BasicParser(new StringReader(code));
         ProgramNode prog = parser.program();
-        prog.run(new InterpreterState(System.out));
+        InterpreterState state = new InterpreterState(prog, System.out);
+        prog.run(state);
         System.out.println("================================================================================");
     }
 

@@ -18,16 +18,14 @@ public abstract class InterpreterTest {
 
     private InterpreterState state;
 
-    @BeforeEach
-    void setUp() {
+    void setUpState(ProgramNode prog) {
         bytesOut = new ByteArrayOutputStream();
         PrintStream out = new PrintStream(bytesOut, true);
-        state = new InterpreterState(out);
+        state = new InterpreterState(prog, out);
     }
 
     private ProgramNode buildProgram(String source) {
         BasicParser parser = new BasicParser(new StringReader(source));
-        ProgramNode prog;
         try {
             return parser.program();
         } catch (ParseException pe) {
@@ -37,12 +35,14 @@ public abstract class InterpreterTest {
 
     void testInterpreter(String source, String expectedOutput) {
         ProgramNode prog = buildProgram(source);
+        setUpState(prog);
         prog.run(state);
         assertEquals(expectedOutput, bytesOut.toString());
     }
 
     void testInterpreterThrows(String source, Class<? extends Throwable> exceptionClass) {
         ProgramNode prog = buildProgram(source);
+        setUpState(prog);
         assertThrows(exceptionClass, () -> prog.run(state));
     }
 

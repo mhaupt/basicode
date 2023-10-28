@@ -1,5 +1,7 @@
 package de.haupz.basicode.interpreter;
 
+import de.haupz.basicode.ast.ProgramNode;
+
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -7,6 +9,8 @@ import java.util.Optional;
 import java.util.Stack;
 
 public class InterpreterState {
+
+    private final ProgramNode program;
 
     private final PrintStream out;
 
@@ -32,7 +36,10 @@ public class InterpreterState {
 
     private int backedgeTarget;
 
-    public InterpreterState(PrintStream out) {
+    private int dataPtr = 0;
+
+    public InterpreterState(ProgramNode program, PrintStream out) {
+        this.program = program;
         this.out = out;
     }
 
@@ -142,6 +149,14 @@ public class InterpreterState {
 
     public int getBackedgeTarget() {
         return backedgeTarget;
+    }
+
+    public void resetDataPtr() {
+        dataPtr = 0;
+    }
+
+    public Object readNextDataItem() {
+        return program.getDataList().get(dataPtr++);
     }
 
 }

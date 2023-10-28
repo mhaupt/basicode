@@ -21,7 +21,7 @@ public abstract class ExpressionTest {
     void setUp() {
         ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
         PrintStream out = new PrintStream(bytesOut, true);
-        state = new InterpreterState(out);
+        state = new InterpreterState(null, out);
     }
 
     ExpressionNode parseExpression(String expression) {

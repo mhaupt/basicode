@@ -15,13 +15,16 @@ public class ProgramNode extends BasicNode {
 
     private Map<Integer, Integer> lineNumberToStatementIndex = new HashMap<>();
 
-    public ProgramNode(List<LineNode> lines) {
+    private final List<Object> dataList;
+
+    public ProgramNode(List<LineNode> lines, List<Object> dataList) {
         this.lines = List.copyOf(lines);
         lines.forEach(line -> {
             // A new line: the index of its first statement is the current size of the statements array.
             lineNumberToStatementIndex.put(line.getLineNumber(), statements.size());
             statements.addAll(List.copyOf(line.getStatements()));
         });
+        this.dataList = List.copyOf(dataList);
     }
 
     @Override
@@ -59,6 +62,10 @@ public class ProgramNode extends BasicNode {
     @Override
     public Object eval(InterpreterState state) {
         throw new IllegalStateException("a ProgramNode should not be evaluated");
+    }
+
+    public List<Object> getDataList() {
+        return dataList;
     }
 
 }
