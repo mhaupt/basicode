@@ -119,7 +119,7 @@ StatementNode statement():
 |   s = if_statement() { return s; }
 |   s = read_statement() { return s; }
 |   <RESTORE> { return new RestoreNode(); }
-|   <END> { return new EndNode(); }
+|   (<END>|<STOP>) { return new EndNode(); }
 }
 
 StatementNode data_line():

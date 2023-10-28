@@ -21,4 +21,21 @@ public class EndTest extends InterpreterTest {
                 """, "Hello.\n");
     }
 
+    @Test
+    public void testStop() {
+        testInterpreter("""
+                10 PRINT "Hello."
+                20 STOP
+                30 PRINT "Invisible."
+                """, "Hello.\n");
+    }
+
+    @Test
+    public void testStopOnSameLine() {
+        testInterpreter("""
+                10 PRINT "Hello.":STOP
+                20 PRINT "Invisible."
+                """, "Hello.\n");
+    }
+
 }
