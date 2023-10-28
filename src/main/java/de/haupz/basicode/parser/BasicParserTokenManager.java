@@ -107,29 +107,29 @@ private int jjMoveStringLiteralDfa0_0(){
       case 10:
          return jjStopAtPos(0, 2);
       case 40:
-         return jjStopAtPos(0, 52);
-      case 41:
          return jjStopAtPos(0, 53);
+      case 41:
+         return jjStopAtPos(0, 54);
       case 42:
          return jjStopAtPos(0, 62);
       case 43:
-         return jjStopAtPos(0, 60);
+         return jjStopAtPos(0, 61);
       case 44:
          return jjStopAtPos(0, 51);
       case 45:
-         return jjStopAtPos(0, 61);
+         return jjStopAtPos(0, 52);
       case 47:
          return jjStopAtPos(0, 63);
       case 58:
          return jjStopAtPos(0, 3);
       case 60:
-         jjmatchedKind = 56;
-         return jjMoveStringLiteralDfa1_0(0x280000000000000L);
+         jjmatchedKind = 57;
+         return jjMoveStringLiteralDfa1_0(0x500000000000000L);
       case 61:
-         return jjStopAtPos(0, 54);
+         return jjStopAtPos(0, 55);
       case 62:
-         jjmatchedKind = 58;
-         return jjMoveStringLiteralDfa1_0(0x800000000000000L);
+         jjmatchedKind = 59;
+         return jjMoveStringLiteralDfa1_0(0x1000000000000000L);
       case 94:
          return jjStopAtPos(0, 64);
       case 65:
@@ -193,14 +193,14 @@ private int jjMoveStringLiteralDfa1_0(long active0){
    switch(curChar)
    {
       case 61:
-         if ((active0 & 0x200000000000000L) != 0L)
-            return jjStopAtPos(1, 57);
-         else if ((active0 & 0x800000000000000L) != 0L)
-            return jjStopAtPos(1, 59);
+         if ((active0 & 0x400000000000000L) != 0L)
+            return jjStopAtPos(1, 58);
+         else if ((active0 & 0x1000000000000000L) != 0L)
+            return jjStopAtPos(1, 60);
          break;
       case 62:
-         if ((active0 & 0x80000000000000L) != 0L)
-            return jjStopAtPos(1, 55);
+         if ((active0 & 0x100000000000000L) != 0L)
+            return jjStopAtPos(1, 56);
          break;
       case 65:
       case 97:
@@ -745,8 +745,8 @@ public static final String[] jjstrLiteralImages = {
 "", null, "\12", "\72", null, null, null, null, null, null, null, null, null, 
 null, null, null, null, null, null, null, null, null, null, null, null, null, null, 
 null, null, null, null, null, null, null, null, null, null, null, null, null, null, 
-null, null, null, null, null, null, null, null, null, null, "\54", "\50", "\51", 
-"\75", "\74\76", "\74", "\74\75", "\76", "\76\75", "\53", "\55", "\52", "\57", 
+null, null, null, null, null, null, null, null, null, null, "\54", "\55", "\50", 
+"\51", "\75", "\74\76", "\74", "\74\75", "\76", "\76\75", "\53", "\52", "\57", 
 "\136", };
 protected Token jjFillToken()
 {

@@ -3,10 +3,7 @@ package de.haupz.basicode.interpreter;
 import de.haupz.basicode.ast.ProgramNode;
 
 import java.io.PrintStream;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Stack;
+import java.util.*;
 
 public class InterpreterState {
 
@@ -156,7 +153,11 @@ public class InterpreterState {
     }
 
     public Object readNextDataItem() {
-        return program.getDataList().get(dataPtr++);
+        List<Object> dataList = program.getDataList();
+        if (dataPtr >= dataList.size()) {
+            throw new IllegalStateException(String.format("read index %d exceeds size %d", dataPtr, dataList.size()));
+        }
+        return dataList.get(dataPtr++);
     }
 
 }

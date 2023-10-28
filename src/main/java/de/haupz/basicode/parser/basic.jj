@@ -137,11 +137,15 @@ StatementNode data_line():
 
 Object data_literal():
 {
+    int sgn = 1;
     Token t;
 }
 {
-    (t = <NUMBER> | t = <INTEGER>) { return Integer.parseInt(t.image); }
-|   t = <FLOAT> { return Double.parseDouble(t.image); }
+    ("-" { sgn = -1; })?
+    (
+        t = <NUMBER> { return sgn * Integer.parseInt(t.image); }
+    |   t = <FLOAT> { return sgn * Double.parseDouble(t.image); }
+    )
 |   t = <STRING> { return t.image.substring(1, t.image.length() - 1); }
 }
 
