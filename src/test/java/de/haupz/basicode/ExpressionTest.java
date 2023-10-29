@@ -5,10 +5,7 @@ import de.haupz.basicode.interpreter.InterpreterState;
 import de.haupz.basicode.parser.BasicParser;
 import de.haupz.basicode.parser.ParseException;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 import java.io.StringReader;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -19,9 +16,7 @@ public abstract class ExpressionTest {
 
     @BeforeEach
     void setUp() {
-        ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
-        PrintStream out = new PrintStream(bytesOut, true);
-        state = new InterpreterState(null, out);
+        state = new InterpreterState(null, null, null);
     }
 
     ExpressionNode parseExpression(String expression) {

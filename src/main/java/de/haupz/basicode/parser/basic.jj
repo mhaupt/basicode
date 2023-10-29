@@ -120,6 +120,7 @@ StatementNode statement():
 |   s = read_statement() { return s; }
 |   <RESTORE> { return new RestoreNode(); }
 |   (<END>|<STOP>) { return new EndNode(); }
+|   <INPUT> t = <IDENTIFIER> { return new InputNode(t.image); }
 }
 
 StatementNode data_line():

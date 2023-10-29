@@ -6,6 +6,7 @@ import de.haupz.basicode.array.BasicArray1D;
 import de.haupz.basicode.array.BasicArray2D;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -96,8 +97,7 @@ public class DimTest extends StatementTest {
 
     @Test
     public void testAccess1DNonString() {
-        run("DIM A(7)");
-        run("AA=A(1)");
+        run(List.of("DIM A(7)", "AA=A(1)"));
         Optional<Object> aa = state.getVar("AA");
         assertTrue(aa.isPresent());
         assertEquals(0, aa.get());
@@ -105,8 +105,7 @@ public class DimTest extends StatementTest {
 
     @Test
     public void testAccess1DString() {
-        run("DIM A$(7)");
-        run("AA$=A$(1)");
+        run(List.of("DIM A$(7)", "AA$=A$(1)"));
         Optional<Object> aa = state.getVar("AA$");
         assertTrue(aa.isPresent());
         assertEquals("", aa.get());
@@ -114,8 +113,7 @@ public class DimTest extends StatementTest {
 
     @Test
     public void testAccess2DNonString() {
-        run("DIM A(2,3)");
-        run("AA=A(1,1)");
+        run(List.of("DIM A(2,3)", "AA=A(1,1)"));
         Optional<Object> aa = state.getVar("AA");
         assertTrue(aa.isPresent());
         assertEquals(0, aa.get());
@@ -123,8 +121,7 @@ public class DimTest extends StatementTest {
 
     @Test
     public void testAccess2DString() {
-        run("DIM A$(2,3)");
-        run("AA$=A$(1,1)");
+        run(List.of("DIM A$(2,3)", "AA$=A$(1,1)"));
         Optional<Object> aa = state.getVar("AA$");
         assertTrue(aa.isPresent());
         assertEquals("", aa.get());
@@ -132,23 +129,19 @@ public class DimTest extends StatementTest {
 
     @Test
     public void testReadOutOfBounds1D() {
-        run("DIM A(7)");
-        assertThrows(IllegalStateException.class, () -> run("AA=A(8)"));
+        assertThrows(IllegalStateException.class, () -> run(List.of("DIM A(7)", "AA=A(8)")));
     }
 
     @Test
     public void testReadOutOfBounds2D() {
-        run("DIM A(7,8)");
-        assertThrows(IllegalStateException.class, () -> run("AA=A(4,9)"));
-        assertThrows(IllegalStateException.class, () -> run("AA=A(9,4)"));
-        assertThrows(IllegalStateException.class, () -> run("AA=A(9,9)"));
+        assertThrows(IllegalStateException.class, () -> run(List.of("DIM A(7,8)", "AA=A(4,9)")));
+        assertThrows(IllegalStateException.class, () -> run(List.of("DIM A(7,8)", "AA=A(9,4)")));
+        assertThrows(IllegalStateException.class, () -> run(List.of("DIM A(7,8)", "AA=A(9,9)")));
     }
 
     @Test
     public void testWriteNonString1D() {
-        run("DIM A(7)");
-        run("A(1)=23");
-        run("AA=A(1)");
+        run(List.of("DIM A(7)", "A(1)=23", "AA=A(1)"));
         Optional<Object> aa = state.getVar("AA");
         assertTrue(aa.isPresent());
         assertEquals(23, aa.get());
@@ -156,9 +149,7 @@ public class DimTest extends StatementTest {
 
     @Test
     public void testWriteString1D() {
-        run("DIM A$(7)");
-        run("A$(1)=\"Hello.\"");
-        run("AA$=A$(1)");
+        run(List.of("DIM A$(7)", "A$(1)=\"Hello.\"", "AA$=A$(1)"));
         Optional<Object> aa = state.getVar("AA$");
         assertTrue(aa.isPresent());
         assertEquals("Hello.", aa.get());
@@ -166,9 +157,7 @@ public class DimTest extends StatementTest {
 
     @Test
     public void testWriteNonString2D() {
-        run("DIM A(7,8)");
-        run("A(1,1)=23");
-        run("AA=A(1,1)");
+        run(List.of("DIM A(7,8)", "A(1,1)=23", "AA=A(1,1)"));
         Optional<Object> aa = state.getVar("AA");
         assertTrue(aa.isPresent());
         assertEquals(23, aa.get());
@@ -176,9 +165,7 @@ public class DimTest extends StatementTest {
 
     @Test
     public void testWriteString2D() {
-        run("DIM A$(7,8)");
-        run("A$(1,1)=\"Hello.\"");
-        run("AA$=A$(1,1)");
+        run(List.of("DIM A$(7,8)", "A$(1,1)=\"Hello.\"", "AA$=A$(1,1)"));
         Optional<Object> aa = state.getVar("AA$");
         assertTrue(aa.isPresent());
         assertEquals("Hello.", aa.get());
@@ -186,28 +173,24 @@ public class DimTest extends StatementTest {
 
     @Test
     public void testWriteOutOfBounds1D() {
-        run("DIM A(7)");
-        assertThrows(IllegalStateException.class, () -> run("A(8)=23"));
+        assertThrows(IllegalStateException.class, () -> run(List.of("DIM A(7)", "A(8)=23")));
     }
 
     @Test
     public void testWriteOutOfBounds2D() {
-        run("DIM A(7,8)");
-        assertThrows(IllegalStateException.class, () -> run("A(4,9)=23"));
-        assertThrows(IllegalStateException.class, () -> run("A(9,4)=23"));
-        assertThrows(IllegalStateException.class, () -> run("A(9,9)=23"));
+        assertThrows(IllegalStateException.class, () -> run(List.of("DIM A(7,8)", "A(4,9)=23")));
+        assertThrows(IllegalStateException.class, () -> run(List.of("DIM A(7,8)", "A(9,4)=23")));
+        assertThrows(IllegalStateException.class, () -> run(List.of("DIM A(7,8)", "A(9,9)=23")));
     }
 
     @Test
     public void testWriteWrongTypeNonString() {
-        run("DIM A(7)");
-        assertThrows(IllegalStateException.class, () -> run("A(1)=\"boop\""));
+        assertThrows(IllegalStateException.class, () -> run(List.of("DIM A(7)", "A(1)=\"boop\"")));
     }
 
     @Test
     public void testWriteWrongTypeString() {
-        run("DIM A$(7)");
-        assertThrows(IllegalStateException.class, () -> run("A$(1)=23"));
+        assertThrows(IllegalStateException.class, () -> run(List.of("DIM A$(7)", "A$(1)=23")));
     }
 
 }

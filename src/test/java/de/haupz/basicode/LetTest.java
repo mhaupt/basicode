@@ -2,6 +2,7 @@ package de.haupz.basicode;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -52,8 +53,7 @@ public class LetTest extends StatementTest {
 
     @Test
     public void multipleAssignments() {
-        run("A=7");
-        run("B=8");
+        run(List.of("A=7", "B=8"));
         Optional<Object> a = state.getVar("A");
         Optional<Object> b = state.getVar("B");
         assertTrue(a.isPresent());
@@ -64,8 +64,7 @@ public class LetTest extends StatementTest {
 
     @Test
     public void testSamePrefix() {
-        run("A=7");
-        run("AA=8");
+        run(List.of("A=7", "AA=8"));
         Optional<Object> a = state.getVar("A");
         Optional<Object> aa = state.getVar("AA");
         assertTrue(a.isPresent());

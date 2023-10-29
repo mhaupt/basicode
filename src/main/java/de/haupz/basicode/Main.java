@@ -4,6 +4,8 @@ import de.haupz.basicode.ast.ProgramNode;
 import de.haupz.basicode.interpreter.InterpreterState;
 import de.haupz.basicode.parser.BasicParser;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.io.StringReader;
 
 public class Main {
@@ -14,7 +16,8 @@ public class Main {
         System.out.println("--------------------------------------------------------------------------------");
         final var parser = new BasicParser(new StringReader(code));
         ProgramNode prog = parser.program();
-        InterpreterState state = new InterpreterState(prog, System.out);
+        InterpreterState state =
+                new InterpreterState(prog, new BufferedReader(new InputStreamReader(System.in)), System.out);
         prog.run(state);
         System.out.println("================================================================================");
     }

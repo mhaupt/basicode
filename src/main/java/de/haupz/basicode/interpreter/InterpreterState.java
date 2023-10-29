@@ -2,6 +2,7 @@ package de.haupz.basicode.interpreter;
 
 import de.haupz.basicode.ast.ProgramNode;
 
+import java.io.BufferedReader;
 import java.io.PrintStream;
 import java.util.*;
 
@@ -10,6 +11,8 @@ public class InterpreterState {
     private final ProgramNode program;
 
     private final PrintStream out;
+
+    private final BufferedReader in;
 
     private final Map<String, Object> vars = new HashMap<>();
 
@@ -35,9 +38,14 @@ public class InterpreterState {
 
     private int dataPtr = 0;
 
-    public InterpreterState(ProgramNode program, PrintStream out) {
+    public InterpreterState(ProgramNode program, BufferedReader in, PrintStream out) {
         this.program = program;
+        this.in = in;
         this.out = out;
+    }
+
+    public BufferedReader getInput() {
+        return in;
     }
 
     public PrintStream getOutput() {
