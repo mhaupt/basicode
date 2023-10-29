@@ -15,18 +15,21 @@ public class LetNode extends StatementNode {
 
     @Override
     public void run(InterpreterState state) {
+        boolean isString = id.endsWith("$");
+
+        // LET initialises the variable if it's not yet present
+        if (state.getVar(id).isEmpty()) {
+            state.setVar(id, isString ? "" : Integer.valueOf(0));
+        }
+
         Object value = expression.eval(state);
-        if (value instanceof String && !isString()) {
+        if (value instanceof String && !isString) {
             throw new IllegalStateException("can't assign a string to a variable named " + id);
         }
-        if (!(value instanceof String) && isString()) {
+        if (!(value instanceof String) && isString) {
             throw new IllegalStateException("can't assign a non-string to a variable named " + id);
         }
         state.setVar(id, value);
-    }
-
-    boolean isString() {
-        return id.endsWith("$");
     }
 
 }

@@ -73,4 +73,20 @@ public class LetTest extends StatementTest {
         assertEquals(8, aa.get());
     }
 
+    @Test
+    public void testLetInitialisesVariableIfNotPresentNumber() {
+        run("A=A+2");
+        Optional<Object> a = state.getVar("A");
+        assertTrue(a.isPresent());
+        assertEquals(2, a.get());
+    }
+
+    @Test
+    public void testLetInitialisesVariableIfNotPresentString() {
+        run("A$=A$+\"whoa\"");
+        Optional<Object> a = state.getVar("A$");
+        assertTrue(a.isPresent());
+        assertEquals("whoa", a.get());
+    }
+
 }
