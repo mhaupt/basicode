@@ -121,6 +121,7 @@ StatementNode statement():
 |   <RESTORE> { return new RestoreNode(); }
 |   (<END>|<STOP>) { return new EndNode(); }
 |   <INPUT> t = <IDENTIFIER> { return new InputNode(t.image); }
+|   <RUN> { return new RunNode(); }
 }
 
 StatementNode data_line():

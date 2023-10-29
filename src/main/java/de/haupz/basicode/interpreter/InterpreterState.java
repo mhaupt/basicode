@@ -60,6 +60,10 @@ public class InterpreterState {
         return Optional.ofNullable(vars.get(id));
     }
 
+    public void clearVars() {
+        vars.clear();
+    }
+
     public void terminate() {
         end = true;
     }
@@ -118,6 +122,10 @@ public class InterpreterState {
 
     public int getReturnIndex() {
         return callStack.pop();
+    }
+
+    public void clearCallStack() {
+        callStack.removeAllElements();
     }
 
     public boolean isRunningLoop(String id) {
