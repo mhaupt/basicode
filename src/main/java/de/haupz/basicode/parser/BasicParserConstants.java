@@ -170,6 +170,7 @@ public interface BasicParserConstants {
     "\"(\"",
     "\")\"",
     "\"=\"",
+    "\";\"",
     "\"<>\"",
     "\"<\"",
     "\"<=\"",

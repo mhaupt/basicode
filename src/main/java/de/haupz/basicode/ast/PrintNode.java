@@ -4,6 +4,7 @@ import de.haupz.basicode.interpreter.InterpreterState;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.List;
 import java.util.Locale;
 
 public class PrintNode extends StatementNode {
@@ -11,19 +12,27 @@ public class PrintNode extends StatementNode {
     private static final DecimalFormat DECIMAL_FORMAT =
             new DecimalFormat("#.#########", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
 
-    private final ExpressionNode value;
+    private final List<ExpressionNode> expressions;
 
-    public PrintNode(ExpressionNode value) {
-        this.value = value;
+    private final List<String> separators;
+
+    public PrintNode(List<ExpressionNode> expressions, List<String> separators) {
+        this.expressions = List.copyOf(expressions);
+        this.separators = List.copyOf(separators);
     }
 
     @Override
     public void run(InterpreterState state) {
-        Object v = value.eval(state);
-        if (v instanceof Double d) {
-            state.getOutput().println(DECIMAL_FORMAT.format(d));
-        } else {
-            state.getOutput().println(v);
+        for (int i = 0; i < expressions.size(); ++i) {
+            Object v = expressions.get(i).eval(state);
+            if (v instanceof Double d) {
+                state.getOutput().print(DECIMAL_FORMAT.format(d));
+            } else {
+                state.getOutput().print(v);
+            }
+            if (",".equals(separators.get(i))) {
+                state.getOutput().println();
+            }
         }
     }
 

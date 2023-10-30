@@ -8,6 +8,7 @@ public class EndNode extends StatementNode {
 
     @Override
     public void run(InterpreterState state) {
+        state.getOutput().flush();
         state.terminate();
     }
 

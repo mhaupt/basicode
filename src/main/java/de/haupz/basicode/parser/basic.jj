@@ -108,7 +108,7 @@ StatementNode statement():
 {
     t = <REM> { return new RemNode(t.image); }
 |   s = assignment() { return s; }
-|   <PRINT> e = expression() { return new PrintNode(e); }
+|   s = print_statement() { return s; }
 |   <GOTO> n = lineNumber() { return new GotoNode(n); }
 |   <GOSUB> n = lineNumber() { return new GosubNode(n); }
 |   <RETURN> { return new ReturnNode(); }
@@ -164,6 +164,29 @@ StatementNode assignment():
     ( "(" e = expression() ("," f = expression())? ")" { isArrayAssignment = true; } )?
     "=" g = expression()
     { return isArrayAssignment ? new LetArrayNode(t.image, e, f, g) : new LetNode(t.image, g); }
+}
+
+StatementNode print_statement():
+{
+    Token t;
+    ExpressionNode e;
+    List<ExpressionNode> expressions = new ArrayList<>();
+    List<String> separators = new ArrayList<>();
+}
+{
+    <PRINT> e = expression() { expressions.add(e); }
+    (
+        LOOKAHEAD(2)
+        (t=","|t=";") { separators.add(t.image); }
+        e = expression() { expressions.add(e); }
+    )*
+    (t=";" { separators.add(t.image); } )?
+    {
+        if (expressions.size() > separators.size()) {
+            separators.add(",");
+        }
+        return new PrintNode(expressions, separators);
+    }
 }
 
 StatementNode dim_statement():
