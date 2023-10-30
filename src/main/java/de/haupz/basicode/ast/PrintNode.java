@@ -12,27 +12,46 @@ public class PrintNode extends StatementNode {
     private static final DecimalFormat DECIMAL_FORMAT =
             new DecimalFormat("#.#########", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
 
-    private final List<ExpressionNode> expressions;
+    public enum ElementType { EXPRESSION, TAB, SEPARATOR; }
 
-    private final List<String> separators;
+    public record Element(ElementType type, Object payload) {}
 
-    public PrintNode(List<ExpressionNode> expressions, List<String> separators) {
-        this.expressions = List.copyOf(expressions);
-        this.separators = List.copyOf(separators);
+    private static final Element SEP_NO_NEWLINE = new Element(ElementType.SEPARATOR, ";");
+
+    private final List<Element> elements;
+
+    public PrintNode(List<Element> elements) {
+        this.elements = List.copyOf(elements);
     }
 
     @Override
     public void run(InterpreterState state) {
-        for (int i = 0; i < expressions.size(); ++i) {
-            Object v = expressions.get(i).eval(state);
-            if (v instanceof Double d) {
-                state.getOutput().print(DECIMAL_FORMAT.format(d));
-            } else {
-                state.getOutput().print(v);
+        for (Element e : elements) {
+            switch (e.type) {
+                case EXPRESSION -> {
+                    Object v = ((ExpressionNode) e.payload).eval(state);
+                    if (v instanceof Double d) {
+                        state.getOutput().print(DECIMAL_FORMAT.format(d));
+                    } else {
+                        state.getOutput().print(v);
+                    }
+                }
+                case TAB -> {
+                    Integer t = ((Number) ((ExpressionNode) e.payload).eval(state)).intValue();
+                    state.getOutput().printf("<TAB%d>", t);
+                }
+                case SEPARATOR -> {
+                    String sep = (String) e.payload;
+                    if (",".equals(sep)) {
+                        state.getOutput().println();
+                    }
+                }
             }
-            if (",".equals(separators.get(i))) {
-                state.getOutput().println();
-            }
+        }
+        // if the final element wasn't a ";" separator, we still need to print a new line
+        Element last = elements.get(elements.size() - 1);
+        if (!SEP_NO_NEWLINE.equals(last)) {
+            state.getOutput().println();
         }
     }
 

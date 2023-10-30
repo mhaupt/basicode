@@ -169,24 +169,29 @@ StatementNode assignment():
 StatementNode print_statement():
 {
     Token t;
-    ExpressionNode e;
-    List<ExpressionNode> expressions = new ArrayList<>();
-    List<String> separators = new ArrayList<>();
+    PrintNode.Element elem;
+    List<PrintNode.Element> elements = new ArrayList<>();
 }
 {
-    <PRINT> e = expression() { expressions.add(e); }
+    <PRINT> elem = print_element() { elements.add(elem); }
     (
         LOOKAHEAD(2)
-        (t=","|t=";") { separators.add(t.image); }
-        e = expression() { expressions.add(e); }
+        (t=","|t=";") { elements.add(new PrintNode.Element(PrintNode.ElementType.SEPARATOR, t.image)); }
+        elem = print_element() { elements.add(elem); }
     )*
-    (t=";" { separators.add(t.image); } )?
+    (t=";" { elements.add(new PrintNode.Element(PrintNode.ElementType.SEPARATOR, t.image)); } )?
     {
-        if (expressions.size() > separators.size()) {
-            separators.add(",");
-        }
-        return new PrintNode(expressions, separators);
+        return new PrintNode(elements);
     }
+}
+
+PrintNode.Element print_element():
+{
+    ExpressionNode e;
+}
+{
+    e = expression() { return new PrintNode.Element(PrintNode.ElementType.EXPRESSION, e); }
+|   <TAB> "(" e = expression() ")" { return new PrintNode.Element(PrintNode.ElementType.TAB, e); }
 }
 
 StatementNode dim_statement():
