@@ -19,6 +19,15 @@ public class LetTest extends StatementTest {
     }
 
     @Test
+    public void letVarInt() {
+        run("LET AA=10");
+        Optional<Object> v = state.getVar("AA");
+        assertTrue(v.isPresent());
+        assertEquals(Integer.class, v.get().getClass());
+        assertEquals(10, v.get());
+    }
+
+    @Test
     public void setVarDouble() {
         run("AA=10.5");
         Optional<Object> v = state.getVar("AA");

@@ -160,6 +160,7 @@ StatementNode assignment():
     ExpressionNode g = null;
 }
 {
+    (<LET>)?
     t = <IDENTIFIER>
     ( "(" e = expression() ("," f = expression())? ")" { isArrayAssignment = true; } )?
     "=" g = expression()
