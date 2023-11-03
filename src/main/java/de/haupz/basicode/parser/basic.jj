@@ -23,9 +23,7 @@ SKIP: {
 }
 
 TOKEN: {
-// basics
     < EOL: "\n" >
-|   < COLON: ":" >
 // numbers and other values
 |   < NUMBER: (<DIGIT>)+ >
 |   < INTEGER: <NUMBER> >
@@ -80,7 +78,7 @@ LineNode line():
     num = lineNumber()
     (
         st = data_line() { statements.add(st); }
-    |   st = statement() { statements.add(st); } (<COLON> st = statement() { statements.add(st); })*
+    |   st = statement() { statements.add(st); } (":" st = statement() { statements.add(st); })*
     )
     (<EOL>|<EOF>)
     { return new LineNode(num, statements); }
