@@ -37,75 +37,81 @@ public interface BasicParserConstants {
   /** RegularExpression Id. */
   int DATA = 14;
   /** RegularExpression Id. */
-  int DIM = 15;
+  int DEF = 15;
   /** RegularExpression Id. */
-  int END = 16;
+  int DIM = 16;
   /** RegularExpression Id. */
-  int FOR = 17;
+  int END = 17;
   /** RegularExpression Id. */
-  int GOSUB = 18;
+  int FN = 18;
   /** RegularExpression Id. */
-  int GOTO = 19;
+  int FOR = 19;
   /** RegularExpression Id. */
-  int INT = 20;
+  int GOSUB = 20;
   /** RegularExpression Id. */
-  int IF = 21;
+  int GOTO = 21;
   /** RegularExpression Id. */
-  int INPUT = 22;
+  int INT = 22;
   /** RegularExpression Id. */
-  int LEFTS = 23;
+  int IF = 23;
   /** RegularExpression Id. */
-  int LEN = 24;
+  int INPUT = 24;
   /** RegularExpression Id. */
-  int LET = 25;
+  int LEFTS = 25;
   /** RegularExpression Id. */
-  int LOG = 26;
+  int LEN = 26;
   /** RegularExpression Id. */
-  int MIDS = 27;
+  int LET = 27;
   /** RegularExpression Id. */
-  int NEXT = 28;
+  int LOG = 28;
   /** RegularExpression Id. */
-  int NOT = 29;
+  int MIDS = 29;
   /** RegularExpression Id. */
-  int ON = 30;
+  int NEXT = 30;
   /** RegularExpression Id. */
-  int OR = 31;
+  int NOT = 31;
   /** RegularExpression Id. */
-  int PRINT = 32;
+  int ON = 32;
   /** RegularExpression Id. */
-  int READ = 33;
+  int OR = 33;
   /** RegularExpression Id. */
-  int REM = 34;
+  int PRINT = 34;
   /** RegularExpression Id. */
-  int RESTORE = 35;
+  int READ = 35;
   /** RegularExpression Id. */
-  int RETURN = 36;
+  int REM = 36;
   /** RegularExpression Id. */
-  int RIGHTS = 37;
+  int RESTORE = 37;
   /** RegularExpression Id. */
-  int RUN = 38;
+  int RETURN = 38;
   /** RegularExpression Id. */
-  int SGN = 39;
+  int RIGHTS = 39;
   /** RegularExpression Id. */
-  int SIN = 40;
+  int RUN = 40;
   /** RegularExpression Id. */
-  int SQR = 41;
+  int SGN = 41;
   /** RegularExpression Id. */
-  int STEP = 42;
+  int SIN = 42;
   /** RegularExpression Id. */
-  int STOP = 43;
+  int SQR = 43;
   /** RegularExpression Id. */
-  int TAB = 44;
+  int STEP = 44;
   /** RegularExpression Id. */
-  int TAN = 45;
+  int STOP = 45;
   /** RegularExpression Id. */
-  int THEN = 46;
+  int TAB = 46;
   /** RegularExpression Id. */
-  int TO = 47;
+  int TAN = 47;
   /** RegularExpression Id. */
-  int VAL = 48;
+  int THEN = 48;
   /** RegularExpression Id. */
-  int IDENTIFIER = 49;
+  int TO = 49;
+  /** RegularExpression Id. */
+  int VAL = 50;
+  /** RegularExpression Id. */
+  int IDENTIFIER = 51;
+  /** RegularExpression Id. */
+  int FNIDENTIFIER = 52;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -127,8 +133,10 @@ public interface BasicParserConstants {
     "\"CHR$\"",
     "\"COS\"",
     "\"DATA\"",
+    "\"DEF\"",
     "\"DIM\"",
     "\"END\"",
+    "\"FN\"",
     "\"FOR\"",
     "\"GOSUB\"",
     "\"GOTO\"",
@@ -162,6 +170,7 @@ public interface BasicParserConstants {
     "\"TO\"",
     "\"VAL\"",
     "<IDENTIFIER>",
+    "<FNIDENTIFIER>",
     "\":\"",
     "\",\"",
     "\"-\"",

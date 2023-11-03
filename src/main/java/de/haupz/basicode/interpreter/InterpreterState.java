@@ -62,6 +62,10 @@ public class InterpreterState {
         return Optional.ofNullable(vars.get(id));
     }
 
+    public void removeVar(String id) {
+        vars.remove(id);
+    }
+
     public void clearVars() {
         vars.clear();
     }

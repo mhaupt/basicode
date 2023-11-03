@@ -33,9 +33,9 @@ TOKEN: {
 // keywords
 |   < ABS: "ABS" > | < AND: "AND" > | < ASC: "ASC" > | < ATN: "ATN" >
 |   < CHRS: "CHR$" > | < COS: "COS" >
-|   < DATA: "DATA" > | < DIM: "DIM" >
+|   < DATA: "DATA" > | < DEF: "DEF" > | < DIM: "DIM" >
 |   < END: "END" >
-|   < FOR: "FOR" >
+|   < FN: "FN"> | < FOR: "FOR" >
 |   < GOSUB: "GOSUB" > | < GOTO: "GOTO" >
 |   < INT: "INT" > | < IF: "IF" > | < INPUT: "INPUT" >
 |   < LEFTS: "LEFT$" > | < LEN: "LEN" > | < LET: "LET" > | < LOG: "LOG" >
@@ -50,6 +50,7 @@ TOKEN: {
 |   < VAL: "VAL" >
 // identifiers
 |   < IDENTIFIER: ["a"-"z","A"-"Z"] (["a"-"z","A"-"Z","0"-"9"])? ("$")? >
+|   < FNIDENTIFIER: "FN" ["a"-"z","A"-"Z"] (["a"-"z","A"-"Z","0"-"9"])? >
 }
 
 // Parser.
@@ -120,6 +121,7 @@ StatementNode statement():
 |   (<END>|<STOP>) { return new EndNode(); }
 |   <INPUT> t = <IDENTIFIER> { return new InputNode(t.image); }
 |   <RUN> { return new RunNode(); }
+|   s = def_fn() { return s; }
 }
 
 StatementNode data_line():
@@ -266,6 +268,27 @@ StatementNode read_statement():
     { return new ReadNode(ids); }
 }
 
+StatementNode def_fn():
+{
+    String f;
+    Token u;
+    ExpressionNode e;
+}
+{
+    <DEF> f = fn_id() "(" u = <IDENTIFIER> ")" "=" e = expression() { return new DefFnNode(f, u.image, e); }
+}
+
+String fn_id():
+{
+    Token t;
+}
+{
+    (
+        <FN> t = <IDENTIFIER> { return t.image; }
+    |   t = <FNIDENTIFIER> { return t.image.substring(2, t.image.length()); }
+    )
+}
+
 //
 // expressions
 //
@@ -388,6 +411,7 @@ ExpressionNode primary_expression():
     e = literal() { return e; }
 |   "(" e = expression() ")" { return e; }
 |   e = builtin_call() { return e; }
+|   e = fn_call() { return e; }
 |   e = varOrDimAccess() { return e; }
 }
 
@@ -433,4 +457,13 @@ ExpressionNode builtin_call():
 |   <SQR> "(" e = expression() ")" { return new SqrNode(e); }
 |   <TAN> "(" e = expression() ")" { return new TanNode(e); }
 |   <VAL> "(" e = expression() ")" { return new ValNode(e); }
+}
+
+ExpressionNode fn_call():
+{
+    String f;
+    ExpressionNode e;
+}
+{
+    f = fn_id() "(" e = expression() ")" { return new FnCallNode(f, e); }
 }
