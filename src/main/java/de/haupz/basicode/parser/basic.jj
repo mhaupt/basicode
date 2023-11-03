@@ -253,7 +253,7 @@ StatementNode if_statement():
     <IF> e = expression() <THEN>
     (
         l = lineNumber() { thenStatements.add(new GotoNode(l)); }
-    | ( s = statement() { thenStatements.add(s); } ( ":" s = statement() { thenStatements.add(s); } )* )
+    |   s = statement() { thenStatements.add(s); } ( LOOKAHEAD(2) ":" s = statement() { thenStatements.add(s); } )*
     )
     { return new IfThenNode(e, thenStatements); }
 }
