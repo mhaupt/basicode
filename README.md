@@ -5,7 +5,7 @@ runtime environment that's independent of any emulator (unless you count the Jav
 
 ## Building
 
-You'll need Java 17 and Maven. Just run `mvn package` to build everything and run the tests.
+You'll need Java 21 and Maven. Just run `mvn package` to build everything and run the tests.
 
 ## Licence
 
