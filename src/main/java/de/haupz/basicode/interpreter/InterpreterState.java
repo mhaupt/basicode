@@ -1,18 +1,19 @@
 package de.haupz.basicode.interpreter;
 
 import de.haupz.basicode.ast.ProgramNode;
+import de.haupz.basicode.io.BasicInput;
+import de.haupz.basicode.io.BasicOutput;
 
 import java.io.BufferedReader;
-import java.io.PrintStream;
 import java.util.*;
 
 public class InterpreterState {
 
     private final ProgramNode program;
 
-    private final PrintStream out;
+    private final BasicOutput out;
 
-    private final BufferedReader in;
+    private final BasicInput in;
 
     private int currentOutputColumn = 0;
 
@@ -40,17 +41,17 @@ public class InterpreterState {
 
     private int dataPtr = 0;
 
-    public InterpreterState(ProgramNode program, BufferedReader in, PrintStream out) {
+    public InterpreterState(ProgramNode program, BasicInput in, BasicOutput out) {
         this.program = program;
         this.in = in;
         this.out = out;
     }
 
-    public BufferedReader getInput() {
+    public BasicInput getInput() {
         return in;
     }
 
-    public PrintStream getOutput() {
+    public BasicOutput getOutput() {
         return out;
     }
 

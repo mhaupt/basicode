@@ -40,10 +40,10 @@ public class PrintNode extends StatementNode {
                     if (spacesToPrint < 0) {
                         state.getOutput().println();
                         state.resetOutputColumn();
-                        state.getOutput().printf("%" + tab + "s", "");
+                        state.getOutput().print(String.format("%" + tab + "s", ""));
                         state.increaseOutputColumn(tab);
                     } else if (spacesToPrint > 0) {
-                        state.getOutput().printf("%" + spacesToPrint + "s", "");
+                        state.getOutput().print(String.format("%" + spacesToPrint + "s", ""));
                         state.increaseOutputColumn(spacesToPrint);
                     }
                     // no need to print anything for spacesToPrint == 0
