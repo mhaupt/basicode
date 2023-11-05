@@ -77,6 +77,13 @@ public class BasicContainer extends JComponent implements BasicOutput {
     public void println() {
         curLine++;
         curColumn = 0;
+        if (curLine >= LINES) {
+            for (int l = 0; l < LINES - 1; ++l) {
+                System.arraycopy(textBuffer[l+1], 0, textBuffer[l], 0, COLUMNS);
+            }
+            Arrays.fill(textBuffer[LINES-1], ' ');
+            curLine--;
+        }
     }
 
     @Override
