@@ -1,7 +1,7 @@
 package de.haupz.basicode.ast;
 
 import de.haupz.basicode.interpreter.InterpreterState;
-import de.haupz.basicode.subroutines.GotoRoutines;
+import de.haupz.basicode.subroutines.Subroutines;
 
 public class GotoNode extends StatementNode {
 
@@ -14,7 +14,7 @@ public class GotoNode extends StatementNode {
     @Override
     public void run(InterpreterState state) {
         if (target < 1000) {
-            GotoRoutines.runRoutine(target, state);
+            Subroutines.runGoto(target, state);
         } else {
             state.setLineJumpTarget(target);
             state.requestLineJump();
