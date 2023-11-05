@@ -7,10 +7,10 @@ public class GotoTest extends InterpreterTest {
     @Test
     public void testGoto() {
         testInterpreter("""
-                10 PRINT "Hello."
-                20 GOTO 40
-                30 PRINT "You will not see this."
-                40 PRINT "Good bye."
+                1010 PRINT "Hello."
+                1020 GOTO 1040
+                1030 PRINT "You will not see this."
+                1040 PRINT "Good bye."
                 """, """
                 Hello.
                 Good bye.
@@ -20,12 +20,12 @@ public class GotoTest extends InterpreterTest {
     @Test
     public void testGotoBackAndForth() {
         testInterpreter("""
-                10 GOTO 40
-                20 PRINT "Two."
-                30 GOTO 60
-                40 PRINT "One."
-                50 GOTO 20
-                60 PRINT "Three."
+                1010 GOTO 1040
+                1020 PRINT "Two."
+                1030 GOTO 1060
+                1040 PRINT "One."
+                1050 GOTO 1020
+                1060 PRINT "Three."
                 """, """
                 One.
                 Two.

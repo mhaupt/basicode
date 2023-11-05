@@ -7,10 +7,10 @@ public class IfThenTest extends InterpreterTest {
     @Test
     public void testIfThenLineNumber() {
         testInterpreter("""
-                10 A=1
-                20 IF A=1 THEN 40
-                30 PRINT "not to be seen"
-                40 PRINT "Hello."
+                1010 A=1
+                1020 IF A=1 THEN 1040
+                1030 PRINT "not to be seen"
+                1040 PRINT "Hello."
                 """, """
                 Hello.
                 """);
@@ -19,10 +19,10 @@ public class IfThenTest extends InterpreterTest {
     @Test
     public void testIfThenGoto() {
         testInterpreter("""
-                10 A=1
-                20 IF A=1 THEN GOTO 40
-                30 PRINT "not to be seen"
-                40 PRINT "Hello."
+                1010 A=1
+                1020 IF A=1 THEN GOTO 1040
+                1030 PRINT "not to be seen"
+                1040 PRINT "Hello."
                 """, """
                 Hello.
                 """);
@@ -81,9 +81,9 @@ public class IfThenTest extends InterpreterTest {
     @Test
     public void testIfThenMultipleStatementsNotAll() {
         testInterpreter("""
-                10 A=1
-                20 IF A=1 THEN PRINT "yep":GOTO 30:PRINT "nope"
-                30 PRINT "out"
+                1010 A=1
+                1020 IF A=1 THEN PRINT "yep":GOTO 1030:PRINT "nope"
+                1030 PRINT "out"
                 """, """
                 yep
                 out
