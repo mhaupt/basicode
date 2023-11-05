@@ -8,8 +8,14 @@ import de.haupz.basicode.ui.BasicContainer;
 
 import javax.swing.*;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class Main {
 
@@ -29,9 +35,18 @@ public class Main {
     }
 
     public static void main(String[] args) throws Throwable {
+        if (args.length < 1) {
+            throw new IllegalStateException("no file given");
+        }
+        String filename = args[0];
+        Path path = Paths.get(filename);
+        List<String> sourceLines = Files.readAllLines(path);
+        String source = sourceLines.stream().collect(Collectors.joining("\n"));
+
         bc = new BasicContainer();
         SwingUtilities.invokeLater(() -> gui());
-        run("10 PRINT \"Hello, world!\"");
+
+        run(source);
     }
 
     public static void gui() {
