@@ -65,6 +65,7 @@ public class BasicContainer extends JComponent implements BasicOutput {
     public void print(String s) {
         System.arraycopy(s.toCharArray(), 0, textBuffer[curLine], curColumn, s.length());
         curColumn += s.length();
+        repaint();
     }
 
     @Override
@@ -83,12 +84,13 @@ public class BasicContainer extends JComponent implements BasicOutput {
             }
             Arrays.fill(textBuffer[LINES-1], ' ');
             curLine--;
+            repaint();
         }
     }
 
     @Override
     public void flush() {
-        // naught
+        repaint();
     }
 
 }
