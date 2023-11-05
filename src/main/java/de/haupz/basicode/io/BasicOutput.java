@@ -10,4 +10,6 @@ public interface BasicOutput {
 
     void flush();
 
+    void clear();
+
 }

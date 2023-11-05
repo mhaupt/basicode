@@ -1,6 +1,7 @@
 package de.haupz.basicode.ast;
 
 import de.haupz.basicode.interpreter.InterpreterState;
+import de.haupz.basicode.subroutines.Subroutines;
 
 public class GosubNode extends StatementNode {
 
@@ -13,8 +14,12 @@ public class GosubNode extends StatementNode {
     @Override
     public void run(InterpreterState state) {
         state.pushReturnIndex();
-        state.setLineJumpTarget(target);
-        state.requestLineJump();
+        if (target < 1000) {
+            Subroutines.runGosub(target, state);
+        } else {
+            state.setLineJumpTarget(target);
+            state.requestLineJump();
+        }
     }
 
 }

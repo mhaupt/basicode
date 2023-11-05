@@ -93,4 +93,10 @@ public class BasicContainer extends JComponent implements BasicOutput {
         repaint();
     }
 
+    @Override
+    public void clear() {
+        clearTextBuffer();
+        repaint();
+    }
+
 }

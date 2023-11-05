@@ -52,8 +52,21 @@ public class Subroutines {
         }
     }
 
+    public static void runGosub(int target, InterpreterState state) {
+        try {
+            ROUTINES.get(target).invoke(state);
+            state.requestReturn();
+        } catch (Throwable t) {
+            throw new RuntimeException(t);
+        }
+    }
+
     public static void goto20(InterpreterState state) {
         throw new IllegalStateException("not yet implemented");
+    }
+
+    public static void gosub100(InterpreterState state) {
+        state.getOutput().clear();
     }
 
     public static void goto950(InterpreterState state) {
