@@ -5,6 +5,9 @@ import de.haupz.basicode.interpreter.InterpreterState;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,8 +19,7 @@ public class Subroutines {
 
     private static final MethodHandles.Lookup LOOKUP = MethodHandles.lookup();
 
-    static MethodHandle lookupTarget(String type, int target) {
-        String methodName = type + target;
+    private static MethodHandle lookupTarget(String methodName) {
         try {
             return LOOKUP.findStatic(Subroutines.class, methodName, ROUTINE_TYPE);
         } catch (Exception e) {
@@ -25,9 +27,21 @@ public class Subroutines {
         }
     }
 
+    private static void registerRoutine(Method method) {
+        String name = method.getName();
+        int target = Integer.parseInt(name.substring(name.startsWith("goto")?4:5));
+        ROUTINES.put(target, lookupTarget(name));
+    }
+
+    static void registerRoutines() {
+        Arrays.stream(Subroutines.class.getDeclaredMethods())
+                .filter(m -> Modifier.isStatic(m.getModifiers()))
+                .filter(m -> m.getName().matches("(goto|gosub)\\d+"))
+                .forEach(Subroutines::registerRoutine);
+    }
+
     static {
-        ROUTINES.put(20, lookupTarget("goto", 20));
-        ROUTINES.put(950, lookupTarget("goto", 950));
+        registerRoutines();
     }
 
     public static void runGoto(int target, InterpreterState state) {
