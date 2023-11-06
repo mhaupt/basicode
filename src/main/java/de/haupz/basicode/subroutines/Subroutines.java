@@ -62,11 +62,23 @@ public class Subroutines {
     }
 
     public static void goto20(InterpreterState state) {
-        throw new IllegalStateException("not yet implemented");
+        state.setVar("HO", 0);
+        state.setVar("VE", 0);
+        state.setVar("HG", 0);
+        state.setVar("VG", 0);
+        state.setVar("SV", 15);
+        state.setLineJumpTarget(1010);
+        state.requestLineJump();
     }
 
     public static void gosub100(InterpreterState state) {
         state.getOutput().clear();
+    }
+
+    public static void gosub110(InterpreterState state) {
+        int ho = ((Integer) state.getVar("HO").get()).intValue();
+        int ve = ((Integer) state.getVar("VE").get()).intValue();
+        state.getOutput().setTextCursor(ho, ve);
     }
 
     public static void goto950(InterpreterState state) {

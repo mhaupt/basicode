@@ -7,11 +7,11 @@ public class GosubTest extends InterpreterTest {
     @Test
     public void testGosub() {
         testInterpreter("""
-                10 GOSUB 40
-                20 PRINT "Two."
-                30 END
-                40 PRINT "One."
-                50 RETURN
+                1010 GOSUB 1040
+                1020 PRINT "Two."
+                1030 END
+                1040 PRINT "One."
+                1050 RETURN
                 """, """
                 One.
                 Two.
@@ -21,14 +21,14 @@ public class GosubTest extends InterpreterTest {
     @Test
     public void testMoreGosub() {
         testInterpreter("""
-                10 GOSUB 50
-                20 GOSUB 70
-                30 PRINT "Three."
-                40 END
-                50 PRINT "One."
-                60 RETURN
-                70 PRINT "Two."
-                80 RETURN
+                1010 GOSUB 1050
+                1020 GOSUB 1070
+                1030 PRINT "Three."
+                1040 END
+                1050 PRINT "One."
+                1060 RETURN
+                1070 PRINT "Two."
+                1080 RETURN
                 """, """
                 One.
                 Two.
@@ -39,17 +39,17 @@ public class GosubTest extends InterpreterTest {
     @Test
     public void testNestedGosub() {
         testInterpreter("""
-                10 GOSUB 40
-                20 PRINT "Four."
-                30 END
-                40 GOSUB 70
-                50 PRINT "Three."
-                60 RETURN
-                70 PRINT "One."
-                80 GOSUB 100
-                90 RETURN
-                100 PRINT "Two."
-                110 RETURN
+                1010 GOSUB 1040
+                1020 PRINT "Four."
+                1030 END
+                1040 GOSUB 1070
+                1050 PRINT "Three."
+                1060 RETURN
+                1070 PRINT "One."
+                1080 GOSUB 1100
+                1090 RETURN
+                1100 PRINT "Two."
+                1110 RETURN
                 """, """
                 One.
                 Two.
@@ -61,11 +61,11 @@ public class GosubTest extends InterpreterTest {
     @Test
     public void testContinueOnSameLine() {
         testInterpreter("""
-                10 PRINT "One."
-                20 GOSUB 40:PRINT "Three."
-                30 END
-                40 PRINT "Two."
-                50 RETURN
+                1010 PRINT "One."
+                1020 GOSUB 1040:PRINT "Three."
+                1030 END
+                1040 PRINT "Two."
+                1050 RETURN
                 """, """
                 One.
                 Two.
@@ -76,10 +76,10 @@ public class GosubTest extends InterpreterTest {
     @Test
     public void testReturnOnSameLine() {
         testInterpreter("""
-                10 PRINT "One."
-                20 GOSUB 40:PRINT "Three."
-                30 END
-                40 PRINT "Two.":RETURN
+                1010 PRINT "One."
+                1020 GOSUB 1040:PRINT "Three."
+                1030 END
+                1040 PRINT "Two.":RETURN
                 """, """
                 One.
                 Two.

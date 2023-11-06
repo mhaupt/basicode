@@ -10,6 +10,8 @@ public interface BasicOutput {
 
     void flush();
 
-    void clear();
+    default void clear() {}
+
+    default void setTextCursor(int ho, int ve) {}
 
 }

@@ -99,4 +99,10 @@ public class BasicContainer extends JComponent implements BasicOutput {
         repaint();
     }
 
+    @Override
+    public void setTextCursor(int ho, int ve) {
+        curLine = ve;
+        curColumn = ho;
+    }
+
 }

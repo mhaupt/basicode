@@ -30,9 +30,4 @@ public class PrintStreamOutput implements BasicOutput {
         ps.flush();
     }
 
-    @Override
-    public void clear() {
-        // naught
-    }
-
 }

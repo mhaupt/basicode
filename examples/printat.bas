@@ -1,0 +1,2 @@
+1000 GOTO 20
+1010 HO=10:VE=10:GOSUB 110:PRINT "Hello, world."
