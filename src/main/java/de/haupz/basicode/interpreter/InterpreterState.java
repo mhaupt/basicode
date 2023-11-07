@@ -4,7 +4,6 @@ import de.haupz.basicode.ast.ProgramNode;
 import de.haupz.basicode.io.BasicInput;
 import de.haupz.basicode.io.BasicOutput;
 
-import java.io.BufferedReader;
 import java.util.*;
 
 public class InterpreterState {
@@ -61,6 +60,10 @@ public class InterpreterState {
 
     public Optional<Object> getVar(String id) {
         return Optional.ofNullable(vars.get(id));
+    }
+
+    public Number getStdVar(String id) {
+        return (Number) vars.get(id);
     }
 
     public void removeVar(String id) {

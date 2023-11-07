@@ -1,5 +1,7 @@
 package de.haupz.basicode.io;
 
+import java.awt.image.BufferedImage;
+
 public interface BasicOutput {
 
     void print(String s);
@@ -10,8 +12,12 @@ public interface BasicOutput {
 
     void flush();
 
-    default void clear() {}
+    default void textMode() {}
 
     default void setTextCursor(int ho, int ve) {}
+
+    default void graphicsMode() {}
+
+    default BufferedImage getImage() { throw new IllegalStateException("graphics not supported"); }
 
 }

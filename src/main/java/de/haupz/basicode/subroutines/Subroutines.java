@@ -2,6 +2,8 @@ package de.haupz.basicode.subroutines;
 
 import de.haupz.basicode.interpreter.InterpreterState;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
@@ -72,13 +74,31 @@ public class Subroutines {
     }
 
     public static void gosub100(InterpreterState state) {
-        state.getOutput().clear();
+        state.getOutput().textMode();
     }
 
     public static void gosub110(InterpreterState state) {
-        int ho = ((Integer) state.getVar("HO").get()).intValue();
-        int ve = ((Integer) state.getVar("VE").get()).intValue();
+        int ho = state.getStdVar("HO").intValue();
+        int ve = state.getStdVar("VE").intValue();
         state.getOutput().setTextCursor(ho, ve);
+    }
+
+    public static void gosub600(InterpreterState state) {
+        state.getOutput().graphicsMode();
+    }
+
+    public static void gosub630(InterpreterState state) {
+        BufferedImage im = state.getOutput().getImage();
+        double ho = state.getStdVar("HO").doubleValue();
+        double ve = state.getStdVar("VE").doubleValue();
+        double hg = state.getStdVar("HG").doubleValue();
+        double vg = state.getStdVar("VG").doubleValue();
+        Graphics2D g2 = (Graphics2D) im.getGraphics();
+        g2.drawLine((int) (im.getWidth() * hg), (int) (im.getHeight() * vg),
+                (int) (im.getWidth() * ho), (int) (im.getHeight() * ve));
+        state.setVar("HG", ho);
+        state.setVar("VG", ve);
+        state.getOutput().flush();
     }
 
     public static void goto950(InterpreterState state) {
