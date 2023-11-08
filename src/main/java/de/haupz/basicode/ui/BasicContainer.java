@@ -9,9 +9,9 @@ import java.util.Arrays;
 
 public class BasicContainer extends JComponent implements BasicOutput {
 
-    public static final int C_WIDTH = 14;
+    public static final int C_WIDTH = 24;
 
-    public static final int C_HEIGHT = 29;
+    public static final int C_HEIGHT = 24;
 
     public static final int COLUMNS = 40;
 
@@ -21,7 +21,16 @@ public class BasicContainer extends JComponent implements BasicOutput {
 
     public static final int HEIGHT = C_HEIGHT * LINES;
 
-    public static final Font FONT = new Font("Monospaced", Font.BOLD, 24);
+    public static final Font FONT;
+
+    static {
+        try {
+            FONT = Font.createFont(Font.TRUETYPE_FONT,
+                    BasicContainer.class.getResourceAsStream("/amstrad_cpc464.ttf")).deriveFont(24.0f);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     private final char[][] textBuffer = new char[LINES][COLUMNS];
 
