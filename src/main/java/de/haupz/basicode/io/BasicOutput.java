@@ -16,6 +16,8 @@ public interface BasicOutput {
 
     default void setTextCursor(int ho, int ve) {}
 
+    default int[] getTextCursor() { return new int[]{0,0}; }
+
     default void graphicsMode() {}
 
     default BufferedImage getImage() { throw new IllegalStateException("graphics not supported"); }

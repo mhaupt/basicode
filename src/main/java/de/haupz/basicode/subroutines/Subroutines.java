@@ -84,6 +84,12 @@ public class Subroutines {
         state.getOutput().setTextCursor(ho, ve);
     }
 
+    public static void gosub120(InterpreterState state) {
+        int[] coordinates = state.getOutput().getTextCursor();
+        state.setVar("HO", coordinates[0]);
+        state.setVar("VE", coordinates[1]);
+    }
+
     public static void gosub250(InterpreterState state) {
         Sound.play(440, 250, 100);
     }

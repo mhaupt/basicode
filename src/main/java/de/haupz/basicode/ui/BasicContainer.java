@@ -123,8 +123,13 @@ public class BasicContainer extends JComponent implements BasicOutput {
 
     @Override
     public void setTextCursor(int ho, int ve) {
-        curLine = ve;
         curColumn = ho;
+        curLine = ve;
+    }
+
+    @Override
+    public int[] getTextCursor() {
+        return new int[] { curColumn, curLine };
     }
 
     @Override
