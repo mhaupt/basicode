@@ -64,6 +64,8 @@ public class Subroutines {
         }
     }
 
+    private static final Stroke STROKE = new BasicStroke(3);
+
     public static void goto20(InterpreterState state) {
         state.setVar("HO", 0);
         state.setVar("VE", 0);
@@ -105,6 +107,8 @@ public class Subroutines {
         double hg = state.getStdVar("HG").doubleValue();
         double vg = state.getStdVar("VG").doubleValue();
         Graphics2D g2 = (Graphics2D) im.getGraphics();
+        g2.setPaint(Color.YELLOW);
+        g2.setStroke(STROKE);
         g2.drawLine((int) (im.getWidth() * hg), (int) (im.getHeight() * vg),
                 (int) (im.getWidth() * ho), (int) (im.getHeight() * ve));
         state.setVar("HG", ho);
