@@ -96,6 +96,16 @@ public class Subroutines {
         Sound.play(440, 250, 100);
     }
 
+    public static void gosub400(InterpreterState state) {
+        int sp = state.getStdVar("SP").intValue();
+        int sd = state.getStdVar("SD").intValue();
+        int sv = state.getStdVar("SV").intValue();
+        int frequency = (int) (440.0 * Math.pow(2.0, 100.0 * (sp - 69) / 1200.0));
+        int duration = 100 * sd; // sd is in 0.1 s (100 ms)
+        int volume = (int) (100/15.0 * sv); // volume is 0..100, mapping from 0..15
+        Sound.play(frequency, duration, volume);
+    }
+
     public static void gosub600(InterpreterState state) {
         state.getOutput().graphicsMode();
     }
