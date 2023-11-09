@@ -1,6 +1,7 @@
 package de.haupz.basicode.subroutines;
 
 import de.haupz.basicode.interpreter.InterpreterState;
+import de.haupz.basicode.ui.Sound;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -81,6 +82,10 @@ public class Subroutines {
         int ho = state.getStdVar("HO").intValue();
         int ve = state.getStdVar("VE").intValue();
         state.getOutput().setTextCursor(ho, ve);
+    }
+
+    public static void gosub250(InterpreterState state) {
+        Sound.play(440, 250, 100);
     }
 
     public static void gosub600(InterpreterState state) {
