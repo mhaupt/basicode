@@ -100,6 +100,21 @@ public class Subroutines {
         state.getOutput().graphicsMode();
     }
 
+    public static void gosub620(InterpreterState state) {
+        BufferedImage im = state.getOutput().getImage();
+        double ho = state.getStdVar("HO").doubleValue();
+        double ve = state.getStdVar("VE").doubleValue();
+        Graphics2D g2 = (Graphics2D) im.getGraphics();
+        g2.setPaint(Color.YELLOW);
+        g2.setStroke(STROKE);
+        int x = (int) (im.getWidth() * ho);
+        int y = (int) (im.getHeight() * ve);
+        g2.drawLine(x, y, x, y);
+        state.setVar("HG", ho);
+        state.setVar("VG", ve);
+        state.getOutput().flush();
+    }
+
     public static void gosub630(InterpreterState state) {
         BufferedImage im = state.getOutput().getImage();
         double ho = state.getStdVar("HO").doubleValue();
