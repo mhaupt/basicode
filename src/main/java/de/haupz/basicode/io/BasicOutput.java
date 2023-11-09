@@ -1,5 +1,6 @@
 package de.haupz.basicode.io;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public interface BasicOutput {
@@ -21,5 +22,7 @@ public interface BasicOutput {
     default void graphicsMode() {}
 
     default BufferedImage getImage() { throw new IllegalStateException("graphics not supported"); }
+
+    default Font getFont() { throw new IllegalStateException("font not supported"); }
 
 }

@@ -131,6 +131,20 @@ public class Subroutines {
         state.getOutput().flush();
     }
 
+    public static void gosub650(InterpreterState state) {
+        BufferedImage im = state.getOutput().getImage();
+        double ho = state.getStdVar("HO").doubleValue();
+        double ve = state.getStdVar("VE").doubleValue();
+        String sr = (String) state.getVar("SR$").get();
+        Graphics2D g2 = (Graphics2D) im.getGraphics();
+        g2.setPaint(Color.YELLOW);
+        g2.setFont(state.getOutput().getFont());
+        g2.drawString(sr, (int) (im.getWidth() * ho), g2.getFontMetrics().getHeight() + (int) (im.getHeight() * ve));
+        state.setVar("HG", ho);
+        state.setVar("VG", ve);
+        state.getOutput().flush();
+    }
+
     public static void goto950(InterpreterState state) {
         state.terminate();
     }

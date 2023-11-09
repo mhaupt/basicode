@@ -146,4 +146,9 @@ public class BasicContainer extends JComponent implements BasicOutput {
         return image;
     }
 
+    @Override
+    public Font getFont() {
+        return FONT;
+    }
+
 }
