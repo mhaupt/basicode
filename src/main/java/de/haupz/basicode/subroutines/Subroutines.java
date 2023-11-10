@@ -86,6 +86,11 @@ public class Subroutines {
         state.getOutput().setTextCursor(ho, ve);
     }
 
+    public static void gosub150(InterpreterState state) {
+        String sr = "   " + (String) state.getVar("SR$").get() + "   ";
+        state.getOutput().printReverse(sr);
+    }
+
     public static void gosub120(InterpreterState state) {
         int[] coordinates = state.getOutput().getTextCursor();
         state.setVar("HO", coordinates[0]);

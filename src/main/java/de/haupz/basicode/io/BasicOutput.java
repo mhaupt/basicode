@@ -7,6 +7,8 @@ public interface BasicOutput {
 
     void print(String s);
 
+    default void printReverse(String s) { print(s); }
+
     void println(String s);
 
     void println();

@@ -6,6 +6,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Set;
 
 public class BasicContainer extends JComponent implements BasicOutput {
 
@@ -38,6 +40,8 @@ public class BasicContainer extends JComponent implements BasicOutput {
 
     private int curColumn;
 
+    private final boolean[][] reverse = new boolean[LINES][];
+
     private boolean isGraphicsMode = false;
 
     private final BufferedImage image;
@@ -53,6 +57,7 @@ public class BasicContainer extends JComponent implements BasicOutput {
         for (char[] line : textBuffer) {
             Arrays.fill(line, ' ');
         }
+        Arrays.fill(reverse, null);
         curLine = 0;
         curColumn = 0;
     }
@@ -75,9 +80,34 @@ public class BasicContainer extends JComponent implements BasicOutput {
             g2.drawImage(image, 0, 0, WIDTH, HEIGHT, null);
         } else {
             g2.setFont(FONT);
-            g2.setColor(Color.YELLOW);
             for (int l = 0; l < LINES; ++l) {
-                g2.drawChars(textBuffer[l], 0, COLUMNS, 0, (l + 1) * C_HEIGHT);
+                if (reverse[l] != null) {
+                    boolean reverseMode = false;
+                    int c = 0;
+                    while (c < COLUMNS) {
+                        int start = c;
+                        int end = start;
+                        while (end < COLUMNS && reverse[l][end] == reverseMode) {
+                            ++end;
+                        }
+                        if (end > start) {
+                            if (reverseMode) {
+                                g2.setColor(Color.YELLOW);
+                                g2.fillRect(start * C_WIDTH, l * C_HEIGHT, (end - start) * C_WIDTH, C_HEIGHT);
+                                g2.setColor(Color.BLUE);
+                                g2.drawChars(textBuffer[l], start, end - start, start * C_WIDTH, (l + 1) * C_HEIGHT);
+                            } else {
+                                g2.setColor(Color.YELLOW);
+                                g2.drawChars(textBuffer[l], start, end - start, start * C_WIDTH, (l + 1) * C_HEIGHT);
+                            }
+                        }
+                        c = end;
+                        reverseMode = !reverseMode;
+                    }
+                } else {
+                    g2.setColor(Color.YELLOW);
+                    g2.drawChars(textBuffer[l], 0, COLUMNS, 0, (l + 1) * C_HEIGHT);
+                }
             }
         }
     }
@@ -87,6 +117,15 @@ public class BasicContainer extends JComponent implements BasicOutput {
         System.arraycopy(s.toCharArray(), 0, textBuffer[curLine], curColumn, s.length());
         curColumn += s.length();
         repaint();
+    }
+
+    @Override
+    public void printReverse(String s) {
+        if (reverse[curLine] == null) {
+            reverse[curLine] = new boolean[COLUMNS];
+        }
+        Arrays.fill(reverse[curLine], curColumn, curColumn + s.length(), true);
+        print(s);
     }
 
     @Override
