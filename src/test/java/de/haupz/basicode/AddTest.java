@@ -54,4 +54,10 @@ public class AddTest extends ExpressionTest {
         testExpressionThrows("\"A\"+3.2", IllegalStateException.class);
     }
 
+    @Test
+    public void testDoubleNoLeadingZero() {
+        testExpression("1+.1", 1.1, Double.class);
+        testExpression(".1+1", 1.1, Double.class);
+    }
+
 }

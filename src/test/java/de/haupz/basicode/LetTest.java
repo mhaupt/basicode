@@ -37,6 +37,15 @@ public class LetTest extends StatementTest {
     }
 
     @Test
+    public void setVarDoubleNoLeadingZero() {
+        run("AA=.5");
+        Optional<Object> v = state.getVar("AA");
+        assertTrue(v.isPresent());
+        assertEquals(Double.class, v.get().getClass());
+        assertEquals(0.5, v.get());
+    }
+
+    @Test
     public void setVarString() {
         run("AA$=\"Hello.\"");
         Optional<Object> v = state.getVar("AA$");
