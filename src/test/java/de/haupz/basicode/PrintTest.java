@@ -66,4 +66,15 @@ public class PrintTest extends InterpreterTest {
                 """);
     }
 
+    @Test
+    public void testEmptyPrint() {
+        testInterpreter("""
+                1000 PRINT 1:PRINT:PRINT 2
+                """, """
+                1
+                
+                2
+                """);
+    }
+
 }

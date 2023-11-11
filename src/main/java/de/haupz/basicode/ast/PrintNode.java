@@ -26,6 +26,11 @@ public class PrintNode extends StatementNode {
 
     @Override
     public void run(InterpreterState state) {
+        if (elements.isEmpty()) {
+            state.getOutput().println();
+            state.resetOutputColumn();
+            return;
+        }
         for (Element e : elements) {
             switch (e.type) {
                 case EXPRESSION -> {

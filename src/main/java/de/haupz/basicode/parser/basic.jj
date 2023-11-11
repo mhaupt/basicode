@@ -174,13 +174,16 @@ StatementNode print_statement():
     List<PrintNode.Element> elements = new ArrayList<>();
 }
 {
-    <PRINT> elem = print_element() { elements.add(elem); }
+    <PRINT>
     (
-        LOOKAHEAD(2)
-        (t=","|t=";") { elements.add(new PrintNode.Element(PrintNode.ElementType.SEPARATOR, t.image)); }
         elem = print_element() { elements.add(elem); }
-    )*
-    (t=";" { elements.add(new PrintNode.Element(PrintNode.ElementType.SEPARATOR, t.image)); } )?
+        (
+            LOOKAHEAD(2)
+            (t=","|t=";") { elements.add(new PrintNode.Element(PrintNode.ElementType.SEPARATOR, t.image)); }
+            elem = print_element() { elements.add(elem); }
+        )*
+        (t=";" { elements.add(new PrintNode.Element(PrintNode.ElementType.SEPARATOR, t.image)); } )?
+    )?
     {
         return new PrintNode(elements);
     }
