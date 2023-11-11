@@ -114,9 +114,10 @@ public class BasicContainer extends JComponent implements BasicOutput {
 
     @Override
     public void print(String s) {
-        System.arraycopy(s.toCharArray(), 0, textBuffer[curLine], curColumn, s.length());
-        curColumn += s.length();
-        repaint();
+        if (reverse[curLine] != null) {
+            Arrays.fill(reverse[curLine], curColumn, curColumn + s.length(), false);
+        }
+        printInternal(s);
     }
 
     @Override
@@ -125,7 +126,13 @@ public class BasicContainer extends JComponent implements BasicOutput {
             reverse[curLine] = new boolean[COLUMNS];
         }
         Arrays.fill(reverse[curLine], curColumn, curColumn + s.length(), true);
-        print(s);
+        printInternal(s);
+    }
+
+    private void printInternal(String s) {
+        System.arraycopy(s.toCharArray(), 0, textBuffer[curLine], curColumn, s.length());
+        curColumn += s.length();
+        repaint();
     }
 
     @Override
