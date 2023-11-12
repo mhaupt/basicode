@@ -153,18 +153,23 @@ Object data_literal():
 
 StatementNode assignment():
 {
-    Token t;
-    boolean isArrayAssignment = false;
+    LetNode.LHS l;
     ExpressionNode e = null;
-    ExpressionNode f = null;
-    ExpressionNode g = null;
 }
 {
-    (<LET>)?
+    (<LET>)? l = lhs() "=" e = expression() { return new LetNode(l, e); }
+}
+
+LetNode.LHS lhs():
+{
+    Token t;
+    ExpressionNode e = null;
+    ExpressionNode f = null;
+}
+{
     t = <IDENTIFIER>
-    ( "(" e = expression() ("," f = expression())? ")" { isArrayAssignment = true; } )?
-    "=" g = expression()
-    { return new LetNode(isArrayAssignment ? new LetNode.Array(t.image, e, f) : new LetNode.Variable(t.image), g); }
+    ( "(" e = expression() ("," f = expression())? ")" { return new LetNode.Array(t.image, e, f); } )?
+    { return new LetNode.Variable(t.image); }
 }
 
 StatementNode print_statement():
