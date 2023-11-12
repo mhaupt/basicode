@@ -51,7 +51,7 @@ public class Subroutines {
         try {
             ROUTINES.get(target).invoke(state);
         } catch (Throwable t) {
-            throw new RuntimeException(t);
+            throw new IllegalStateException("subroutine not implemented: goto " + target);
         }
     }
 
@@ -60,7 +60,7 @@ public class Subroutines {
             ROUTINES.get(target).invoke(state);
             state.requestReturn();
         } catch (Throwable t) {
-            throw new RuntimeException(t);
+            throw new IllegalStateException("subroutine not implemented: gosub " + target);
         }
     }
 
