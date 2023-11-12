@@ -345,7 +345,7 @@ isArrayAssignment = true;
     }
     jj_consume_token(58);
     g = expression();
-{if ("" != null) return isArrayAssignment ? new LetArrayNode(t.image, e, f, g) : new LetNode(t.image, g);}
+{if ("" != null) return new LetNode(isArrayAssignment ? new LetNode.Array(t.image, e, f) : new LetNode.Variable(t.image), g);}
     throw new Error("Missing return statement in function");
 }
 

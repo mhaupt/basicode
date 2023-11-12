@@ -164,7 +164,7 @@ StatementNode assignment():
     t = <IDENTIFIER>
     ( "(" e = expression() ("," f = expression())? ")" { isArrayAssignment = true; } )?
     "=" g = expression()
-    { return isArrayAssignment ? new LetArrayNode(t.image, e, f, g) : new LetNode(t.image, g); }
+    { return new LetNode(isArrayAssignment ? new LetNode.Array(t.image, e, f) : new LetNode.Variable(t.image), g); }
 }
 
 StatementNode print_statement():
