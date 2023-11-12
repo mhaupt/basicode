@@ -6,23 +6,24 @@ import java.util.List;
 
 public class ReadNode extends StatementNode {
 
-    private final List<String> ids;
+    private static class ReadOp extends ExpressionNode {
+        @Override
+        public Object eval(InterpreterState state) {
+            return state.readNextDataItem();
+        }
+    }
 
-    public ReadNode(List<String> ids) {
-        this.ids = List.copyOf(ids);
+    private static final ReadOp READ_OP = new ReadOp();
+
+    private final List<LetNode> lets;
+
+    public ReadNode(List<LetNode.LHS> lhss) {
+        lets = lhss.stream().map(lhs -> new LetNode(lhs, READ_OP)).toList();
     }
 
     @Override
     public void run(InterpreterState state) {
-        for(String id : ids) {
-            Object value = state.readNextDataItem();
-            boolean expectsString = id.endsWith("$");
-            if ((expectsString && value instanceof Number) || (!expectsString && value instanceof String)) {
-                throw new IllegalStateException("data type mismatch: read " + value + ", expected " +
-                        (expectsString ? "string" : "number"));
-            }
-            state.setVar(id, value);
-        }
+        lets.forEach(let -> let.run(state));
     }
 
 }

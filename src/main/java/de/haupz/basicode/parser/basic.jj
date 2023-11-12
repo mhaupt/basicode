@@ -268,12 +268,12 @@ StatementNode if_statement():
 
 StatementNode read_statement():
 {
-    Token t;
-    List<String> ids = new ArrayList<>();
+    LetNode.LHS l;
+    List<LetNode.LHS> lhss = new ArrayList<>();
 }
 {
-    <READ> t = <IDENTIFIER> { ids.add(t.image); } ( "," t = <IDENTIFIER> { ids.add(t.image); } )*
-    { return new ReadNode(ids); }
+    <READ> l = lhs() { lhss.add(l); } ( "," l = lhs() { lhss.add(l); } )*
+    { return new ReadNode(lhss); }
 }
 
 StatementNode def_fn():

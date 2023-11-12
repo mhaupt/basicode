@@ -106,4 +106,32 @@ public class DataTest extends InterpreterTest {
                 """, IllegalStateException.class);
     }
 
+    @Test
+    public void readArray1D() {
+        testInterpreter("""
+                1000 DIM AR(3)
+                1010 FOR I=1 TO 3:READ AR(I):NEXT I
+                1020 FOR J=1 TO 3:PRINT AR(J):NEXT J
+                1030 DATA 23,42,148
+                """, """
+                23
+                42
+                148
+                """);
+    }
+
+    @Test
+    public void readArray2D() {
+        testInterpreter("""
+                1000 DIM AR(3,3)
+                1010 FOR I=1 TO 3:READ AR(I,I):NEXT I
+                1020 FOR J=1 TO 3:PRINT AR(J,J):NEXT J
+                1030 DATA 23,42,148
+                """, """
+                23
+                42
+                148
+                """);
+    }
+
 }

@@ -644,11 +644,11 @@ thenStatements.add(s);
     throw new Error("Missing return statement in function");
 }
 
-  final public StatementNode read_statement() throws ParseException {Token t;
-    List<String> ids = new ArrayList<>();
+  final public StatementNode read_statement() throws ParseException {LetNode.LHS l;
+    List<LetNode.LHS> lhss = new ArrayList<>();
     jj_consume_token(READ);
-    t = jj_consume_token(IDENTIFIER);
-ids.add(t.image);
+    l = lhs();
+lhss.add(l);
     label_8:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -661,10 +661,10 @@ ids.add(t.image);
         break label_8;
       }
       jj_consume_token(54);
-      t = jj_consume_token(IDENTIFIER);
-ids.add(t.image);
+      l = lhs();
+lhss.add(l);
     }
-{if ("" != null) return new ReadNode(ids);}
+{if ("" != null) return new ReadNode(lhss);}
     throw new Error("Missing return statement in function");
 }
 
