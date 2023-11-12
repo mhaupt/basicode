@@ -79,7 +79,7 @@ LineNode line():
     num = lineNumber()
     (
         st = data_line() { statements.add(st); }
-    |   st = statement() { statements.add(st); } (":" st = statement() { statements.add(st); })*
+    |   st = statement() { statements.add(st); } ((":")+ st = statement() { statements.add(st); })*
     )
     (<EOL>|<EOF>)
     { return new LineNode(num, statements); }
