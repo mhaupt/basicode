@@ -31,7 +31,9 @@ public class NextNode extends StatementNode {
             shouldEnd = step>= 0 ? nextit > end : nextit < end;
             state.setVar(id, nextit);
         }
-        if (!shouldEnd) {
+        if (shouldEnd) {
+            state.stopLoop(id);
+        } else {
             state.setBackedgeTarget(frec.startIndex());
             state.requestBackedge();
         }

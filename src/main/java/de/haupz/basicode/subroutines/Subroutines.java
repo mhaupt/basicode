@@ -111,6 +111,16 @@ public class Subroutines {
         Sound.play(frequency, duration, volume);
     }
 
+    public static void gosub450(InterpreterState state) {
+        // not fully implemented yet: keystrokes will not interrupt
+        int sd = state.getStdVar("SD").intValue();
+        try {
+            Thread.sleep(sd * 100);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static void gosub600(InterpreterState state) {
         state.getOutput().graphicsMode();
     }

@@ -158,4 +158,19 @@ public class ForTest extends InterpreterTest {
                 """, IllegalStateException.class);
     }
 
+    @Test
+    public void testForReInit() {
+        testInterpreter("""
+                1000 FOR X=0 TO 1:PRINT X:NEXT X
+                1020 PRINT X
+                1010 FOR X=0 TO 1:PRINT X:NEXT X
+                """, """
+                0
+                1
+                2
+                0
+                1
+                """);
+    }
+
 }
