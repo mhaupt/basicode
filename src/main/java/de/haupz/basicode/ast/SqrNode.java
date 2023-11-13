@@ -10,12 +10,6 @@ public class SqrNode extends WrappingExpressionNode {
 
     @Override
     Optional<Object> evalWithTypes(Object value) {
-        if (value instanceof Integer i) {
-            if (i < 0) {
-                throw new ArithmeticException();
-            }
-            return Optional.of(Math.sqrt(i));
-        }
         if (value instanceof Double d) {
             if (d < 0) {
                 throw new ArithmeticException();

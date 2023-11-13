@@ -11,11 +11,7 @@ public class ValNode extends WrappingExpressionNode {
     @Override
     Optional<Object> evalWithTypes(Object value) {
         if (value instanceof String s) {
-            try {
-                return Optional.of(Integer.parseInt(s));
-            } catch (NumberFormatException nfe) {
-                return Optional.of(Double.parseDouble(s));
-            }
+            return Optional.of(Double.parseDouble(s));
         }
         return Optional.empty();
     }

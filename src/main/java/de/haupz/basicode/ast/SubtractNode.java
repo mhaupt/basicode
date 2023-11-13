@@ -12,9 +12,6 @@ public class SubtractNode extends TypeAdjustingNode {
 
     @Override
     Optional<Object> evalWithTypes(Object value1, Object value2) {
-        if (value1 instanceof Integer i && value2 instanceof Integer j) {
-            return Optional.of(i - j);
-        }
         if (value1 instanceof Double d && value2 instanceof Double e) {
             return Optional.of(d - e);
         }

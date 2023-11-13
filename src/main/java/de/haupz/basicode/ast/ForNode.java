@@ -28,9 +28,8 @@ public class ForNode extends StatementNode {
             Number i = ensureNumber(init, state);
             Number e = ensureNumber(end, state);
             Number s = ensureNumber(step, state);
-            boolean isInt = i instanceof Integer && e instanceof Integer && s instanceof Integer;
             state.setVar(id, i);
-            state.startLoop(id, e, s, isInt);
+            state.startLoop(id, e, s);
         }
     }
 

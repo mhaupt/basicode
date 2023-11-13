@@ -6,28 +6,28 @@ public class LogicTest extends ExpressionTest {
 
     @Test
     public void testOr() {
-        testExpression("0 OR 1", 1, Integer.class);
-        testExpression("1 OR 2", 3, Integer.class);
-        testExpression("1 OR 0", 1, Integer.class);
-        testExpression("2 OR 1", 3, Integer.class);
-        testExpression("1.1 OR 2.2", 3, Integer.class);
+        testExpression("0 OR 1", 1.0, Double.class);
+        testExpression("1 OR 2", 3.0, Double.class);
+        testExpression("1 OR 0", 1.0, Double.class);
+        testExpression("2 OR 1", 3.0, Double.class);
+        testExpression("1.1 OR 2.2", 3.0, Double.class);
     }
     
     @Test
     public void testAnd() {
-        testExpression("0 AND 1", 0, Integer.class);
-        testExpression("1 AND 3", 1, Integer.class);
-        testExpression("1 AND 0", 0, Integer.class);
-        testExpression("3 AND 1", 1, Integer.class);
-        testExpression("1.1 AND 3.3", 1, Integer.class);
+        testExpression("0 AND 1", 0.0, Double.class);
+        testExpression("1 AND 3", 1.0, Double.class);
+        testExpression("1 AND 0", 0.0, Double.class);
+        testExpression("3 AND 1", 1.0, Double.class);
+        testExpression("1.1 AND 3.3", 1.0, Double.class);
     }
 
     @Test
     public void testNot() {
-        testExpression("NOT 0", -1, Integer.class);
-        testExpression("NOT -1", 0, Integer.class);
-        testExpression("NOT 42", -43, Integer.class);
-        testExpression("NOT 0.5", -1, Integer.class);
+        testExpression("NOT 0", -1.0, Double.class);
+        testExpression("NOT -1", 0.0, Double.class);
+        testExpression("NOT 42", -43.0, Double.class);
+        testExpression("NOT 0.5", -1.0, Double.class);
     }
 
     @Test

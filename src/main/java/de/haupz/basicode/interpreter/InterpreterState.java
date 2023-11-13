@@ -20,7 +20,7 @@ public class InterpreterState {
 
     private final Stack<Integer> callStack = new Stack<>();
 
-    public record For(int startIndex, Number end, Number step, boolean isIntIterator) {}
+    public record For(int startIndex, Number end, Number step) {}
 
     private final Map<String, For> runningForLoops = new HashMap<>();
 
@@ -142,8 +142,8 @@ public class InterpreterState {
         return runningForLoops.containsKey(id);
     }
 
-    public void startLoop(String id, Number end, Number step, boolean isIntIterator) {
-        runningForLoops.put(id, new For(statementIndex, end, step, isIntIterator));
+    public void startLoop(String id, Number end, Number step) {
+        runningForLoops.put(id, new For(statementIndex, end, step));
     }
 
     public void stopLoop(String id) {

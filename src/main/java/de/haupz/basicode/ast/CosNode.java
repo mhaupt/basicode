@@ -12,9 +12,6 @@ public class CosNode extends WrappingExpressionNode {
 
     @Override
     Optional<Object> evalWithTypes(Object value) {
-        if (value instanceof Integer i) {
-            return Optional.of(Math.cos(i));
-        }
         if (value instanceof Double d) {
             return Optional.of(Math.cos(d));
         }

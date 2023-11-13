@@ -6,9 +6,9 @@ public class ValTest extends ExpressionTest {
 
     @Test
     public void testInteger() {
-        testExpression("VAL(\"0\")", 0, Integer.class);
-        testExpression("VAL(\"23\")", 23, Integer.class);
-        testExpression("VAL(\"-23\")", -23, Integer.class);
+        testExpression("VAL(\"0\")", 0.0, Double.class);
+        testExpression("VAL(\"23\")", 23.0, Double.class);
+        testExpression("VAL(\"-23\")", -23.0, Double.class);
     }
 
     @Test

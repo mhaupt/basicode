@@ -23,15 +23,10 @@ public class InputNode extends StatementNode {
         if (id.endsWith("$")) {
             state.setVar(id, input);
         } else {
-            // attempt to parse first as Integer, then as Double - slightly abusing exceptions here
             try {
-                state.setVar(id, Integer.parseInt(input));
-            } catch (NumberFormatException nfei) {
-                try {
-                    state.setVar(id, Double.parseDouble(input));
-                } catch (NumberFormatException nfed) {
-                    throw new IllegalStateException(String.format("expected number for variable %s, got %s", id, input));
-                }
+                state.setVar(id, Double.parseDouble(input));
+            } catch (NumberFormatException nfed) {
+                throw new IllegalStateException(String.format("expected number for variable %s, got %s", id, input));
             }
         }
     }

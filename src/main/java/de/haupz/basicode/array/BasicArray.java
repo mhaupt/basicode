@@ -12,7 +12,7 @@ public abstract class BasicArray {
         this.type = type;
         data = new Object[storageSize];
         switch (type) {
-            case NUMBER -> Arrays.fill(data, Integer.valueOf(0));
+            case NUMBER -> Arrays.fill(data, Double.valueOf(0.0));
             case STRING -> Arrays.fill(data, "");
         }
     }

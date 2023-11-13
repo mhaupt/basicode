@@ -19,9 +19,7 @@ public class RightsNode extends ExpressionNode {
         Object value2 = expression2.eval(state);
         if (value1 instanceof String s) {
             int n;
-            if (value2 instanceof Integer i) {
-                n = i;
-            } else if (value2 instanceof Double d) {
+            if (value2 instanceof Double d) {
                 n = d.intValue();
             } else {
                 throw new IllegalStateException("LEFT$ expects number as second argument");

@@ -12,9 +12,6 @@ public class AtnNode extends WrappingExpressionNode {
 
     @Override
     Optional<Object> evalWithTypes(Object value) {
-        if (value instanceof Integer i) {
-            return Optional.of(Math.atan(i));
-        }
         if (value instanceof Double d) {
             return Optional.of(Math.atan(d));
         }

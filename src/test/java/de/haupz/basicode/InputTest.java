@@ -14,8 +14,8 @@ public class InputTest extends StatementTest {
         run("INPUT A", "23");
         Optional<Object> v = state.getVar("A");
         assertTrue(v.isPresent());
-        assertEquals(Integer.class, v.get().getClass());
-        assertEquals(23, v.get());
+        assertEquals(Double.class, v.get().getClass());
+        assertEquals(23.0, v.get());
     }
 
     @Test

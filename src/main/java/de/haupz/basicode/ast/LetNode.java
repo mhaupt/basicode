@@ -23,7 +23,7 @@ public class LetNode extends StatementNode {
         protected void checkPreInit(InterpreterState state) {
             boolean isString = id.endsWith("$");
             if (state.getVar(id).isEmpty()) {
-                state.setVar(id, isString ? "" : Integer.valueOf(0));
+                state.setVar(id, isString ? "" : Double.valueOf(0.0));
             }
         }
         @Override

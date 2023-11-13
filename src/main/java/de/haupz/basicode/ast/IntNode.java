@@ -10,11 +10,8 @@ public class IntNode extends WrappingExpressionNode {
 
     @Override
     Optional<Object> evalWithTypes(Object value) {
-        if (value instanceof Integer i) {
-            return Optional.of(i);
-        }
         if (value instanceof Double d) {
-            return Optional.of((int) Math.floor(d));
+            return Optional.of(Math.floor(d));
         }
         return Optional.empty();
     }

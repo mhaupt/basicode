@@ -12,9 +12,6 @@ public class ChrsNode extends WrappingExpressionNode {
 
     @Override
     Optional<Object> evalWithTypes(Object value) {
-        if (value instanceof Integer i) {
-            return Optional.of(chrs((char) i.intValue()));
-        }
         if (value instanceof Double d) {
             return Optional.of(chrs((char) d.intValue()));
         }

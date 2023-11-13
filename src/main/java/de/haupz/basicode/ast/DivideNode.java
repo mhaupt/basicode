@@ -12,16 +12,6 @@ public class DivideNode extends TypeAdjustingNode {
 
     @Override
     Optional<Object> evalWithTypes(Object value1, Object value2) {
-        if (value1 instanceof Integer i && value2 instanceof Integer j) {
-            if (j == 0) {
-                throw new ArithmeticException();
-            }
-            if (i % j == 0) {
-                return Optional.of(i / j);
-            } else {
-                return Optional.of((double) i / j);
-            }
-        }
         if (value1 instanceof Double d && value2 instanceof Double e) {
             if (e == 0.0) {
                 throw new ArithmeticException();

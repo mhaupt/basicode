@@ -17,9 +17,7 @@ public class MidsNode extends ExpressionNode {
     }
 
     private int argToInt(Object arg, String pos) {
-        if (arg instanceof Integer i) {
-            return i;
-        } else if (arg instanceof Double d) {
+        if (arg instanceof Double d) {
             return d.intValue();
         } else {
             throw new IllegalStateException("RIGHT$ expects number as " + pos + " argument");
