@@ -6,12 +6,12 @@ public class AddTest extends ExpressionTest {
 
     @Test
     public void test3plus4() {
-        testExpression("3 + 4", 7, Integer.class);
+        testExpression("3 + 4", 7.0, Double.class);
     }
 
     @Test
     public void test3plus4NoSpace() {
-        testExpression("3+4", 7, Integer.class);
+        testExpression("3+4", 7.0, Double.class);
     }
 
     @Test
@@ -27,8 +27,8 @@ public class AddTest extends ExpressionTest {
 
     @Test
     public void testNegativeNumbers() {
-        testExpression("-1+2", 1, Integer.class);
-        testExpression("1+-2", -1, Integer.class);
+        testExpression("-1+2", 1.0, Double.class);
+        testExpression("1+-2", -1.0, Double.class);
         testExpression("-1.1+2.1", 1.0, Double.class);
         testExpression("1.1+-2.1", -1.0, Double.class);
     }

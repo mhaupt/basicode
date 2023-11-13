@@ -6,12 +6,12 @@ public class AbsTest extends ExpressionTest {
 
     @Test
     public void testPositiveInteger() {
-        testExpression("ABS(23)", 23, Integer.class);
+        testExpression("ABS(23)", 23.0, Double.class);
     }
 
     @Test
     public void testNegativeInteger() {
-        testExpression("ABS(-42)", 42, Integer.class);
+        testExpression("ABS(-42)", 42.0, Double.class);
     }
 
     @Test
@@ -26,9 +26,9 @@ public class AbsTest extends ExpressionTest {
 
     @Test
     public void testZero() {
-        testExpression("ABS(0)", 0, Integer.class);
+        testExpression("ABS(0)", 0.0, Double.class);
         testExpression("ABS(0.0)", 0.0, Double.class);
-        testExpression("ABS(-0)", 0, Integer.class);
+        testExpression("ABS(-0)", 0.0, Double.class);
         testExpression("ABS(-0.0)", 0.0, Double.class);
     }
 

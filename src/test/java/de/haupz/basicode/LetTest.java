@@ -14,8 +14,8 @@ public class LetTest extends StatementTest {
         run("AA=10");
         Optional<Object> v = state.getVar("AA");
         assertTrue(v.isPresent());
-        assertEquals(Integer.class, v.get().getClass());
-        assertEquals(10, v.get());
+        assertEquals(Double.class, v.get().getClass());
+        assertEquals(10.0, v.get());
     }
 
     @Test
@@ -23,8 +23,8 @@ public class LetTest extends StatementTest {
         run("LET AA=10");
         Optional<Object> v = state.getVar("AA");
         assertTrue(v.isPresent());
-        assertEquals(Integer.class, v.get().getClass());
-        assertEquals(10, v.get());
+        assertEquals(Double.class, v.get().getClass());
+        assertEquals(10.0, v.get());
     }
 
     @Test
@@ -59,8 +59,8 @@ public class LetTest extends StatementTest {
         run("AA=2+3*4-5");
         Optional<Object> v = state.getVar("AA");
         assertTrue(v.isPresent());
-        assertEquals(Integer.class, v.get().getClass());
-        assertEquals(9, v.get());
+        assertEquals(Double.class, v.get().getClass());
+        assertEquals(9.0, v.get());
     }
 
     @Test
@@ -76,8 +76,8 @@ public class LetTest extends StatementTest {
         Optional<Object> b = state.getVar("B");
         assertTrue(a.isPresent());
         assertTrue(b.isPresent());
-        assertEquals(7, a.get());
-        assertEquals(8, b.get());
+        assertEquals(7.0, a.get());
+        assertEquals(8.0, b.get());
     }
 
     @Test
@@ -87,8 +87,8 @@ public class LetTest extends StatementTest {
         Optional<Object> aa = state.getVar("AA");
         assertTrue(a.isPresent());
         assertTrue(aa.isPresent());
-        assertEquals(7, a.get());
-        assertEquals(8, aa.get());
+        assertEquals(7.0, a.get());
+        assertEquals(8.0, aa.get());
     }
 
     @Test
@@ -96,7 +96,7 @@ public class LetTest extends StatementTest {
         run("A=A+2");
         Optional<Object> a = state.getVar("A");
         assertTrue(a.isPresent());
-        assertEquals(2, a.get());
+        assertEquals(2.0, a.get());
     }
 
     @Test

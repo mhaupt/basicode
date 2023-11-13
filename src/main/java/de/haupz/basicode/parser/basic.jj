@@ -26,7 +26,6 @@ TOKEN: {
     < EOL: "\n" >
 // numbers and other values
 |   < NUMBER: (<DIGIT>)+ >
-|   < INTEGER: <NUMBER> >
 |   < FLOAT: (<NUMBER>)? "." <NUMBER> >
 |   < DIGIT: ["0"-"9"] >
 |   < STRING: "\"" (~["\"","\n"])* "\"" >
@@ -143,11 +142,7 @@ Object data_literal():
     Token t;
 }
 {
-    ("-" { sgn = -1; })?
-    (
-        t = <NUMBER> { return sgn * Integer.parseInt(t.image); }
-    |   t = <FLOAT> { return sgn * Double.parseDouble(t.image); }
-    )
+    ( ("-" { sgn = -1; })? (t = <NUMBER> | t = <FLOAT>) { return sgn * Double.parseDouble(t.image); } )
 |   t = <STRING> { return t.image.substring(1, t.image.length() - 1); }
 }
 
@@ -428,8 +423,7 @@ ExpressionNode literal():
     Token t;
 }
 {
-    (t = <NUMBER> | t = <INTEGER>) { return new IntegerNode(Integer.parseInt(t.image)); }
-|   t = <FLOAT> { return new DoubleNode(Double.parseDouble(t.image)); }
+    (t = <NUMBER> | t = <FLOAT>) { return new DoubleNode(Double.parseDouble(t.image)); }
 |   t = <STRING> { return new StringNode(t.image.substring(1, t.image.length() - 1)); }
 }
 

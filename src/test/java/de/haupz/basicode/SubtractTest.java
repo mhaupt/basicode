@@ -6,12 +6,12 @@ public class SubtractTest extends ExpressionTest {
 
     @Test
     public void test3minus4() {
-        testExpression("3 - 4", -1, Integer.class);
+        testExpression("3 - 4", -1.0, Double.class);
     }
 
     @Test
     public void test3minus4NoSpace() {
-        testExpression("3-4", -1, Integer.class);
+        testExpression("3-4", -1.0, Double.class);
     }
 
     @Test
@@ -27,8 +27,8 @@ public class SubtractTest extends ExpressionTest {
 
     @Test
     public void testNegativeNumbers() {
-        testExpression("-1-2", -3, Integer.class);
-        testExpression("1--2", 3, Integer.class);
+        testExpression("-1-2", -3.0, Double.class);
+        testExpression("1--2", 3.0, Double.class);
         testExpression("-1.1-2.1", -3.2, Double.class);
         testExpression("1.1--2.1", 3.2, Double.class);
     }

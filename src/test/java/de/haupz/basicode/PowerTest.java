@@ -6,11 +6,11 @@ public class PowerTest extends ExpressionTest {
 
     @Test
     public void testInteger() {
-        testExpression("2^3", 8, Integer.class);
+        testExpression("2^3", 8.0, Double.class);
         testExpression("2^-2", 0.25, Double.class);
-        testExpression("-2^2", 4, Integer.class);
-        testExpression("-2^3", -8, Integer.class);
-        testExpression("2^3^4", 4096, Integer.class);
+        testExpression("-2^2", 4.0, Double.class);
+        testExpression("-2^3", -8.0, Double.class);
+        testExpression("2^3^4", 4096.0, Double.class);
     }
 
     @Test

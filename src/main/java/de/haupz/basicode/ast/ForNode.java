@@ -16,7 +16,7 @@ public class ForNode extends StatementNode {
         this.id = id;
         this.init = init;
         this.end = end;
-        this.step = step == null ? new IntegerNode(1) : step;
+        this.step = step == null ? new DoubleNode(1.0) : step;
     }
 
     @Override

@@ -6,12 +6,12 @@ public class DivideTest extends ExpressionTest {
 
     @Test
     public void test4div2() {
-        testExpression("4 / 2", 2, Integer.class);
+        testExpression("4 / 2", 2.0, Double.class);
     }
 
     @Test
     public void test4div2NoSpace() {
-        testExpression("4/2", 2, Integer.class);
+        testExpression("4/2", 2.0, Double.class);
     }
 
     @Test
@@ -27,8 +27,8 @@ public class DivideTest extends ExpressionTest {
 
     @Test
     public void testNegativeNumbers() {
-        testExpression("-4/2", -2, Integer.class);
-        testExpression("4/-2", -2, Integer.class);
+        testExpression("-4/2", -2.0, Double.class);
+        testExpression("4/-2", -2.0, Double.class);
         testExpression("-6.2/3.1", -2.0, Double.class);
         testExpression("6.2/-3.1", -2.0, Double.class);
     }

@@ -144,7 +144,7 @@ public class DimTest extends StatementTest {
         run(List.of("DIM A(7)", "A(1)=23", "AA=A(1)"));
         Optional<Object> aa = state.getVar("AA");
         assertTrue(aa.isPresent());
-        assertEquals(23, aa.get());
+        assertEquals(23.0, aa.get());
     }
 
     @Test
@@ -160,7 +160,7 @@ public class DimTest extends StatementTest {
         run(List.of("DIM A(7,8)", "A(1,1)=23", "AA=A(1,1)"));
         Optional<Object> aa = state.getVar("AA");
         assertTrue(aa.isPresent());
-        assertEquals(23, aa.get());
+        assertEquals(23.0, aa.get());
     }
 
     @Test
