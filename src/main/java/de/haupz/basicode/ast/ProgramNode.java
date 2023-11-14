@@ -15,6 +15,10 @@ public class ProgramNode extends BasicNode {
 
     private Map<Integer, Integer> lineNumberToStatementIndex = new HashMap<>();
 
+    record LineAndStatement(int line, int statement) {}
+
+    private Map<Integer, LineAndStatement> statementIndexToLineNumberAndStatement = new HashMap<>();
+
     private final List<Object> dataList;
 
     public ProgramNode(List<LineNode> lines, List<Object> dataList) {
@@ -23,6 +27,13 @@ public class ProgramNode extends BasicNode {
             // A new line: the index of its first statement is the current size of the statements array.
             lineNumberToStatementIndex.put(line.getLineNumber(), statements.size());
             statements.addAll(List.copyOf(line.getStatements()));
+            int nStatements = statements.size();
+            int nStatementsOnLine = line.getStatements().size();
+            int lineNum = line.getLineNumber();
+            for (int s = 0; s < nStatementsOnLine; ++s) {
+                statementIndexToLineNumberAndStatement.put(
+                        nStatements - nStatementsOnLine + s, new LineAndStatement(lineNum, s));
+            }
         });
         this.dataList = List.copyOf(dataList);
     }
@@ -32,7 +43,12 @@ public class ProgramNode extends BasicNode {
         StatementNode statement;
         while (!state.shouldEnd()) {
             statement = statements.get(state.getStatementIndex());
-            statement.run(state);
+            try {
+                statement.run(state);
+            } catch (Exception e) {
+                LineAndStatement las = statementIndexToLineNumberAndStatement.get(state.getStatementIndex());
+                throw new IllegalStateException("error at line " + las.line + ", statement " + las.statement, e);
+            }
             if (state.isLineJumpNext()) {
                 resolveJump(state);
             } else if (state.isReturnNext()) {
