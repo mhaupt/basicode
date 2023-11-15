@@ -7,6 +7,7 @@ import de.haupz.basicode.parser.BasicParser;
 import de.haupz.basicode.ui.BasicContainer;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.StringReader;
@@ -50,9 +51,10 @@ public class Main {
 
     public static void gui() {
         JFrame frame = new JFrame("BASICODE");
-        frame.setSize(bc.getSize());
+        frame.getContentPane().setPreferredSize(bc.getSize());
         frame.getContentPane().add(bc);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
         frame.setVisible(true);
     }
 
