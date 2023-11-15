@@ -97,4 +97,27 @@ public class IfThenTest extends InterpreterTest {
                 """, IllegalStateException.class);
     }
 
+    @Test
+    public void ifThenReturn() {
+        testInterpreter("""
+                1000 PRINT "first"
+                1010 Q=1:GOSUB 2000
+                1020 PRINT "second"
+                1030 Q=2:GOSUB 2000
+                1040 PRINT "out"
+                1050 GOTO 950
+                2000 PRINT "sub"
+                2010 IF Q=2 THEN RETURN
+                2020 PRINT "extra sub"
+                2030 RETURN
+                """, """
+                first
+                sub
+                extra sub
+                second
+                sub
+                out
+                """);
+    }
+
 }
