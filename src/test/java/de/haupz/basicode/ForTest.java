@@ -173,4 +173,17 @@ public class ForTest extends InterpreterTest {
                 """);
     }
 
+    @Test
+    public void testAfterLoopValue() {
+        testInterpreter("""
+                1000 FOR I=1 TO 3:PRINT I:NEXT I
+                1010 PRINT I
+                """, """
+                1
+                2
+                3
+                4
+                """);
+    }
+
 }
