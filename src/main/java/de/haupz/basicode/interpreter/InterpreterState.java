@@ -138,6 +138,10 @@ public class InterpreterState {
         callStack.removeAllElements();
     }
 
+    public Stack<Integer> getCallStack() {
+        return callStack;
+    }
+
     public boolean isRunningLoop(String id) {
         return runningForLoops.containsKey(id);
     }

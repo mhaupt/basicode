@@ -2,10 +2,8 @@ package de.haupz.basicode.ast;
 
 import de.haupz.basicode.interpreter.InterpreterState;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class ProgramNode extends BasicNode {
 
@@ -46,8 +44,18 @@ public class ProgramNode extends BasicNode {
             try {
                 statement.run(state);
             } catch (Exception e) {
-                LineAndStatement las = statementIndexToLineNumberAndStatement.get(state.getStatementIndex());
-                throw new IllegalStateException("error at line " + las.line + ", statement " + las.statement, e);
+                Stack<Integer> stack = state.getCallStack();
+                String stackDump = "";
+                if (stack.isEmpty()) {
+                    LineAndStatement las = statementIndexToLineNumberAndStatement.get(state.getStatementIndex());
+                    stackDump = String.format("at line %d, statement %d", las.line, las.statement);
+                } else {
+                    stackDump = stack.reversed().stream().map(stmt -> {
+                        LineAndStatement sdlas = statementIndexToLineNumberAndStatement.get(stmt - 1);
+                        return String.format("at line %d, statement %d", sdlas.line, sdlas.statement);
+                    }).collect(Collectors.joining("\n"));
+                }
+                throw new IllegalStateException(stackDump, e);
             }
             if (state.isLineJumpNext()) {
                 resolveJump(state);

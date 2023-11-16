@@ -48,27 +48,35 @@ public class Subroutines {
     }
 
     public static void runGoto(int target, InterpreterState state) {
-        try {
-            ROUTINES.get(target).invoke(state);
-        } catch (Throwable t) {
+        MethodHandle routine = ROUTINES.get(target);
+        if (routine == null) {
             throw new IllegalStateException("subroutine not implemented: goto " + target);
+        }
+        try {
+            routine.invoke(state);
+        } catch (Throwable t) {
+            throw new IllegalStateException("error in goto " + target, t);
         }
     }
 
     public static void runGosub(int target, InterpreterState state) {
+        MethodHandle routine = ROUTINES.get(target);
+        if (routine == null) {
+            throw new IllegalStateException("subroutine not implemented: gosub " + target);
+        }
         try {
-            ROUTINES.get(target).invoke(state);
+            routine.invoke(state);
             state.requestReturn();
         } catch (Throwable t) {
-            throw new IllegalStateException("subroutine not implemented: gosub " + target);
+            throw new IllegalStateException("error in gosub " + target, t);
         }
     }
 
     private static final Stroke STROKE = new BasicStroke(3);
 
     public static void goto20(InterpreterState state) {
-        state.setVar("HO", 0);
-        state.setVar("VE", 0);
+        state.setVar("HO", 0.0);
+        state.setVar("VE", 0.0);
         state.setVar("HG", 0);
         state.setVar("VG", 0);
         state.setVar("SV", 15);
@@ -123,20 +131,30 @@ public class Subroutines {
 
     public static void gosub600(InterpreterState state) {
         state.getOutput().graphicsMode();
+        state.setVar("HG", 0);
+        state.setVar("VG", 0);
+    }
+
+    private static void checkBoundaries(String name, double v) {
+        if (v < 0.0 || v > 1.0) {
+            throw new IllegalStateException("out of bounds: " + name + " = " + v);
+        }
     }
 
     public static void gosub620(InterpreterState state) {
         BufferedImage im = state.getOutput().getImage();
         double ho = state.getStdVar("HO").doubleValue();
         double ve = state.getStdVar("VE").doubleValue();
+        checkBoundaries("HO", ho);
+        checkBoundaries("VE", ve);
         Graphics2D g2 = (Graphics2D) im.getGraphics();
         g2.setPaint(Color.YELLOW);
         g2.setStroke(STROKE);
-        int x = (int) (im.getWidth() * ho);
-        int y = (int) (im.getHeight() * ve);
-        g2.drawLine(x, y, x, y);
-        state.setVar("HG", ho);
-        state.setVar("VG", ve);
+        int hg = (int) (im.getWidth() * ho);
+        int vg = (int) (im.getHeight() * ve);
+        g2.drawLine(hg, vg, hg, vg);
+        state.setVar("HG", hg);
+        state.setVar("VG", vg);
         state.getOutput().flush();
     }
 
@@ -144,15 +162,18 @@ public class Subroutines {
         BufferedImage im = state.getOutput().getImage();
         double ho = state.getStdVar("HO").doubleValue();
         double ve = state.getStdVar("VE").doubleValue();
-        double hg = state.getStdVar("HG").doubleValue();
-        double vg = state.getStdVar("VG").doubleValue();
+        int hg = state.getStdVar("HG").intValue();
+        int vg = state.getStdVar("VG").intValue();
+        checkBoundaries("HO", ho);
+        checkBoundaries("VE", ve);
         Graphics2D g2 = (Graphics2D) im.getGraphics();
         g2.setPaint(Color.YELLOW);
         g2.setStroke(STROKE);
-        g2.drawLine((int) (im.getWidth() * hg), (int) (im.getHeight() * vg),
-                (int) (im.getWidth() * ho), (int) (im.getHeight() * ve));
-        state.setVar("HG", ho);
-        state.setVar("VG", ve);
+        int nhg = (int) (im.getWidth() * ho);
+        int nvg = (int) (im.getHeight() * ve);
+        g2.drawLine(hg, vg, nhg, nvg);
+        state.setVar("HG", nhg);
+        state.setVar("VG", nvg);
         state.getOutput().flush();
     }
 
@@ -160,13 +181,18 @@ public class Subroutines {
         BufferedImage im = state.getOutput().getImage();
         double ho = state.getStdVar("HO").doubleValue();
         double ve = state.getStdVar("VE").doubleValue();
+        checkBoundaries("HO", ho);
+        checkBoundaries("VE", ve);
         String sr = (String) state.getVar("SR$").get();
         Graphics2D g2 = (Graphics2D) im.getGraphics();
         g2.setPaint(Color.YELLOW);
         g2.setFont(state.getOutput().getFont());
-        g2.drawString(sr, (int) (im.getWidth() * ho), g2.getFontMetrics().getHeight() + (int) (im.getHeight() * ve));
-        state.setVar("HG", ho);
-        state.setVar("VG", ve);
+        FontMetrics fm = g2.getFontMetrics();
+        int hg = (int) (im.getWidth() * ho);
+        int vg = (int) (im.getHeight() * ve);
+        g2.drawString(sr, hg, fm.getHeight() + vg);
+        state.setVar("HG", hg);
+        state.setVar("VG", vg);
         state.getOutput().flush();
     }
 
