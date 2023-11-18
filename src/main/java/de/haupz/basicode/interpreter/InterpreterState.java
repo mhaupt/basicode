@@ -34,6 +34,8 @@ public class InterpreterState {
 
     private boolean backedge = false;
 
+    private boolean skipLine = false;
+
     private int lineJumpTarget;
 
     private int backedgeTarget;
@@ -176,6 +178,18 @@ public class InterpreterState {
 
     public int getBackedgeTarget() {
         return backedgeTarget;
+    }
+
+    public void requestSkipLine() {
+        skipLine = true;
+    }
+
+    public boolean isSkipLine() {
+        return skipLine;
+    }
+
+    public void skipLineDone() {
+        skipLine = false;
     }
 
     public void resetDataPtr() {

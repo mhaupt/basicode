@@ -120,4 +120,41 @@ public class IfThenTest extends InterpreterTest {
                 """);
     }
 
+    @Test
+    public void ifThenSomeReturn() {
+        testInterpreter("""
+                1000 PRINT "first"
+                1010 Q=5
+                1020 GOSUB 2000
+                1030 PRINT "end"
+                1040 GOTO 950
+                2000 PRINT "sub"
+                2010 IF Q=5 THEN PRINT "next":RETURN:PRINT "nope"
+                """, """
+                first
+                sub
+                next
+                end
+                """);
+    }
+
+    @Test
+    public void ifThenGosubAndThenSome() {
+        testInterpreter("""
+                1000 PRINT "A"
+                1010 Q=1
+                1020 IF Q>0 THEN PRINT "1":GOSUB 2000:PRINT "2"
+                1030 PRINT "B"
+                1040 GOTO 950
+                2000 PRINT "sub"
+                2010 RETURN
+                """, """
+                A
+                1
+                sub
+                2
+                B
+                """);
+    }
+
 }

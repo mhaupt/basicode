@@ -248,17 +248,16 @@ StatementNode for_statement():
 StatementNode if_statement():
 {
     ExpressionNode e;
-    int l = -1;
-    StatementNode s;
-    List<StatementNode> thenStatements = new ArrayList<>();
+    int l;
+    StatementNode s = null;
 }
 {
     <IF> e = expression() <THEN>
     (
-        l = lineNumber() { thenStatements.add(new GotoNode(l)); }
-    |   s = statement() { thenStatements.add(s); } ( LOOKAHEAD(2) ":" s = statement() { thenStatements.add(s); } )*
+        l = lineNumber() { s = new GotoNode(l); }
+    |   s = statement()
     )
-    { return new IfThenNode(e, thenStatements); }
+    { return new IfThenNode(e, s); }
 }
 
 StatementNode read_statement():

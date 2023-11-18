@@ -65,6 +65,14 @@ public class ProgramNode extends BasicNode {
             } else if (state.isBackedgeNext()) {
                 state.setNextStatement(state.getBackedgeTarget());
                 state.backedgeDone();
+            } else if (state.isSkipLine()) {
+                int stmt = state.getStatementIndex();
+                int lineToSkip = statementIndexToLineNumberAndStatement.get(stmt).line;
+                do {
+                    ++stmt;
+                } while (lineToSkip == statementIndexToLineNumberAndStatement.get(stmt).line);
+                state.setNextStatement(stmt);
+                state.skipLineDone();
             } else {
                 state.incStatementIndex();
                 if (state.getStatementIndex() >= statements.size()) {
