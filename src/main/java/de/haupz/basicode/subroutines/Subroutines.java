@@ -5,6 +5,7 @@ import de.haupz.basicode.ui.Sound;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
@@ -103,6 +104,19 @@ public class Subroutines {
         int[] coordinates = state.getOutput().getTextCursor();
         state.setVar("HO", coordinates[0]);
         state.setVar("VE", coordinates[1]);
+    }
+
+    public static void gosub210(InterpreterState state) {
+        char input;
+        try {
+            input = (char) state.getInput().readChar();
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+        String ins = "" + input;
+        state.getOutput().print(ins);
+        state.setVar("IN$", ins);
+        state.setVar("IN", Double.valueOf(input));
     }
 
     public static void gosub250(InterpreterState state) {

@@ -6,4 +6,6 @@ public interface BasicInput {
 
     String readLine() throws IOException;
 
+    int readChar() throws IOException;
+
 }

@@ -16,4 +16,9 @@ public class BufferedReaderInput implements BasicInput {
         return br.readLine();
     }
 
+    @Override
+    public int readChar() throws IOException {
+        return br.read();
+    }
+
 }
