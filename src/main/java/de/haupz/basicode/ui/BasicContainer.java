@@ -1,15 +1,18 @@
 package de.haupz.basicode.ui;
 
+import de.haupz.basicode.io.BasicInput;
 import de.haupz.basicode.io.BasicOutput;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Set;
 
-public class BasicContainer extends JComponent implements BasicOutput {
+public class BasicContainer extends JComponent implements BasicInput, BasicOutput {
 
     public static final int C_WIDTH = 24;
 
@@ -46,11 +49,14 @@ public class BasicContainer extends JComponent implements BasicOutput {
 
     private final BufferedImage image;
 
+    private KeyEvent lastKeyTyped = null;
+
     public BasicContainer() {
         super();
         setSize(WIDTH, HEIGHT);
         clearTextBuffer();
         image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+        addKeyListener(makeKeyListener());
     }
 
     public void clearTextBuffer() {
@@ -195,6 +201,50 @@ public class BasicContainer extends JComponent implements BasicOutput {
     @Override
     public Font getFont() {
         return FONT;
+    }
+
+    @Override
+    public String readLine() throws IOException {
+        throw new IllegalStateException("not yet implemented");
+    }
+
+    private final Object keyLock = new Object();
+
+    private final Thread keyThread = new Thread(() -> {
+        synchronized (keyLock) {
+            try {
+                while (lastKeyTyped == null) {
+                    keyLock.wait();
+                }
+            } catch (InterruptedException ie) {
+                throw new IllegalStateException("key thread issue", ie);
+            }
+        }
+        System.err.println("key pressed <" + lastKeyTyped.getKeyChar() + ">");
+    });
+
+    public KeyListener makeKeyListener() {
+        return new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                synchronized (keyLock) {
+                    lastKeyTyped = e;
+                    keyLock.notify();
+                }
+            }
+        };
+    }
+
+    @Override
+    public int readChar() throws IOException {
+        lastKeyTyped = null;
+        keyThread.start();
+        try {
+            keyThread.join();
+        } catch (InterruptedException ie) {
+            throw new IllegalStateException("could not join key thread", ie);
+        }
+        return lastKeyTyped.getKeyChar();
     }
 
 }

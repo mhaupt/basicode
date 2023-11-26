@@ -113,9 +113,7 @@ public class Subroutines {
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
-        String ins = "" + input;
-        state.getOutput().print(ins);
-        state.setVar("IN$", ins);
+        state.setVar("IN$", "" + input);
         state.setVar("IN", Double.valueOf(input));
     }
 
