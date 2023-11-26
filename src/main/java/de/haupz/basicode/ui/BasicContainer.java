@@ -210,18 +210,20 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
 
     private final Object keyLock = new Object();
 
-    private final Thread keyThread = new Thread(() -> {
-        synchronized (keyLock) {
-            try {
-                while (lastKeyTyped == null) {
-                    keyLock.wait();
+    class KeyThread extends Thread {
+        @Override
+        public void run() {
+            synchronized (keyLock) {
+                try {
+                    while (lastKeyTyped == null) {
+                        keyLock.wait();
+                    }
+                } catch (InterruptedException ie) {
+                    throw new IllegalStateException("key thread issue", ie);
                 }
-            } catch (InterruptedException ie) {
-                throw new IllegalStateException("key thread issue", ie);
             }
         }
-        System.err.println("key pressed <" + lastKeyTyped.getKeyChar() + ">");
-    });
+    }
 
     public KeyListener makeKeyListener() {
         return new KeyAdapter() {
@@ -238,6 +240,7 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
     @Override
     public int readChar() throws IOException {
         lastKeyTyped = null;
+        KeyThread keyThread = new KeyThread();
         keyThread.start();
         try {
             keyThread.join();
