@@ -1,1 +1,2 @@
-10 PRINT "Hello, world."
+1000 GOTO 20
+1010 PRINT "Hello, world."

@@ -1,5 +1,6 @@
 package de.haupz.basicode.subroutines;
 
+import de.haupz.basicode.array.BasicArray1D;
 import de.haupz.basicode.interpreter.InterpreterState;
 import de.haupz.basicode.ui.Sound;
 
@@ -75,6 +76,13 @@ public class Subroutines {
 
     private static final Stroke STROKE = new BasicStroke(3);
 
+    private static void setColours(InterpreterState state) {
+        BasicArray1D cc = (BasicArray1D) state.getVar("CC").get();
+        int fg = ((Double) cc.at(0, -1)).intValue();
+        int bg = ((Double) cc.at(1, -1)).intValue();
+        state.getOutput().setColours(fg, bg);
+    }
+
     public static void goto20(InterpreterState state) {
         state.setVar("HO", 0.0);
         state.setVar("VE", 0.0);
@@ -86,6 +94,7 @@ public class Subroutines {
     }
 
     public static void gosub100(InterpreterState state) {
+        setColours(state);
         state.getOutput().textMode();
     }
 
@@ -142,6 +151,7 @@ public class Subroutines {
     }
 
     public static void gosub600(InterpreterState state) {
+        setColours(state);
         state.getOutput().graphicsMode();
         state.setVar("HG", 0);
         state.setVar("VG", 0);
@@ -160,7 +170,8 @@ public class Subroutines {
         checkBoundaries("HO", ho);
         checkBoundaries("VE", ve);
         Graphics2D g2 = (Graphics2D) im.getGraphics();
-        g2.setPaint(Color.YELLOW);
+        setColours(state);
+        g2.setPaint(state.getOutput().getForegroundColour());
         g2.setStroke(STROKE);
         int hg = (int) (im.getWidth() * ho);
         int vg = (int) (im.getHeight() * ve);
@@ -179,7 +190,8 @@ public class Subroutines {
         checkBoundaries("HO", ho);
         checkBoundaries("VE", ve);
         Graphics2D g2 = (Graphics2D) im.getGraphics();
-        g2.setPaint(Color.YELLOW);
+        setColours(state);
+        g2.setPaint(state.getOutput().getForegroundColour());
         g2.setStroke(STROKE);
         int nhg = (int) (im.getWidth() * ho);
         int nvg = (int) (im.getHeight() * ve);
@@ -197,7 +209,8 @@ public class Subroutines {
         checkBoundaries("VE", ve);
         String sr = (String) state.getVar("SR$").get();
         Graphics2D g2 = (Graphics2D) im.getGraphics();
-        g2.setPaint(Color.YELLOW);
+        setColours(state);
+        g2.setPaint(state.getOutput().getForegroundColour());
         g2.setFont(state.getOutput().getFont());
         FontMetrics fm = g2.getFontMetrics();
         int hg = (int) (im.getWidth() * ho);

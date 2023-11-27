@@ -27,4 +27,10 @@ public interface BasicOutput {
 
     default Font getFont() { throw new IllegalStateException("font not supported"); }
 
+    default void setColours(int fg, int bg) { throw new IllegalStateException("colours not supported"); }
+
+    default Color getBackgroundColour() { throw new IllegalStateException("colours not supported"); }
+
+    default Color getForegroundColour() { throw new IllegalStateException("colours not supported"); }
+
 }

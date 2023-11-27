@@ -1,5 +1,7 @@
 package de.haupz.basicode.interpreter;
 
+import de.haupz.basicode.array.ArrayType;
+import de.haupz.basicode.array.BasicArray1D;
 import de.haupz.basicode.ast.ProgramNode;
 import de.haupz.basicode.io.BasicInput;
 import de.haupz.basicode.io.BasicOutput;
@@ -46,6 +48,15 @@ public class InterpreterState {
         this.program = program;
         this.in = in;
         this.out = out;
+        initialiseStandardVariables();
+    }
+
+    private void initialiseStandardVariables() {
+        // colours
+        BasicArray1D cc = new BasicArray1D(ArrayType.NUMBER, 2);
+        cc.setAt(0, -1, 6.0); // foreground: yellow
+        cc.setAt(1, -1, 1.0); // background: blue
+        setVar("CC", cc);
     }
 
     public BasicInput getInput() {

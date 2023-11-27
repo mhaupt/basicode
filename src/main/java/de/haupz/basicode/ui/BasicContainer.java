@@ -1,5 +1,6 @@
 package de.haupz.basicode.ui;
 
+import de.haupz.basicode.interpreter.InterpreterState;
 import de.haupz.basicode.io.BasicInput;
 import de.haupz.basicode.io.BasicOutput;
 
@@ -51,6 +52,23 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
 
     private KeyEvent lastKeyTyped = null;
 
+    private static final Color[] COLOR_MAP = new Color[] {
+            Color.BLACK,
+            Color.BLUE,
+            Color.RED,
+            Color.MAGENTA,
+            Color.GREEN,
+            Color.CYAN,
+            Color.YELLOW,
+            Color.WHITE
+    };
+
+    private static final int N_COLORS = COLOR_MAP.length;
+
+    private Color backgroundColour = COLOR_MAP[1]; // initlally, blue
+
+    private Color foregroundColour = COLOR_MAP[6]; // initially, yellow
+
     public BasicContainer() {
         super();
         setSize(WIDTH, HEIGHT);
@@ -73,7 +91,7 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
         Graphics2D g2 = (Graphics2D) g;
         super.paintComponent(g2);
         if (!isGraphicsMode) {
-            g2.setBackground(Color.BLUE);
+            g2.setBackground(backgroundColour);
             g2.clearRect(0, 0, WIDTH, HEIGHT);
         }
     }
@@ -98,12 +116,12 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
                         }
                         if (end > start) {
                             if (reverseMode) {
-                                g2.setColor(Color.YELLOW);
+                                g2.setColor(foregroundColour);
                                 g2.fillRect(start * C_WIDTH, l * C_HEIGHT, (end - start) * C_WIDTH, C_HEIGHT);
-                                g2.setColor(Color.BLUE);
+                                g2.setColor(backgroundColour);
                                 g2.drawChars(textBuffer[l], start, end - start, start * C_WIDTH, (l + 1) * C_HEIGHT);
                             } else {
-                                g2.setColor(Color.YELLOW);
+                                g2.setColor(foregroundColour);
                                 g2.drawChars(textBuffer[l], start, end - start, start * C_WIDTH, (l + 1) * C_HEIGHT);
                             }
                         }
@@ -111,7 +129,7 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
                         reverseMode = !reverseMode;
                     }
                 } else {
-                    g2.setColor(Color.YELLOW);
+                    g2.setColor(foregroundColour);
                     g2.drawChars(textBuffer[l], 0, COLUMNS, 0, (l + 1) * C_HEIGHT);
                 }
             }
@@ -188,7 +206,7 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
     public void graphicsMode() {
         isGraphicsMode = true;
         Graphics2D g2 = (Graphics2D) image.getGraphics();
-        g2.setBackground(Color.BLUE);
+        g2.setBackground(backgroundColour);
         g2.clearRect(0, 0, WIDTH, HEIGHT);
         repaint();
     }
@@ -248,6 +266,30 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
             throw new IllegalStateException("could not join key thread", ie);
         }
         return lastKeyTyped.getKeyChar();
+    }
+
+    private void ensureColourRange(String name, int c) {
+        if (c < 0 || c >= N_COLORS) {
+            throw new IllegalStateException(name + " colour out of range: " + c);
+        }
+    }
+
+    @Override
+    public void setColours(int fg, int bg) {
+        ensureColourRange("foreground", fg);
+        ensureColourRange("background", bg);
+        foregroundColour = COLOR_MAP[fg];
+        backgroundColour = COLOR_MAP[bg];
+    }
+
+    @Override
+    public Color getBackgroundColour() {
+        return backgroundColour;
+    }
+
+    @Override
+    public Color getForegroundColour() {
+        return foregroundColour;
     }
 
 }
