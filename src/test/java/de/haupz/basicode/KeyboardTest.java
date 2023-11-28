@@ -7,7 +7,7 @@ public class KeyboardTest extends InterpreterTest {
     @Test
     public void testYesNo() {
         testInterpreter("""
-                1000 PRINT "(Y)es/(N)o? ";
+                1000 PRINT "(Y)es/(N)o?";
                 1010 GOSUB 210:PRINT
                 1020 IF IN$="Y" THEN PRINT "Yooooo"
                 1030 IF IN$="N" THEN PRINT "nope"
@@ -15,7 +15,7 @@ public class KeyboardTest extends InterpreterTest {
                 """, """
                 Y
                 """, """
-                (Y)es/(N)o? Y
+                (Y)es/(N)o?
                 Yooooo
                 """);
     }
