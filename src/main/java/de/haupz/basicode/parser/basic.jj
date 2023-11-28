@@ -252,10 +252,14 @@ StatementNode if_statement():
     StatementNode s = null;
 }
 {
-    <IF> e = expression() <THEN>
+    <IF> e = expression()
     (
-        l = lineNumber() { s = new GotoNode(l); }
-    |   s = statement()
+        <THEN>
+        (
+            l = lineNumber() { s = new GotoNode(l); }
+        |   s = statement()
+        )
+    |   <GOTO> l = lineNumber() { s = new GotoNode(l); }
     )
     { return new IfThenNode(e, s); }
 }

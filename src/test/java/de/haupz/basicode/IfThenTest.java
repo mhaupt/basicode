@@ -157,4 +157,16 @@ public class IfThenTest extends InterpreterTest {
                 """);
     }
 
+    @Test
+    public void testIfGoto() {
+        testInterpreter("""
+                1010 A=1
+                1020 IF A=1 GOTO 1040
+                1030 PRINT "not to be seen"
+                1040 PRINT "Hello."
+                """, """
+                Hello.
+                """);
+    }
+
 }
