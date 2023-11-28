@@ -186,4 +186,26 @@ public class ForTest extends InterpreterTest {
                 """);
     }
 
+    @Test
+    public void testMultipleNext() {
+        testInterpreter("""
+                1000 FOR X=0 TO 5
+                1010 IF X=1 THEN PRINT "one":NEXT X:PRINT "one out"
+                1020 IF X=3 THEN PRINT "three":NEXT X:PRINT "three out"
+                1030 IF X=5 THEN PRINT "five":NEXT X:PRINT "five out"
+                1040 PRINT X:IF X<5 THEN NEXT X
+                1050 PRINT "end"
+                """, """
+                0
+                one
+                2
+                three
+                4
+                five
+                five out
+                6
+                end
+                """);
+    }
+
 }
