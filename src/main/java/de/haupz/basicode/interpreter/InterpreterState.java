@@ -57,6 +57,8 @@ public class InterpreterState {
         cc.setAt(0, -1, 6.0); // foreground: yellow
         cc.setAt(1, -1, 1.0); // background: blue
         setVar("CC", cc);
+        // drawing text defaults to using the foreground colour
+        setVar("CN", 0.0);
     }
 
     public BasicInput getInput() {

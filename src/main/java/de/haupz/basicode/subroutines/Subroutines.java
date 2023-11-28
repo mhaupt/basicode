@@ -208,9 +208,11 @@ public class Subroutines {
         checkBoundaries("HO", ho);
         checkBoundaries("VE", ve);
         String sr = (String) state.getVar("SR$").get();
+        int cn = state.getStdVar("CN").intValue();
         Graphics2D g2 = (Graphics2D) im.getGraphics();
         setColours(state);
-        g2.setPaint(state.getOutput().getForegroundColour());
+        Color c = cn == 0 ? state.getOutput().getForegroundColour() : state.getOutput().getBackgroundColour();
+        g2.setPaint(c);
         g2.setFont(state.getOutput().getFont());
         FontMetrics fm = g2.getFontMetrics();
         int hg = (int) (im.getWidth() * ho);
