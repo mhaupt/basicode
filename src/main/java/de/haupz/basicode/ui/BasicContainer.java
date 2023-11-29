@@ -1,6 +1,5 @@
 package de.haupz.basicode.ui;
 
-import de.haupz.basicode.interpreter.InterpreterState;
 import de.haupz.basicode.io.BasicInput;
 import de.haupz.basicode.io.BasicOutput;
 
