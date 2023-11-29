@@ -455,6 +455,7 @@ ExpressionNode builtin_call():
 |   <COS> "(" e = expression() ")" { return new CosNode(e); }
 |   <INT> "(" e = expression() ")" { return new IntNode(e); }
 |   <LEFTS> "(" e = expression() "," f = expression() ")" { return new LeftsNode(e, f); }
+|   <LEN> "(" e = expression() ")" { return new LenNode(e); }
 |   <MIDS> "(" e = expression() "," f = expression() "," g = expression() ")" { return new MidsNode(e, f, g); }
 |   <RIGHTS> "(" e = expression() "," f = expression() ")" { return new RightsNode(e, f); }
 |   <SGN> "(" e = expression() ")" { return new SgnNode(e); }
