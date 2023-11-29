@@ -33,4 +33,6 @@ public interface BasicOutput {
 
     default Color getForegroundColour() { throw new IllegalStateException("colours not supported"); }
 
+    default char getCharAt(int ho, int ve) { return ' '; }
+
 }

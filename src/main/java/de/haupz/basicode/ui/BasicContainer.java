@@ -291,4 +291,9 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
         return foregroundColour;
     }
 
+    @Override
+    public char getCharAt(int ho, int ve) {
+        return textBuffer[ve][ho];
+    }
+
 }

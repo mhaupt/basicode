@@ -126,6 +126,13 @@ public class Subroutines {
         state.setVar("IN", Double.valueOf(input));
     }
 
+    public static void gosub220(InterpreterState state) {
+        int ho = state.getStdVar("HO").intValue();
+        int ve = state.getStdVar("VE").intValue();
+        char c = state.getOutput().getCharAt(ho, ve);
+        state.setVar("IN", Double.valueOf(c));
+    }
+
     public static void gosub250(InterpreterState state) {
         Sound.play(440, 250, 100);
     }
