@@ -237,7 +237,18 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
 
     @Override
     public String readLine() throws IOException {
-        throw new IllegalStateException("not yet implemented");
+        String s = "";
+        char c;
+        do {
+            c = (char) readChar();
+            if (c != '\n') {
+                print("" + c);
+                s += c;
+            } else {
+                println();
+            }
+        } while (c != '\n');
+        return s;
     }
 
     private final Object keyLock = new Object();
