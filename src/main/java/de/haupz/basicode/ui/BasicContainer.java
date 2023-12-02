@@ -11,6 +11,9 @@ import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class BasicContainer extends JComponent implements BasicInput, BasicOutput {
 
@@ -49,7 +52,9 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
 
     private final BufferedImage image;
 
-    private KeyEvent lastKeyTyped = null;
+    private KeyThread keyThread;
+
+    private BlockingQueue<KeyEvent> keyEvents = new LinkedBlockingQueue<>();
 
     private static final Color[] COLOR_MAP = new Color[] {
             Color.BLACK,
@@ -68,12 +73,22 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
 
     private Color foregroundColour = COLOR_MAP[6]; // initially, yellow
 
+    private volatile boolean collectingKeyEvents;
+
     public BasicContainer() {
         super();
         setSize(WIDTH, HEIGHT);
         clearTextBuffer();
         image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+        keyThread = new KeyThread();
+        collectingKeyEvents = true;
+        keyThread.start();
         addKeyListener(makeKeyListener());
+    }
+
+    public void shutdown() {
+        collectingKeyEvents = false;
+        keyThread.interrupt();
     }
 
     public void clearTextBuffer() {
@@ -230,13 +245,16 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
     class KeyThread extends Thread {
         @Override
         public void run() {
-            synchronized (keyLock) {
+            while (collectingKeyEvents) {
                 try {
-                    while (lastKeyTyped == null) {
-                        keyLock.wait();
+                    synchronized (keyLock) {
+                        while (keyEvents.isEmpty()) {
+                            keyLock.wait();
+                        }
                     }
                 } catch (InterruptedException ie) {
-                    throw new IllegalStateException("key thread issue", ie);
+                    Thread.currentThread().interrupt();
+                    break;
                 }
             }
         }
@@ -247,7 +265,7 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
             @Override
             public void keyTyped(KeyEvent e) {
                 synchronized (keyLock) {
-                    lastKeyTyped = e;
+                    keyEvents.add(e);
                     keyLock.notify();
                 }
             }
@@ -256,15 +274,12 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
 
     @Override
     public int readChar() throws IOException {
-        lastKeyTyped = null;
-        KeyThread keyThread = new KeyThread();
-        keyThread.start();
+        keyEvents.clear();
         try {
-            keyThread.join();
+            return keyEvents.take().getKeyChar();
         } catch (InterruptedException ie) {
-            throw new IllegalStateException("could not join key thread", ie);
+            throw new IllegalStateException("could not consume key event", ie);
         }
-        return lastKeyTyped.getKeyChar();
     }
 
     private void ensureColourRange(String name, int c) {

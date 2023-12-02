@@ -48,6 +48,7 @@ public class Main {
 
         run(source);
         System.out.println("done.");
+        bc.shutdown();
         bf.dispose();
     }
 
