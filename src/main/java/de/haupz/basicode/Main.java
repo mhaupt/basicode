@@ -1,6 +1,7 @@
 package de.haupz.basicode;
 
 import de.haupz.basicode.ast.ProgramNode;
+import de.haupz.basicode.interpreter.Configuration;
 import de.haupz.basicode.interpreter.InterpreterState;
 import de.haupz.basicode.io.BasicFrame;
 import de.haupz.basicode.parser.BasicParser;
@@ -20,22 +21,36 @@ public class Main {
 
     static BasicFrame bf;
 
-    public static void run(String code) throws Throwable {
+    public static void run(String code, Configuration configuration) throws Throwable {
         System.out.println("================================================================================");
         System.out.println(code);
         System.out.println("--------------------------------------------------------------------------------");
         final var parser = new BasicParser(new StringReader(code));
         ProgramNode prog = parser.program();
-        InterpreterState state = new InterpreterState(prog, bc, bc);
+        InterpreterState state = new InterpreterState(prog, bc, bc, configuration);
         prog.run(state);
         System.out.println("================================================================================");
     }
 
     public static void main(String[] args) throws Throwable {
-        if (args.length < 1) {
+        boolean nowait = false;
+        boolean nosound = false;
+        boolean hold = false;
+        String filename = "";
+        for (String arg : args) {
+            switch (arg) {
+                case "-nowait" -> nowait = true;
+                case "-nosound" -> nosound = true;
+                case "-hold" -> hold = true;
+                default -> filename = arg;
+            }
+        }
+
+        Configuration configuration = new Configuration(nowait, nosound, hold);
+
+        if (filename.isEmpty()) {
             throw new IllegalStateException("no file given");
         }
-        String filename = args[0];
         Path path = Paths.get(filename);
         List<String> sourceLines = Files.readAllLines(path);
         String source = sourceLines.stream().collect(Collectors.joining("\n"));
@@ -46,7 +61,7 @@ public class Main {
             bf.setVisible(true);
         });
 
-        run(source);
+        run(source, configuration);
         System.out.println("done.");
         bc.shutdown();
         bf.dispose();

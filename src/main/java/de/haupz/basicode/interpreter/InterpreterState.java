@@ -16,6 +16,8 @@ public class InterpreterState {
 
     private final BasicInput in;
 
+    private final Configuration configuration;
+
     private int currentOutputColumn = 0;
 
     private final Map<String, Object> vars = new HashMap<>();
@@ -44,10 +46,11 @@ public class InterpreterState {
 
     private int dataPtr = 0;
 
-    public InterpreterState(ProgramNode program, BasicInput in, BasicOutput out) {
+    public InterpreterState(ProgramNode program, BasicInput in, BasicOutput out, Configuration configuration) {
         this.program = program;
         this.in = in;
         this.out = out;
+        this.configuration = configuration;
         initialiseStandardVariables();
     }
 
@@ -67,6 +70,10 @@ public class InterpreterState {
 
     public BasicOutput getOutput() {
         return out;
+    }
+
+    public Configuration getConfiguration() {
+        return configuration;
     }
 
     public void setVar(String id, Object value) {

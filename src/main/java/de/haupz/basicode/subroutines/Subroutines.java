@@ -134,10 +134,16 @@ public class Subroutines {
     }
 
     public static void gosub250(InterpreterState state) {
+        if (state.getConfiguration().nosound()) {
+            return;
+        }
         Sound.play(440, 250, 100);
     }
 
     public static void gosub400(InterpreterState state) {
+        if (state.getConfiguration().nosound()) {
+            return;
+        }
         int sp = state.getStdVar("SP").intValue();
         int sd = state.getStdVar("SD").intValue();
         int sv = state.getStdVar("SV").intValue();
@@ -148,6 +154,9 @@ public class Subroutines {
     }
 
     public static void gosub450(InterpreterState state) {
+        if (state.getConfiguration().nowait()) {
+            return;
+        }
         // not fully implemented yet: keystrokes will not interrupt
         int sd = state.getStdVar("SD").intValue();
         try {
@@ -231,6 +240,9 @@ public class Subroutines {
     }
 
     public static void goto950(InterpreterState state) {
+        if (state.getConfiguration().hold()) {
+            gosub210(state);
+        }
         state.terminate();
     }
 
