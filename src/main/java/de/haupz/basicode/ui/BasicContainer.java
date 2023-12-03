@@ -276,6 +276,9 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
             public void keyTyped(KeyEvent e) {
                 synchronized (keyLock) {
                     keyEvents.add(e);
+                    if (sleepingThread != null) {
+                        sleepingThread.interrupt();
+                    }
                     keyLock.notify();
                 }
             }
@@ -319,6 +322,13 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
     @Override
     public char getCharAt(int ho, int ve) {
         return textBuffer[ve][ho];
+    }
+
+    private Thread sleepingThread;
+
+    @Override
+    public void setSleepingThread(Thread sleepingThread) {
+        this.sleepingThread = sleepingThread;
     }
 
 }

@@ -157,13 +157,14 @@ public class Subroutines {
         if (state.getConfiguration().nowait()) {
             return;
         }
-        // not fully implemented yet: keystrokes will not interrupt
         int sd = state.getStdVar("SD").intValue();
+        state.getInput().setSleepingThread(Thread.currentThread());
         try {
             Thread.sleep(sd * 100);
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            // ignore
         }
+        state.getInput().setSleepingThread(null);
     }
 
     public static void gosub600(InterpreterState state) {
