@@ -115,6 +115,12 @@ public class Subroutines {
         state.getOutput().printReverse(sr);
     }
 
+    public static void gosub200(InterpreterState state) {
+        char input = (char) state.getInput().lastChar();
+        state.setVar("IN", Double.valueOf(input));
+        state.setVar("IN$", input == 0 ? "" : "" + input);
+    }
+
     public static void gosub210(InterpreterState state) {
         char input;
         try {

@@ -295,6 +295,16 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
         }
     }
 
+    @Override
+    public int lastChar() {
+        synchronized (keyLock) {
+            if (!keyEvents.isEmpty()) {
+                return keyEvents.poll().getKeyChar();
+            }
+            return 0;
+        }
+    }
+
     private void ensureColourRange(String name, int c) {
         if (c < 0 || c >= N_COLORS) {
             throw new IllegalStateException(name + " colour out of range: " + c);

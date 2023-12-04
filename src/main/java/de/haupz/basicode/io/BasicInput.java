@@ -8,6 +8,8 @@ public interface BasicInput {
 
     int readChar() throws IOException;
 
+    default int lastChar() { return 0; }
+
     default void setSleepingThread(Thread sleepingThread) {}
 
 }
