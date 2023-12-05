@@ -1,6 +1,7 @@
 package de.haupz.basicode;
 
 import de.haupz.basicode.ast.StatementNode;
+import de.haupz.basicode.interpreter.Configuration;
 import de.haupz.basicode.interpreter.InterpreterState;
 import de.haupz.basicode.io.BasicInput;
 import de.haupz.basicode.io.BasicOutput;
@@ -25,7 +26,7 @@ public abstract class StatementTest {
         BasicOutput out = new PrintStreamOutput(ps);
         BufferedReader br = new BufferedReader(new StringReader(input));
         BasicInput in = new BufferedReaderInput(br);
-        state = new InterpreterState(null, in, out);
+        state = new InterpreterState(null, in, out, new Configuration());
     }
 
     void run(String source) {

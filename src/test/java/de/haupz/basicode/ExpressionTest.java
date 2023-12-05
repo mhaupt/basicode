@@ -1,6 +1,7 @@
 package de.haupz.basicode;
 
 import de.haupz.basicode.ast.ExpressionNode;
+import de.haupz.basicode.interpreter.Configuration;
 import de.haupz.basicode.interpreter.InterpreterState;
 import de.haupz.basicode.parser.BasicParser;
 import de.haupz.basicode.parser.ParseException;
@@ -16,7 +17,7 @@ public abstract class ExpressionTest {
 
     @BeforeEach
     void setUp() {
-        state = new InterpreterState(null, null, null);
+        state = new InterpreterState(null, null, null, new Configuration());
     }
 
     ExpressionNode parseExpression(String expression) {
