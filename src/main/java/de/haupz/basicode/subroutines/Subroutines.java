@@ -15,6 +15,7 @@ import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 public class Subroutines {
 
@@ -73,6 +74,8 @@ public class Subroutines {
             throw new IllegalStateException("error in gosub " + target, t);
         }
     }
+
+    private static final Random RND = new Random();
 
     private static final Stroke STROKE = new BasicStroke(3);
 
@@ -144,6 +147,10 @@ public class Subroutines {
             return;
         }
         Sound.play(440, 250, 100);
+    }
+
+    public static void gosub260(InterpreterState state) {
+        state.setVar("RV", RND.nextDouble());
     }
 
     public static void gosub400(InterpreterState state) {
