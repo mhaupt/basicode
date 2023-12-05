@@ -1,6 +1,7 @@
 package de.haupz.basicode.subroutines;
 
 import de.haupz.basicode.array.BasicArray1D;
+import de.haupz.basicode.ast.PrintNode;
 import de.haupz.basicode.interpreter.InterpreterState;
 import de.haupz.basicode.ui.Sound;
 
@@ -160,6 +161,12 @@ public class Subroutines {
     public static void gosub280(InterpreterState state) {
         int fr = state.getStdVar("FR").intValue();
         state.getInput().toggleAcceptStopKey(fr == 0);
+    }
+
+    public static void gosub300(InterpreterState state) {
+        double sr = state.getStdVar("SR").doubleValue();
+        String str = PrintNode.DECIMAL_FORMAT.format(sr);
+        state.setVar("SR$", str);
     }
 
     public static void gosub400(InterpreterState state) {

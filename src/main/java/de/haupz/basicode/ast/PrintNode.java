@@ -9,7 +9,7 @@ import java.util.Locale;
 
 public class PrintNode extends StatementNode {
 
-    private static final DecimalFormat DECIMAL_FORMAT =
+    public static final DecimalFormat DECIMAL_FORMAT =
             new DecimalFormat("#.#########", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
 
     public enum ElementType { EXPRESSION, TAB, SEPARATOR; }
