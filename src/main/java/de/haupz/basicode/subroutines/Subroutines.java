@@ -153,6 +153,10 @@ public class Subroutines {
         state.setVar("RV", RND.nextDouble());
     }
 
+    public static void gosub270(InterpreterState state) {
+        state.setVar("FR", Double.valueOf(Runtime.getRuntime().freeMemory()));
+    }
+
     public static void gosub400(InterpreterState state) {
         if (state.getConfiguration().nosound()) {
             return;
