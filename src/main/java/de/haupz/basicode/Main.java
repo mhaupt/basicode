@@ -28,6 +28,7 @@ public class Main {
         final var parser = new BasicParser(new StringReader(code));
         ProgramNode prog = parser.program();
         InterpreterState state = new InterpreterState(prog, bc, bc, configuration);
+        bc.registerStopKeyHandler(() -> state.terminate());
         prog.run(state);
         System.out.println("================================================================================");
     }

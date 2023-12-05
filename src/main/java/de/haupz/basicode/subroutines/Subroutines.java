@@ -157,6 +157,11 @@ public class Subroutines {
         state.setVar("FR", Double.valueOf(Runtime.getRuntime().freeMemory()));
     }
 
+    public static void gosub280(InterpreterState state) {
+        int fr = state.getStdVar("FR").intValue();
+        state.getInput().toggleAcceptStopKey(fr == 0);
+    }
+
     public static void gosub400(InterpreterState state) {
         if (state.getConfiguration().nosound()) {
             return;

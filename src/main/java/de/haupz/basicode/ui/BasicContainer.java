@@ -2,6 +2,7 @@ package de.haupz.basicode.ui;
 
 import de.haupz.basicode.io.BasicInput;
 import de.haupz.basicode.io.BasicOutput;
+import de.haupz.basicode.io.StopKeyHandler;
 
 import javax.swing.*;
 import java.awt.*;
@@ -73,6 +74,10 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
     private Color foregroundColour = COLOR_MAP[6]; // initially, yellow
 
     private volatile boolean collectingKeyEvents;
+
+    private boolean acceptStopKey = true;
+
+    private StopKeyHandler stopKeyHandler;
 
     public BasicContainer() {
         super();
@@ -276,6 +281,9 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
             public void keyTyped(KeyEvent e) {
                 synchronized (keyLock) {
                     keyEvents.add(e);
+                    if (acceptStopKey && e.getKeyChar() == 27) {
+                        stopKeyHandler.stopKeyPressed();
+                    }
                     if (sleepingThread != null) {
                         sleepingThread.interrupt();
                     }
@@ -339,6 +347,16 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
     @Override
     public void setSleepingThread(Thread sleepingThread) {
         this.sleepingThread = sleepingThread;
+    }
+
+    @Override
+    public void toggleAcceptStopKey(boolean acceptStopKey) {
+        this.acceptStopKey = acceptStopKey;
+    }
+
+    @Override
+    public void registerStopKeyHandler(StopKeyHandler stopKeyHandler) {
+        this.stopKeyHandler = stopKeyHandler;
     }
 
 }
