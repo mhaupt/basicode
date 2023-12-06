@@ -205,6 +205,11 @@ public class Subroutines {
         state.setVar("SR$", s);
     }
 
+    public static void gosub330(InterpreterState state) {
+        String srs = (String) state.getVar("SR$").get();
+        state.setVar("SR$", srs.toUpperCase());
+    }
+
     public static void gosub400(InterpreterState state) {
         if (state.getConfiguration().nosound()) {
             return;
