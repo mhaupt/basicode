@@ -13,10 +13,9 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.*;
 
 public class Subroutines {
 
@@ -163,10 +162,47 @@ public class Subroutines {
         state.getInput().toggleAcceptStopKey(fr == 0);
     }
 
+    private static String fill(int length, char c) {
+        char[] a = new char[length];
+        Arrays.fill(a, c);
+        return new String(a);
+    }
+
     public static void gosub300(InterpreterState state) {
         double sr = state.getStdVar("SR").doubleValue();
         String str = PrintNode.DECIMAL_FORMAT.format(sr);
         state.setVar("SR$", str);
+    }
+
+    private static boolean cannotDisplay(double sr, int cn, int ct) {
+        int intDigits = (int) (Math.log10(Math.abs(sr)) + 1);
+        int totalDigits = intDigits + cn;
+        if (totalDigits > 9) {
+            return false;
+        }
+        int sign = sr < 0 ? 1 : 0; // negative number -> need to take the sign into account
+        int decimalPoint = cn > 0 ? 1 : 0; // fractional digits expected -> need to count the decimal point
+        return sign + intDigits + decimalPoint + cn > ct;
+    }
+
+    public static void gosub310(InterpreterState state) {
+        double sr = state.getStdVar("SR").doubleValue();
+        int cn = state.getStdVar("CN").intValue();
+        int ct = state.getStdVar("CT").intValue();
+        String s;
+        if (cannotDisplay(sr, cn, ct)) {
+            s = fill(ct, '*');
+        } else {
+            String fmt = "#";
+            if (cn > 0) {
+                fmt += "." + fill(cn, '#');
+            }
+            s = new DecimalFormat(fmt, DecimalFormatSymbols.getInstance(Locale.ENGLISH)).format(sr);
+        }
+        if (s.length() < ct) {
+            s = fill(ct - s.length(), ' ') + s;
+        }
+        state.setVar("SR$", s);
     }
 
     public static void gosub400(InterpreterState state) {
