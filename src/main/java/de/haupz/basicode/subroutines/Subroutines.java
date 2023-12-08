@@ -1,7 +1,6 @@
 package de.haupz.basicode.subroutines;
 
 import de.haupz.basicode.array.BasicArray1D;
-import de.haupz.basicode.ast.PrintNode;
 import de.haupz.basicode.interpreter.InterpreterState;
 import de.haupz.basicode.ui.Sound;
 
@@ -168,9 +167,16 @@ public class Subroutines {
         return new String(a);
     }
 
+    private static String decimalFormat(int decimalPlaces) {
+        return "#" + (decimalPlaces > 0 ? "." + fill(decimalPlaces, '#') : "");
+    }
+
+    private static final DecimalFormat STANDARD_DECIMAL_FORMAT =
+            new DecimalFormat(decimalFormat(9), DecimalFormatSymbols.getInstance(Locale.ENGLISH));
+
     public static void gosub300(InterpreterState state) {
         double sr = state.getStdVar("SR").doubleValue();
-        String str = PrintNode.DECIMAL_FORMAT.format(sr);
+        String str = STANDARD_DECIMAL_FORMAT.format(sr);
         state.setVar("SR$", str);
     }
 
@@ -193,11 +199,7 @@ public class Subroutines {
         if (cannotDisplay(sr, cn, ct)) {
             s = fill(ct, '*');
         } else {
-            String fmt = "#";
-            if (cn > 0) {
-                fmt += "." + fill(cn, '#');
-            }
-            s = new DecimalFormat(fmt, DecimalFormatSymbols.getInstance(Locale.ENGLISH)).format(sr);
+            s = new DecimalFormat(decimalFormat(cn), DecimalFormatSymbols.getInstance(Locale.ENGLISH)).format(sr);
         }
         if (s.length() < ct) {
             s = fill(ct - s.length(), ' ') + s;
