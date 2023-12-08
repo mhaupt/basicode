@@ -14,10 +14,10 @@ public class SubroutineTest extends InterpreterTest {
                 1040 PRINT VG
                 1050 PRINT SV
                 """, """
-                0
-                0
-                0
-                0
+                39
+                24
+                320
+                200
                 15
                 """);
     }
