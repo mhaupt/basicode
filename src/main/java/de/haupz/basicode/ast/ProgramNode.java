@@ -46,13 +46,12 @@ public class ProgramNode extends BasicNode {
             } catch (Exception e) {
                 Stack<Integer> stack = state.getCallStack();
                 String stackDump = "";
-                if (stack.isEmpty()) {
-                    LineAndStatement las = statementIndexToLineNumberAndStatement.get(state.getStatementIndex());
-                    stackDump = String.format("at line %d, statement %d", las.line, las.statement);
-                } else {
-                    stackDump = stack.reversed().stream().map(stmt -> {
+                LineAndStatement las = statementIndexToLineNumberAndStatement.get(state.getStatementIndex());
+                stackDump = String.format("at line %d, statement %d", las.line, las.statement);
+                if (!stack.isEmpty()) {
+                    stackDump += stack.reversed().stream().map(stmt -> {
                         LineAndStatement sdlas = statementIndexToLineNumberAndStatement.get(stmt - 1);
-                        return String.format("at line %d, statement %d", sdlas.line, sdlas.statement);
+                        return String.format("\nat line %d, statement %d", sdlas.line, sdlas.statement);
                     }).collect(Collectors.joining("\n"));
                 }
                 throw new IllegalStateException(stackDump, e);
