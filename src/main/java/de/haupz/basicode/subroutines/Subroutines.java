@@ -86,10 +86,10 @@ public class Subroutines {
     }
 
     public static void goto20(InterpreterState state) {
-        state.setVar("HO", 0.0);
-        state.setVar("VE", 0.0);
-        state.setVar("HG", 0);
-        state.setVar("VG", 0);
+        state.setVar("HO", 39.0);
+        state.setVar("VE", 24.0);
+        state.setVar("HG", 320.0);
+        state.setVar("VG", 200.0);
         state.setVar("SV", 15);
         state.setLineJumpTarget(1010);
         state.requestLineJump();
