@@ -169,7 +169,7 @@ public class Subroutines {
         state.setVar("VE", 24.0);
         state.setVar("HG", 320.0);
         state.setVar("VG", 200.0);
-        state.setVar("SV", 15);
+        state.setVar("SV", 15.0);
         state.setLineJumpTarget(1010);
         state.requestLineJump();
     }
