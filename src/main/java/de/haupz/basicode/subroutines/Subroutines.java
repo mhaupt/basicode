@@ -242,8 +242,8 @@ public class Subroutines {
     public static void gosub600(InterpreterState state) {
         setColours(state);
         state.getOutput().graphicsMode();
-        state.setVar("HG", 0.0);
-        state.setVar("VG", 0.0);
+        state.setVar("HG", 320.0);
+        state.setVar("VG", 200.0);
     }
 
     private static void checkBoundaries(String name, double v) {
@@ -262,11 +262,11 @@ public class Subroutines {
         setColours(state);
         g2.setPaint(state.getOutput().getForegroundColour());
         g2.setStroke(STROKE);
-        int hg = (int) (im.getWidth() * ho);
-        int vg = (int) (im.getHeight() * ve);
-        g2.drawLine(hg, vg, hg, vg);
-        state.setVar("HG", Double.valueOf(hg));
-        state.setVar("VG", Double.valueOf(vg));
+        double hg = im.getWidth() * ho;
+        double vg = im.getHeight() * ve;
+        g2.drawLine((int) hg, (int) vg, (int) hg, (int) vg);
+        state.setVar("HG", hg);
+        state.setVar("VG", vg);
         state.getOutput().flush();
     }
 
@@ -274,19 +274,19 @@ public class Subroutines {
         BufferedImage im = state.getOutput().getImage();
         double ho = state.getStdVar("HO").doubleValue();
         double ve = state.getStdVar("VE").doubleValue();
-        int hg = state.getStdVar("HG").intValue();
-        int vg = state.getStdVar("VG").intValue();
+        double hg = state.getStdVar("HG").doubleValue();
+        double vg = state.getStdVar("VG").doubleValue();
         checkBoundaries("HO", ho);
         checkBoundaries("VE", ve);
         Graphics2D g2 = (Graphics2D) im.getGraphics();
         setColours(state);
         g2.setPaint(state.getOutput().getForegroundColour());
         g2.setStroke(STROKE);
-        int nhg = (int) (im.getWidth() * ho);
-        int nvg = (int) (im.getHeight() * ve);
-        g2.drawLine(hg, vg, nhg, nvg);
-        state.setVar("HG", Double.valueOf(nhg));
-        state.setVar("VG", Double.valueOf(nvg));
+        double nhg = im.getWidth() * ho;
+        double nvg = im.getHeight() * ve;
+        g2.drawLine((int) hg, (int) vg, (int) nhg, (int) nvg);
+        state.setVar("HG", nhg);
+        state.setVar("VG", nvg);
         state.getOutput().flush();
     }
 
@@ -304,11 +304,11 @@ public class Subroutines {
         g2.setPaint(c);
         g2.setFont(state.getOutput().getFont());
         FontMetrics fm = g2.getFontMetrics();
-        int hg = (int) (im.getWidth() * ho);
-        int vg = (int) (im.getHeight() * ve);
-        g2.drawString(sr, hg, fm.getHeight() + vg);
-        state.setVar("HG", Double.valueOf(hg));
-        state.setVar("VG", Double.valueOf(vg));
+        double hg = im.getWidth() * ho;
+        double vg = im.getHeight() * ve;
+        g2.drawString(sr, (int) hg, fm.getHeight() + (int) vg);
+        state.setVar("HG", hg);
+        state.setVar("VG", vg);
         state.getOutput().flush();
     }
 
