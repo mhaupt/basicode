@@ -244,6 +244,7 @@ public class Subroutines {
         state.getOutput().graphicsMode();
         state.setVar("HG", 320.0);
         state.setVar("VG", 200.0);
+        state.setGraphicsCursor(0.0, 0.0);
     }
 
     private static void checkBoundaries(String name, double v) {
@@ -262,11 +263,10 @@ public class Subroutines {
         setColours(state);
         g2.setPaint(state.getOutput().getForegroundColour());
         g2.setStroke(STROKE);
-        double hg = im.getWidth() * ho;
-        double vg = im.getHeight() * ve;
-        g2.drawLine((int) hg, (int) vg, (int) hg, (int) vg);
-        state.setVar("HG", hg);
-        state.setVar("VG", vg);
+        double h = im.getWidth() * ho;
+        double v = im.getHeight() * ve;
+        g2.drawLine((int) h, (int) v, (int) h, (int) v);
+        state.setGraphicsCursor(h, v);
         state.getOutput().flush();
     }
 
@@ -274,19 +274,17 @@ public class Subroutines {
         BufferedImage im = state.getOutput().getImage();
         double ho = state.getStdVar("HO").doubleValue();
         double ve = state.getStdVar("VE").doubleValue();
-        double hg = state.getStdVar("HG").doubleValue();
-        double vg = state.getStdVar("VG").doubleValue();
+        InterpreterState.GraphicsCursor gc = state.getGraphicsCursor();
         checkBoundaries("HO", ho);
         checkBoundaries("VE", ve);
         Graphics2D g2 = (Graphics2D) im.getGraphics();
         setColours(state);
         g2.setPaint(state.getOutput().getForegroundColour());
         g2.setStroke(STROKE);
-        double nhg = im.getWidth() * ho;
-        double nvg = im.getHeight() * ve;
-        g2.drawLine((int) hg, (int) vg, (int) nhg, (int) nvg);
-        state.setVar("HG", nhg);
-        state.setVar("VG", nvg);
+        double nh = im.getWidth() * ho;
+        double nv = im.getHeight() * ve;
+        g2.drawLine((int) gc.h(), (int) gc.v(), (int) nh, (int) nv);
+        state.setGraphicsCursor(nh, nv);
         state.getOutput().flush();
     }
 
@@ -304,11 +302,10 @@ public class Subroutines {
         g2.setPaint(c);
         g2.setFont(state.getOutput().getFont());
         FontMetrics fm = g2.getFontMetrics();
-        double hg = im.getWidth() * ho;
-        double vg = im.getHeight() * ve;
-        g2.drawString(sr, (int) hg, fm.getHeight() + (int) vg);
-        state.setVar("HG", hg);
-        state.setVar("VG", vg);
+        double h = im.getWidth() * ho;
+        double v = im.getHeight() * ve;
+        g2.drawString(sr, (int) h, fm.getHeight() + (int) v);
+        state.setGraphicsCursor(h, v);
         state.getOutput().flush();
     }
 
