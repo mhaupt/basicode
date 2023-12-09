@@ -5,6 +5,9 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 
+/**
+ * The {@code Sound} class provides basic routines for playing audio.
+ */
 public class Sound {
 
     public static final float SAMPLE_FREQUENCY = 44100.0f;
@@ -25,6 +28,7 @@ public class Sound {
 
     /**
      * Play a sound with the given parameters.
+     *
      * @param frequency in Hz.
      * @param duration in milliseconds.
      * @param volume from 0 to 100.
