@@ -219,12 +219,25 @@ public class Subroutines {
         state.getOutput().printReverse(sr);
     }
 
+    /**
+     * {@code GOSUB 200}: if, at the time of the execution of this subroutine, a key is pressed, return its character
+     * code in the {@code IN} variable; and the corresponding character, in {@code IN$}. This subroutine is
+     * non-blocking.
+     *
+     * @param state the interpreter state.
+     */
     public static void gosub200(InterpreterState state) {
         char input = (char) state.getInput().lastChar();
         state.setVar("IN", Double.valueOf(Character.toUpperCase(input)));
         state.setVar("IN$", input == 0 ? "" : "" + input);
     }
 
+    /**
+     * {@code GOSUB 210}: wait for the next key to be pressed. The key's character code will be returned in the
+     * {@code IN} variable; and the corresponding character, in {@code IN$}. This subroutine is blocking.
+     *
+     * @param state the interpreter state.
+     */
     public static void gosub210(InterpreterState state) {
         char input;
         try {
@@ -236,6 +249,13 @@ public class Subroutines {
         state.setVar("IN", Double.valueOf(Character.toUpperCase(input)));
     }
 
+    /**
+     * {@code GOSUB 220}: in text mode, return, in the {@code IN} variable, the code of the character currently
+     * displayed at the horizontal and vertical position indicated by {@code HO} and {@code VE}. For an empty position
+     * (one where no character is visible), {@code IN} will contain 32 (to represent a space character).
+     *
+     * @param state the interpreter state.
+     */
     public static void gosub220(InterpreterState state) {
         int ho = state.getStdVar("HO").intValue();
         int ve = state.getStdVar("VE").intValue();
@@ -243,6 +263,13 @@ public class Subroutines {
         state.setVar("IN", Double.valueOf(Character.toUpperCase(c)));
     }
 
+    /**
+     * {@code GOSUB 250}: beep. Play a 440 Hz tone for 250 ms at full volume. This can be disabled by passing the
+     * {@code -nosound} command line argument, or by using the
+     * {@link de.haupz.basicode.interpreter.Configuration#nosound nosound} interpreter configuration.
+     *
+     * @param state the interpreter state.
+     */
     public static void gosub250(InterpreterState state) {
         if (state.getConfiguration().nosound()) {
             return;
@@ -250,38 +277,90 @@ public class Subroutines {
         Sound.play(440, 250, 100);
     }
 
+    /**
+     * {@code GOSUB 260}: return, in the {@code RV} variable, a random number in the range 0 <= {@code RV} < 1.
+     *
+     * @param state the interpreter state.
+     */
     public static void gosub260(InterpreterState state) {
         state.setVar("RV", RND.nextDouble());
     }
 
+    /**
+     * <p>{@code GOSUB 270}: return, in the {@code FR} variable, the amount of free memory in bytes.</p>
+     *
+     * <p><b>Implementation note:</b> The free memory returned by this implementation is that of available memory on the
+     * Java heap. For expectable BASICODE usage, it will usually be a ridiculously large number, as memory can be
+     * expected to be ample on machines that run this BASICODE environment.</p>
+     *
+     * @param state the interpreter state.
+     */
     public static void gosub270(InterpreterState state) {
         state.setVar("FR", Double.valueOf(Runtime.getRuntime().freeMemory()));
     }
 
+    /**
+     * {@code GOSUB 280}: control the BASICODE interpreter's sensitivity to the escape key. Pressing the escape key will
+     * terminate execution by default. If {@code FR} is 1 when this subroutine is called, the escape key will be ignored
+     * instead. If {@code FR} is 0 when this subroutine is called, the interpreter will react to the escape key again.
+     *
+     * @param state the interpreter state.
+     */
     public static void gosub280(InterpreterState state) {
         int fr = state.getStdVar("FR").intValue();
         state.getInput().toggleAcceptStopKey(fr == 0);
     }
 
+    /**
+     * Helper method: create a string of the given length, filled with the given character.
+     *
+     * @param length the desired length of the string.
+     * @param c the character to fill the string with.
+     * @return a string of the given length, containing the given character {@code length} times.
+     */
     private static String fill(int length, char c) {
         char[] a = new char[length];
         Arrays.fill(a, c);
         return new String(a);
     }
 
+    /**
+     * Helper method: create a decimal formatter string with the given amount of decimal places.
+     *
+     * @param decimalPlaces the desired number of decimal places.
+     * @return a decimal formatter string with the number of decimal places as given in {@code decimalPlaces}.
+     */
     private static String decimalFormat(int decimalPlaces) {
         return "#" + (decimalPlaces > 0 ? "." + fill(decimalPlaces, '#') : "");
     }
 
+    /**
+     * The standard format for printing decimal numbers.
+     */
     private static final DecimalFormat STANDARD_DECIMAL_FORMAT =
             new DecimalFormat(decimalFormat(9), DecimalFormatSymbols.getInstance(Locale.ENGLISH));
 
+    /**
+     * {@code GOSUB 300}: convert a number passed in the {@code SR} variable to a string returned in {@code SR$}.
+     *
+     * @param state the interpreter state.
+     */
     public static void gosub300(InterpreterState state) {
         double sr = state.getStdVar("SR").doubleValue();
         String str = STANDARD_DECIMAL_FORMAT.format(sr);
         state.setVar("SR$", str);
     }
 
+    /**
+     * Helper method: determine whether a number can be displayed with a given amount of decimal places in a given
+     * number of characters.
+     *
+     * @param sr the number to be displayed.
+     * @param cn the number of decimal places to display.
+     * @param ct the total number of characters, including sign and decimal point, that can be used to display
+     * {@code sr}.
+     * @return {@code true} if the number does <em>not</em> fit in the given number of characters.
+     */
     private static boolean cannotDisplay(double sr, int cn, int ct) {
         int intDigits = (int) (Math.log10(Math.abs(sr)) + 1);
         int totalDigits = intDigits + cn;
@@ -293,6 +372,14 @@ public class Subroutines {
         return sign + intDigits + decimalPoint + cn > ct;
     }
 
+    /**
+     * {@code GOSUB 310}: convert a number passed in {@code SR} to a string returned in {@code SR$}, using {@code CN}
+     * decimal places, and using <em>at most</em> {@code CT} characters. If the number, including sign and decimal
+     * point, does not fit in that many characters, {@code SR$} will still be {@code CT} characters long, but will be
+     * filled with {@code *} characters.
+     *
+     * @param state the interpreter state.
+     */
     public static void gosub310(InterpreterState state) {
         double sr = state.getStdVar("SR").doubleValue();
         int cn = state.getStdVar("CN").intValue();
@@ -309,11 +396,31 @@ public class Subroutines {
         state.setVar("SR$", s);
     }
 
+    /**
+     * {@code GOSUB 330}: convert all lower-case characters in {@code SR$} to upper-case characters.
+     *
+     * @param state the interpreter state.
+     */
     public static void gosub330(InterpreterState state) {
         String srs = (String) state.getVar("SR$").get();
         state.setVar("SR$", srs.toUpperCase());
     }
 
+    /**
+     * <p>{@code GOSUB 400}: play a sound. The frequency is controlled by {@code SP}; the duration, by {@code SD}; and the
+     * volume, by {@code SV}. The subroutine is blocking.</p>
+     *
+     * <p>The roles of the parameters are as follows:<ul>
+     *     <li>{@code SP} can be in the range 0 <= {@code SP} <= 127. A value of 69 indicates a pitch of 440 Hz (tone
+     *     "A"). A difference of 1 in {@code SP} maps to a half-tone in pitch.</li>
+     *     <li>{@code SD} is a value in the range 1 <= {@code SD} <= 255, and is interpreted as a multiple of 0.1
+     *     seconds.</li>
+     *     <li>{@code SV}, with 0 <= {@code SV} <= 15, indicates the volume, where 0 is inaudible, and 15 is the
+     *     loudest.</li>
+     * </ul></p>
+     *
+     * @param state the interpreter state.
+     */
     public static void gosub400(InterpreterState state) {
         if (state.getConfiguration().nosound()) {
             return;
@@ -327,6 +434,11 @@ public class Subroutines {
         Sound.play(frequency, duration, volume);
     }
 
+    /**
+     * {@code GOSUB 450}: wait for {@code SD} times 0.1 seconds, or until a key is pressed.
+     *
+     * @param state the interpreter state.
+     */
     public static void gosub450(InterpreterState state) {
         if (state.getConfiguration().nowait()) {
             return;
@@ -341,6 +453,12 @@ public class Subroutines {
         state.getInput().setSleepingThread(null);
     }
 
+    /**
+     * {@code GOSUB 600}: switch to graphics mode, and clear the screen, filling it with the background colour as set in
+     * {@code CC{1}}. The internal graphics cursor is initialised to (0,0), which is the upper left corner of the view.
+     *
+     * @param state the interpreter state.
+     */
     public static void gosub600(InterpreterState state) {
         setColours(state);
         state.getOutput().graphicsMode();
@@ -349,12 +467,26 @@ public class Subroutines {
         state.setGraphicsCursor(0.0, 0.0);
     }
 
+    /**
+     * Helper method: check whether a number {@code v} is in the expected range for graphics operations, i.e., 0 <=
+     * {@code v} <= 1, and throw an exception if the number is outside that range.
+     *
+     * @param name the name of the number, for debugging purposes.
+     * @param v the number to check.
+     */
     private static void checkBoundaries(String name, double v) {
         if (v < 0.0 || v > 1.0) {
             throw new IllegalStateException("out of bounds: " + name + " = " + v);
         }
     }
 
+    /**
+     * {@code GOSUB 620}: in graphics mode, paint a dot at the horizontal and vertical position indicated by {@code HO}
+     * and {@code VE}. Both must be in the {@linkplain Subroutines#checkBoundaries(String, double) correct range} for
+     * graphics operations. The dot's colour will be the one set in {@code CC(0)}.
+     *
+     * @param state the interpreter state.
+     */
     public static void gosub620(InterpreterState state) {
         BufferedImage im = state.getOutput().getImage();
         double ho = state.getStdVar("HO").doubleValue();
@@ -372,6 +504,15 @@ public class Subroutines {
         state.getOutput().flush();
     }
 
+    /**
+     * {@code GOSUB 630}: in graphics mode, draw a line from the current graphics cursor position to the horizontal and
+     * vertical position indicated by the {@code HO} and {@code VE} variables. Both must be in the
+     * {@linkplain Subroutines#checkBoundaries(String, double) correct range} for graphics operations. The line's colour
+     * will be the one set in {@code CC(0)}. The internal graphics cursor will be updated to the position indicated by
+     * {@code HO} and {@code VE}.
+     *
+     * @param state the interpreter state.
+     */
     public static void gosub630(InterpreterState state) {
         BufferedImage im = state.getOutput().getImage();
         double ho = state.getStdVar("HO").doubleValue();
@@ -390,6 +531,15 @@ public class Subroutines {
         state.getOutput().flush();
     }
 
+    /**
+     * {@code GOSUB 650}: in graphics mode, draw a text string passed in {@code SR$} at the horizontal and vertical
+     * position indicated by the {@code HO} and {@code VE} variables. This position is the top left corner of the text
+     * area. Both variables must be in the {@linkplain Subroutines#checkBoundaries(String, double) correct range} for
+     * graphics operations. The text's colour will be the one set in {@code CC(0)}. Afterwards, the internal graphics
+     * cursor will be positioned at the coordinates indicated by {@code HO} and {@code VE}.
+     *
+     * @param state the interpreter state.
+     */
     public static void gosub650(InterpreterState state) {
         BufferedImage im = state.getOutput().getImage();
         double ho = state.getStdVar("HO").doubleValue();
