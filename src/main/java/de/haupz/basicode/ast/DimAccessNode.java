@@ -12,7 +12,7 @@ public class DimAccessNode extends ExpressionNode {
     private final ExpressionNode dim2;
 
     public DimAccessNode(String id, ExpressionNode dim1, ExpressionNode dim2) {
-        this.getArray = new VarNode(id);
+        this.getArray = new VarNode(id, true);
         this.dim1 = dim1;
         this.dim2 = dim2;
     }

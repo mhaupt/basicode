@@ -6,13 +6,18 @@ public class VarNode extends ExpressionNode {
 
     private final String id;
 
-    public VarNode(String id) {
+    private final boolean isArray;
+
+    public VarNode(String id, boolean isArray) {
         this.id = id;
+        this.isArray = isArray;
     }
 
     @Override
     public Object eval(InterpreterState state) {
-        return state.getVar(id).orElseThrow(() -> new IllegalStateException("no such variable: " + id));
+        return isArray ?
+                state.getArray(id).orElseThrow(() -> new IllegalStateException("no such array: " + id)) :
+                state.getVar(id).orElseThrow(() -> new IllegalStateException("no such variable: " + id));
     }
 
 }

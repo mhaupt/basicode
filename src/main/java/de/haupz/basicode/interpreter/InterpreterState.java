@@ -1,6 +1,7 @@
 package de.haupz.basicode.interpreter;
 
 import de.haupz.basicode.array.ArrayType;
+import de.haupz.basicode.array.BasicArray;
 import de.haupz.basicode.array.BasicArray1D;
 import de.haupz.basicode.ast.ProgramNode;
 import de.haupz.basicode.io.BasicInput;
@@ -21,6 +22,8 @@ public class InterpreterState {
     private int currentOutputColumn = 0;
 
     private final Map<String, Object> vars = new HashMap<>();
+
+    private final Map<String, BasicArray> arrays = new HashMap<>();
 
     private final Stack<Integer> callStack = new Stack<>();
 
@@ -59,7 +62,7 @@ public class InterpreterState {
         BasicArray1D cc = new BasicArray1D(ArrayType.NUMBER, 2);
         cc.setAt(0, -1, 6.0); // foreground: yellow
         cc.setAt(1, -1, 1.0); // background: blue
-        setVar("CC", cc);
+        setArray("CC", cc);
         // drawing text defaults to using the foreground colour
         setVar("CN", 0.0);
     }
@@ -86,6 +89,14 @@ public class InterpreterState {
 
     public Number getStdVar(String id) {
         return (Number) vars.get(id);
+    }
+
+    public void setArray(String id, BasicArray value) {
+        arrays.put(id, value);
+    }
+
+    public Optional<BasicArray> getArray(String id) {
+        return Optional.ofNullable(arrays.get(id));
     }
 
     public void removeVar(String id) {

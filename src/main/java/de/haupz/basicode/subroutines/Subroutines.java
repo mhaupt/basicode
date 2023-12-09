@@ -79,7 +79,7 @@ public class Subroutines {
     private static final Stroke STROKE = new BasicStroke(3);
 
     private static void setColours(InterpreterState state) {
-        BasicArray1D cc = (BasicArray1D) state.getVar("CC").get();
+        BasicArray1D cc = (BasicArray1D) state.getArray("CC").get();
         int fg = ((Double) cc.at(0, -1)).intValue();
         int bg = ((Double) cc.at(1, -1)).intValue();
         state.getOutput().setColours(fg, bg);

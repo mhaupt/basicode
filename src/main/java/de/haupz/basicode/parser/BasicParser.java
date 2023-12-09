@@ -1149,7 +1149,7 @@ e = new PowerNode(e, f);
       jj_la1[44] = jj_gen;
       ;
     }
-{if ("" != null) return new VarNode(t.image);}
+{if ("" != null) return new VarNode(t.image, false);}
     throw new Error("Missing return statement in function");
 }
 

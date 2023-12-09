@@ -438,7 +438,7 @@ ExpressionNode varOrDimAccess():
 }
 {
     t = <IDENTIFIER> ( "(" e = expression() ("," f = expression())? ")" { return new DimAccessNode(t.image, e, f); } )?
-    { return new VarNode(t.image); }
+    { return new VarNode(t.image, false); }
 }
 
 ExpressionNode builtin_call():

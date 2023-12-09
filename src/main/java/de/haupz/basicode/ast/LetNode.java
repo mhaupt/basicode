@@ -45,7 +45,7 @@ public class LetNode extends StatementNode {
         private final ExpressionNode dim2;
         public Array(String id, ExpressionNode dim1, ExpressionNode dim2) {
             super(id);
-            this.getArray = new VarNode(id);
+            this.getArray = new VarNode(id, true);
             this.dim1 = dim1;
             this.dim2 = dim2;
         }

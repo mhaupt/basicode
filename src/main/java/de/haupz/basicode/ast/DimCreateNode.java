@@ -29,7 +29,7 @@ public class DimCreateNode extends StatementNode {
                 throw new IllegalStateException("negative first dimension: " + dim1int);
             }
             if (dim2 == null) {
-                state.setVar(id, new BasicArray1D(type, dim1int));
+                state.setArray(id, new BasicArray1D(type, dim1int));
             } else {
                 Object dim2value = dim2.eval(state);
                 if (dim2value instanceof Number dim2num) {
@@ -37,7 +37,7 @@ public class DimCreateNode extends StatementNode {
                     if (dim2int < 0) {
                         throw new IllegalStateException("negative second dimension: " + dim2int);
                     }
-                    state.setVar(id, new BasicArray2D(type, dim1int, dim2int));
+                    state.setArray(id, new BasicArray2D(type, dim1int, dim2int));
                 } else {
                     throw new IllegalStateException("second dimension must be a number: " + dim2value);
                 }

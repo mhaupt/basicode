@@ -16,10 +16,10 @@ public class DimTest extends StatementTest {
     @Test
     public void test1DNonString() {
         run("DIM A(7)");
-        Optional<Object> v = state.getVar("A");
+        Optional<BasicArray> v = state.getArray("A");
         assertTrue(v.isPresent());
         assertEquals(BasicArray1D.class, v.get().getClass());
-        BasicArray a = (BasicArray) v.get();
+        BasicArray a = v.get();
         assertEquals(ArrayType.NUMBER, a.getType());
         assertEquals(8, a.getDim1());
         assertThrows(IllegalStateException.class, () -> a.getDim2());
@@ -28,10 +28,10 @@ public class DimTest extends StatementTest {
     @Test
     public void test1DString() {
         run("DIM A$(7)");
-        Optional<Object> v = state.getVar("A$");
+        Optional<BasicArray> v = state.getArray("A$");
         assertTrue(v.isPresent());
         assertEquals(BasicArray1D.class, v.get().getClass());
-        BasicArray a = (BasicArray) v.get();
+        BasicArray a = v.get();
         assertEquals(ArrayType.STRING, a.getType());
         assertEquals(8, a.getDim1());
         assertThrows(IllegalStateException.class, () -> a.getDim2());
@@ -40,10 +40,10 @@ public class DimTest extends StatementTest {
     @Test
     public void test2DNonString() {
         run("DIM A(2,3)");
-        Optional<Object> v = state.getVar("A");
+        Optional<BasicArray> v = state.getArray("A");
         assertTrue(v.isPresent());
         assertEquals(BasicArray2D.class, v.get().getClass());
-        BasicArray a = (BasicArray) v.get();
+        BasicArray a = v.get();
         assertEquals(ArrayType.NUMBER, a.getType());
         assertEquals(3, a.getDim1());
         assertEquals(4, a.getDim2());
@@ -52,10 +52,10 @@ public class DimTest extends StatementTest {
     @Test
     public void test2DString() {
         run("DIM A$(2,3)");
-        Optional<Object> v = state.getVar("A$");
+        Optional<BasicArray> v = state.getArray("A$");
         assertTrue(v.isPresent());
         assertEquals(BasicArray2D.class, v.get().getClass());
-        BasicArray a = (BasicArray) v.get();
+        BasicArray a = v.get();
         assertEquals(ArrayType.STRING, a.getType());
         assertEquals(3, a.getDim1());
         assertEquals(4, a.getDim2());
@@ -64,10 +64,10 @@ public class DimTest extends StatementTest {
     @Test
     public void test1DDoubleDim() {
         run("DIM A(7.5)");
-        Optional<Object> v = state.getVar("A");
+        Optional<BasicArray> v = state.getArray("A");
         assertTrue(v.isPresent());
         assertEquals(BasicArray1D.class, v.get().getClass());
-        BasicArray a = (BasicArray) v.get();
+        BasicArray a = v.get();
         assertEquals(ArrayType.NUMBER, a.getType());
         assertEquals(8, a.getDim1());
         assertThrows(IllegalStateException.class, () -> a.getDim2());
@@ -76,10 +76,10 @@ public class DimTest extends StatementTest {
     @Test
     public void test2DDoubleDim() {
         run("DIM A(2.1,3.4)");
-        Optional<Object> v = state.getVar("A");
+        Optional<BasicArray> v = state.getArray("A");
         assertTrue(v.isPresent());
         assertEquals(BasicArray2D.class, v.get().getClass());
-        BasicArray a = (BasicArray) v.get();
+        BasicArray a = v.get();
         assertEquals(ArrayType.NUMBER, a.getType());
         assertEquals(3, a.getDim1());
         assertEquals(4, a.getDim2());
@@ -191,6 +191,22 @@ public class DimTest extends StatementTest {
     @Test
     public void testWriteWrongTypeString() {
         assertThrows(IllegalStateException.class, () -> run(List.of("DIM A$(7)", "A$(1)=23")));
+    }
+
+    @Test
+    public void testSeparateNamespacesSameName() {
+        run(List.of("A=1", "DIM A(1)"));
+        assertTrue(state.getVar("A").isPresent());
+        assertTrue(state.getArray("A").isPresent());
+    }
+
+    @Test
+    public void testSeparateNamespacesDifferentNames() {
+        run(List.of("A=1", "DIM B(1)"));
+        assertTrue(state.getVar("A").isPresent());
+        assertTrue(state.getArray("A").isEmpty());
+        assertTrue(state.getArray("B").isPresent());
+        assertTrue(state.getVar("B").isEmpty());
     }
 
 }

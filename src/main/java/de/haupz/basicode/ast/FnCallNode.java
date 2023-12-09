@@ -13,7 +13,7 @@ public class FnCallNode extends ExpressionNode {
 
     public FnCallNode(String id, ExpressionNode argument) {
         this.id = id;
-        getFn = new VarNode(id);
+        getFn = new VarNode(id, false);
         this.argument = argument;
     }
 
