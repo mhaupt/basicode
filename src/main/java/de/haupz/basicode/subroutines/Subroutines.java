@@ -151,7 +151,7 @@ public class Subroutines {
     }
 
     /**
-     * <p>GOTO 20: initialise some default variables and jump to line 1010. This subroutine is, by convention, called at
+     * <p>{@code GOTO 20}: initialise some default variables and jump to line 1010. This subroutine is, by convention, called at
      * the beginning of every BASICODE program in line 1000, and continues execution in line 1010.</p>
      *
      * <p>The subroutine initialises the following standard variables:<ul>
@@ -174,23 +174,46 @@ public class Subroutines {
         state.requestLineJump();
     }
 
+    /**
+     * {@code GOSUB 100}: switch to text mode, and initialise the colours to the contents of the {@code CC} array.
+     * {@code CC(0)} will determine the foreground colour; {@code CC(1)}, the background colour.
+     *
+     * @param state the interpreter state.
+     */
     public static void gosub100(InterpreterState state) {
         setColours(state);
         state.getOutput().textMode();
     }
 
+    /**
+     * {@code GOSUB 110}: in text mode, position the cursor at the coordinates passed in {@code HO} and {@code VE}.
+     *
+     * @param state the interpreter state.
+     */
     public static void gosub110(InterpreterState state) {
         int ho = state.getStdVar("HO").intValue();
         int ve = state.getStdVar("VE").intValue();
         state.getOutput().setTextCursor(ho, ve);
     }
 
+    /**
+     * {@code GOSUB 120}: in text mode, store the current coordinates of the cursor in the {@code HO} and {@code VE}
+     * variables.
+     *
+     * @param state the interpreter state.
+     */
     public static void gosub120(InterpreterState state) {
         int[] coordinates = state.getOutput().getTextCursor();
         state.setVar("HO", Double.valueOf(coordinates[0]));
         state.setVar("VE", Double.valueOf(coordinates[1]));
     }
 
+    /**
+     * {@code GOSUB 150}: in text mode, print the string passed in {@code SR$} in reverse mode, with three spaces
+     * prepended and appended to it.
+     *
+     * @param state the interpreter state.
+     */
     public static void gosub150(InterpreterState state) {
         String sr = "   " + (String) state.getVar("SR$").get() + "   ";
         state.getOutput().printReverse(sr);
