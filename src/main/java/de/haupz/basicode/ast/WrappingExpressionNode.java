@@ -16,7 +16,8 @@ public abstract class WrappingExpressionNode extends ExpressionNode {
     public Object eval(InterpreterState state) {
         Object value = expression.eval(state);
         return evalWithTypes(value).
-                orElseThrow(() -> new IllegalStateException("unexpected expression type " + value.getClass().getName()));
+                orElseThrow(() -> new IllegalStateException("unexpected expression type " + value.getClass().getName() +
+                        " in " + getClass().getSimpleName()));
     }
 
     abstract Optional<Object> evalWithTypes(Object value);

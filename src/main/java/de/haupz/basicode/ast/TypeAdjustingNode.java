@@ -22,8 +22,8 @@ public abstract class TypeAdjustingNode extends ExpressionNode {
         Object value1 = expression1.eval(state);
         Object value2 = expression2.eval(state);
         return evalWithTypes(value1, value2)
-                .orElseThrow(() -> new IllegalStateException("could not match types " + value1.getClass().getName() +
-                        " and " + value2.getClass()));
+                .orElseThrow(() -> new IllegalStateException(getClass().getSimpleName() + " could not match types " +
+                        value1.getClass().getName() + " and " + value2.getClass()));
     }
 
 }
