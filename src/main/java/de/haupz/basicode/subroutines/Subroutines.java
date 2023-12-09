@@ -242,8 +242,8 @@ public class Subroutines {
     public static void gosub600(InterpreterState state) {
         setColours(state);
         state.getOutput().graphicsMode();
-        state.setVar("HG", 0);
-        state.setVar("VG", 0);
+        state.setVar("HG", 0.0);
+        state.setVar("VG", 0.0);
     }
 
     private static void checkBoundaries(String name, double v) {
@@ -265,8 +265,8 @@ public class Subroutines {
         int hg = (int) (im.getWidth() * ho);
         int vg = (int) (im.getHeight() * ve);
         g2.drawLine(hg, vg, hg, vg);
-        state.setVar("HG", hg);
-        state.setVar("VG", vg);
+        state.setVar("HG", Double.valueOf(hg));
+        state.setVar("VG", Double.valueOf(vg));
         state.getOutput().flush();
     }
 
@@ -285,8 +285,8 @@ public class Subroutines {
         int nhg = (int) (im.getWidth() * ho);
         int nvg = (int) (im.getHeight() * ve);
         g2.drawLine(hg, vg, nhg, nvg);
-        state.setVar("HG", nhg);
-        state.setVar("VG", nvg);
+        state.setVar("HG", Double.valueOf(nhg));
+        state.setVar("VG", Double.valueOf(nvg));
         state.getOutput().flush();
     }
 
@@ -307,8 +307,8 @@ public class Subroutines {
         int hg = (int) (im.getWidth() * ho);
         int vg = (int) (im.getHeight() * ve);
         g2.drawString(sr, hg, fm.getHeight() + vg);
-        state.setVar("HG", hg);
-        state.setVar("VG", vg);
+        state.setVar("HG", Double.valueOf(hg));
+        state.setVar("VG", Double.valueOf(vg));
         state.getOutput().flush();
     }
 
