@@ -264,9 +264,10 @@ public class Subroutines {
     }
 
     /**
-     * {@code GOSUB 250}: beep. Play a 440 Hz tone for 250 ms at full volume. This can be disabled by passing the
-     * {@code -nosound} command line argument, or by using the
-     * {@link de.haupz.basicode.interpreter.Configuration#nosound nosound} interpreter configuration.
+     * <p>{@code GOSUB 250}: beep. Play a 440 Hz tone for 250 ms at full volume.</p>
+     *
+     * <p><b>Implementation note:</b> This can be disabled by passing the {@code -nosound} command line argument, or by
+     * using the {@link de.haupz.basicode.interpreter.Configuration#nosound nosound} interpreter configuration.</p>
      *
      * @param state the interpreter state.
      */
@@ -419,6 +420,9 @@ public class Subroutines {
      *     loudest.</li>
      * </ul></p>
      *
+     * <p><b>Implementation note:</b> no sound will be played if the {@code -nosound} command line flag is used, or if
+     * the {@link de.haupz.basicode.interpreter.Configuration#nosound nosound} interpreter configuration is set.</p>
+     *
      * @param state the interpreter state.
      */
     public static void gosub400(InterpreterState state) {
@@ -435,7 +439,11 @@ public class Subroutines {
     }
 
     /**
-     * {@code GOSUB 450}: wait for {@code SD} times 0.1 seconds, or until a key is pressed.
+     * <p>{@code GOSUB 450}: wait for {@code SD} times 0.1 seconds, or until a key is pressed.</p>
+     *
+     * <p><b>Implementation note:</b> waiting can be entirely suppressed by passing the {@code -nowait} command line
+     * flag, or by using the {@link de.haupz.basicode.interpreter.Configuration#nowait nowait} interpreter
+     * configuration.</p>
      *
      * @param state the interpreter state.
      */
@@ -561,6 +569,15 @@ public class Subroutines {
         state.getOutput().flush();
     }
 
+    /**
+     * <p>{@code GOTO 950}: terminate execution.</p>
+     *
+     * <p><b>Implementation note:</b> if the {@code -hold} command line flag was used, or if the
+     * {@link de.haupz.basicode.interpreter.Configuration#hold hold} interpreter configuration was applied, execution
+     * will halt but wait for one final key press before terminating for good.</p>
+     *
+     * @param state the interpreter state.
+     */
     public static void goto950(InterpreterState state) {
         if (state.getConfiguration().hold()) {
             gosub210(state);
