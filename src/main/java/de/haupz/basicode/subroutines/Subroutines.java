@@ -16,14 +16,43 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.*;
 
+/**
+ * <p>The {@code Subroutines} class holds all implementations of the BASICODE standard subroutines. Most of these are
+ * called with {@code GOSUB} statements; some, using {@code GOTO}.</p>
+ *
+ * <p>Any subroutine implementation must follow a few conventions:<ul>
+ *     <li>it must be declared as {@code public static};</li>
+ *     <li>its return type must be {@code void};</li>
+ *     <li>it must accept a single argument of type {@link InterpreterState};</li>
+ *     <li>its name must begin with either {@code gosub} or {@code goto}, depending on whether it is meant to be called
+ *     by {@code GOSUB} or {@code GOTO}, respectively; and this prefix must be immediately followed by a number
+ *     representing the line number the aforementioned call or jump should be directed to.</li>
+ * </ul></p>
+ *
+ * <p>During startup, as soon as the {@code Subroutines} class is initialised, all of its methods adhering to the above
+ * convention will be automatically registered.</p>
+ */
 public class Subroutines {
 
+    /**
+     * The {@link Map} holding all subroutines. The keys are the line numbers the respective subroutines are called at.
+     * The values are method handles representing the subroutine methods.
+     */
     private static final Map<Integer, MethodHandle> ROUTINES = new HashMap<>();
 
+    /**
+     * The method signature for any subroutine, according to the convention described in the class comment.
+     */
     private static final MethodType ROUTINE_TYPE = MethodType.methodType(void.class, InterpreterState.class);
 
     private static final MethodHandles.Lookup LOOKUP = MethodHandles.lookup();
 
+    /**
+     * Look up a subroutine method identified by its name, and return a method handle representing it if successful.
+     *
+     * @param methodName the name of the subroutine method, following the convention described in the class comment.
+     * @return a method handle representing the subroutine method.
+     */
     private static MethodHandle lookupTarget(String methodName) {
         try {
             return LOOKUP.findStatic(Subroutines.class, methodName, ROUTINE_TYPE);
@@ -32,12 +61,23 @@ public class Subroutines {
         }
     }
 
+    /**
+     * Register a subroutine in the {@link Subroutines#ROUTINES ROUTINES} map. The line number, used as a key in the
+     * map, will be extracted from the method name.
+     *
+     * @param method a subroutine method.
+     */
     private static void registerRoutine(Method method) {
         String name = method.getName();
         int target = Integer.parseInt(name.substring(name.startsWith("goto")?4:5));
         ROUTINES.put(target, lookupTarget(name));
     }
 
+    /**
+     * Register all subroutine methods in the {@code Subroutines} class. The method will find all methods adhering to
+     * the convention described in the class comment, and register them in the {@link Subroutines#ROUTINES ROUTINES}
+     * map.
+     */
     static void registerRoutines() {
         Arrays.stream(Subroutines.class.getDeclaredMethods())
                 .filter(m -> Modifier.isStatic(m.getModifiers()))
@@ -49,6 +89,12 @@ public class Subroutines {
         registerRoutines();
     }
 
+    /**
+     * Run a {@code GOTO} subroutine.
+     *
+     * @param target the line number for the subroutine.
+     * @param state the {@link InterpreterState} to be used in the subroutine's execution.
+     */
     public static void runGoto(int target, InterpreterState state) {
         MethodHandle routine = ROUTINES.get(target);
         if (routine == null) {
@@ -61,6 +107,12 @@ public class Subroutines {
         }
     }
 
+    /**
+     * Run a {@code GOSUB} subroutine.
+     *
+     * @param target the line number for the subroutine.
+     * @param state the {@link InterpreterState} to be used in the subroutine's execution.
+     */
     public static void runGosub(int target, InterpreterState state) {
         MethodHandle routine = ROUTINES.get(target);
         if (routine == null) {
@@ -74,10 +126,23 @@ public class Subroutines {
         }
     }
 
+    /**
+     * Random number generator used by {@link Subroutines#gosub260}.
+     */
     private static final Random RND = new Random();
 
+    /**
+     * The subroutines for graphics output use this to paint lines and dots. Its width is chosen to arrive at a somewhat
+     * pleasant looking line width.
+     */
     private static final Stroke STROKE = new BasicStroke(3);
 
+    /**
+     * Set the foreground and background colours from the {@code CC} standard array stored in the
+     * {@linkplain InterpreterState interpreter state}.
+     *
+     * @param state the current interpreter state, at the time of execution.
+     */
     private static void setColours(InterpreterState state) {
         BasicArray1D cc = (BasicArray1D) state.getArray("CC").get();
         int fg = ((Double) cc.at(0, -1)).intValue();
@@ -85,6 +150,20 @@ public class Subroutines {
         state.getOutput().setColours(fg, bg);
     }
 
+    /**
+     * <p>GOTO 20: initialise some default variables and jump to line 1010. This subroutine is, by convention, called at
+     * the beginning of every BASICODE program in line 1000, and continues execution in line 1010.</p>
+     *
+     * <p>The subroutine initialises the following standard variables:<ul>
+     *     <li>{@code HO} and {@code VE}, to 39 and 24, respectively. These initially hold the maximum horizontal and
+     *     vertical coordinates in text mode, and are later used to control the cursor position in text mode.</li>
+     *     <li>{@code HG} and {@code VG}, to 320 and 200. These initially hold the horizontal and vertical resolution
+     *     for graphics mode.</li>
+     *     <li>{@code SV}, to 15. This is used to control the volume of audio output, and may range from 0 to 15.</li>
+     * </ul></p>
+     *
+     * @param state the interpreter state.
+     */
     public static void goto20(InterpreterState state) {
         state.setVar("HO", 39.0);
         state.setVar("VE", 24.0);
