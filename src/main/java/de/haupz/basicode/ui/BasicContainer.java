@@ -2,6 +2,7 @@ package de.haupz.basicode.ui;
 
 import de.haupz.basicode.io.BasicInput;
 import de.haupz.basicode.io.BasicOutput;
+import de.haupz.basicode.io.KeyPress;
 import de.haupz.basicode.io.StopKeyHandler;
 
 import javax.swing.*;
@@ -54,7 +55,7 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
 
     private KeyThread keyThread;
 
-    private BlockingQueue<KeyEvent> keyEvents = new LinkedBlockingQueue<>();
+    private BlockingQueue<KeyPress> keyEvents = new LinkedBlockingQueue<>();
 
     private static final Color[] COLOR_MAP = new Color[] {
             Color.BLACK,
@@ -275,12 +276,20 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
         }
     }
 
+    private KeyPress mapKey(KeyEvent e) {
+        char c = switch (e.getKeyChar()) {
+            case 10 -> 13;
+            default -> e.getKeyChar();
+        };
+        return new KeyPress(e.getKeyCode(), c);
+    }
+
     public KeyListener makeKeyListener() {
         return new KeyAdapter() {
             @Override
             public void keyTyped(KeyEvent e) {
                 synchronized (keyLock) {
-                    keyEvents.add(e);
+                    keyEvents.add(mapKey(e));
                     if (acceptStopKey && e.getKeyChar() == 27) {
                         stopKeyHandler.stopKeyPressed();
                     }
@@ -297,7 +306,7 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
     public int readChar() throws IOException {
         keyEvents.clear();
         try {
-            return keyEvents.take().getKeyChar();
+            return keyEvents.take().character();
         } catch (InterruptedException ie) {
             throw new IllegalStateException("could not consume key event", ie);
         }
@@ -307,7 +316,7 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
     public int lastChar() {
         synchronized (keyLock) {
             if (!keyEvents.isEmpty()) {
-                return keyEvents.poll().getKeyChar();
+                return keyEvents.poll().character();
             }
             return 0;
         }

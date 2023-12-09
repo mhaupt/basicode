@@ -119,7 +119,7 @@ public class Subroutines {
 
     public static void gosub200(InterpreterState state) {
         char input = (char) state.getInput().lastChar();
-        state.setVar("IN", Double.valueOf(input));
+        state.setVar("IN", Double.valueOf(Character.toUpperCase(input)));
         state.setVar("IN$", input == 0 ? "" : "" + input);
     }
 
@@ -131,14 +131,14 @@ public class Subroutines {
             throw new IllegalStateException(e);
         }
         state.setVar("IN$", "" + input);
-        state.setVar("IN", Double.valueOf(input));
+        state.setVar("IN", Double.valueOf(Character.toUpperCase(input)));
     }
 
     public static void gosub220(InterpreterState state) {
         int ho = state.getStdVar("HO").intValue();
         int ve = state.getStdVar("VE").intValue();
         char c = state.getOutput().getCharAt(ho, ve);
-        state.setVar("IN", Double.valueOf(c));
+        state.setVar("IN", Double.valueOf(Character.toUpperCase(c)));
     }
 
     public static void gosub250(InterpreterState state) {
