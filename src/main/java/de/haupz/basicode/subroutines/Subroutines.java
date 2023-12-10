@@ -2,6 +2,7 @@ package de.haupz.basicode.subroutines;
 
 import de.haupz.basicode.array.BasicArray1D;
 import de.haupz.basicode.interpreter.InterpreterState;
+import de.haupz.basicode.io.GraphicsCursor;
 import de.haupz.basicode.ui.Sound;
 
 import java.awt.*;
@@ -472,7 +473,7 @@ public class Subroutines {
         state.getOutput().graphicsMode();
         state.setVar("HG", 320.0);
         state.setVar("VG", 200.0);
-        state.setGraphicsCursor(0.0, 0.0);
+        state.getOutput().setGraphicsCursor(0.0, 0.0);
     }
 
     /**
@@ -508,7 +509,7 @@ public class Subroutines {
         double h = im.getWidth() * ho;
         double v = im.getHeight() * ve;
         g2.drawLine((int) h, (int) v, (int) h, (int) v);
-        state.setGraphicsCursor(h, v);
+        state.getOutput().setGraphicsCursor(h, v);
         state.getOutput().flush();
     }
 
@@ -525,7 +526,7 @@ public class Subroutines {
         BufferedImage im = state.getOutput().getImage();
         double ho = state.getStdVar("HO").doubleValue();
         double ve = state.getStdVar("VE").doubleValue();
-        InterpreterState.GraphicsCursor gc = state.getGraphicsCursor();
+        GraphicsCursor gc = state.getOutput().getGraphicsCursor();
         checkBoundaries("HO", ho);
         checkBoundaries("VE", ve);
         Graphics2D g2 = (Graphics2D) im.getGraphics();
@@ -535,7 +536,7 @@ public class Subroutines {
         double nh = im.getWidth() * ho;
         double nv = im.getHeight() * ve;
         g2.drawLine((int) gc.h(), (int) gc.v(), (int) nh, (int) nv);
-        state.setGraphicsCursor(nh, nv);
+        state.getOutput().setGraphicsCursor(nh, nv);
         state.getOutput().flush();
     }
 
@@ -565,7 +566,7 @@ public class Subroutines {
         double h = im.getWidth() * ho;
         double v = im.getHeight() * ve;
         g2.drawString(sr, (int) h, fm.getHeight() + (int) v);
-        state.setGraphicsCursor(h, v);
+        state.getOutput().setGraphicsCursor(h, v);
         state.getOutput().flush();
     }
 

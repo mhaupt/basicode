@@ -19,7 +19,7 @@ public interface BasicOutput {
 
     default void setTextCursor(int ho, int ve) {}
 
-    default int[] getTextCursor() { return new int[]{0,0}; }
+    int[] getTextCursor();
 
     default void graphicsMode() {}
 
@@ -34,5 +34,9 @@ public interface BasicOutput {
     default Color getForegroundColour() { throw new IllegalStateException("colours not supported"); }
 
     default char getCharAt(int ho, int ve) { return ' '; }
+
+    default void setGraphicsCursor(double h, double v) {}
+
+    default GraphicsCursor getGraphicsCursor() { throw new IllegalStateException("graphics mode not supported"); }
 
 }

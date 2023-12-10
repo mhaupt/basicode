@@ -19,8 +19,6 @@ public class InterpreterState {
 
     private final Configuration configuration;
 
-    private int currentOutputColumn = 0;
-
     private final Map<String, Object> vars = new HashMap<>();
 
     private final Map<String, BasicArray> arrays = new HashMap<>();
@@ -48,10 +46,6 @@ public class InterpreterState {
     private int backedgeTarget;
 
     private int dataPtr = 0;
-
-    public record GraphicsCursor(double h, double v) {}
-
-    private GraphicsCursor graphicsCursor = new GraphicsCursor(0.0, 0.0);
 
     public InterpreterState(ProgramNode program, BasicInput in, BasicOutput out, Configuration configuration) {
         this.program = program;
@@ -237,26 +231,6 @@ public class InterpreterState {
             throw new IllegalStateException(String.format("read index %d exceeds size %d", dataPtr, dataList.size()));
         }
         return dataList.get(dataPtr++);
-    }
-
-    public void resetOutputColumn() {
-        currentOutputColumn = 0;
-    }
-
-    public int getCurrentOutputColumn() {
-        return currentOutputColumn;
-    }
-
-    public void increaseOutputColumn(int w) {
-        currentOutputColumn += w;
-    }
-
-    public void setGraphicsCursor(double h, double v) {
-        graphicsCursor = new GraphicsCursor(h, v);
-    }
-
-    public GraphicsCursor getGraphicsCursor() {
-        return graphicsCursor;
     }
 
 }
