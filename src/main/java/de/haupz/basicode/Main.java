@@ -3,7 +3,7 @@ package de.haupz.basicode;
 import de.haupz.basicode.ast.ProgramNode;
 import de.haupz.basicode.interpreter.Configuration;
 import de.haupz.basicode.interpreter.InterpreterState;
-import de.haupz.basicode.io.BasicFrame;
+import de.haupz.basicode.ui.BasicFrame;
 import de.haupz.basicode.parser.BasicParser;
 import de.haupz.basicode.ui.BasicContainer;
 

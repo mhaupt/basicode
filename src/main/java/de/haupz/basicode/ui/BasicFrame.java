@@ -1,6 +1,4 @@
-package de.haupz.basicode.io;
-
-import de.haupz.basicode.ui.BasicContainer;
+package de.haupz.basicode.ui;
 
 import javax.swing.*;
 import java.awt.*;
