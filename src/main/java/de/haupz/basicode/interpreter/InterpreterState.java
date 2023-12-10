@@ -19,8 +19,6 @@ public class InterpreterState {
 
     private final Configuration configuration;
 
-    private int currentOutputColumn = 0;
-
     private final Map<String, Object> vars = new HashMap<>();
 
     private final Map<String, BasicArray> arrays = new HashMap<>();
@@ -233,18 +231,6 @@ public class InterpreterState {
             throw new IllegalStateException(String.format("read index %d exceeds size %d", dataPtr, dataList.size()));
         }
         return dataList.get(dataPtr++);
-    }
-
-    public void resetOutputColumn() {
-        currentOutputColumn = 0;
-    }
-
-    public int getCurrentOutputColumn() {
-        return currentOutputColumn;
-    }
-
-    public void increaseOutputColumn(int w) {
-        currentOutputColumn += w;
     }
 
 }

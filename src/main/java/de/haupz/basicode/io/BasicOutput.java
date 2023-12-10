@@ -19,7 +19,7 @@ public interface BasicOutput {
 
     default void setTextCursor(int ho, int ve) {}
 
-    default int[] getTextCursor() { return new int[]{0,0}; }
+    int[] getTextCursor();
 
     default void graphicsMode() {}
 

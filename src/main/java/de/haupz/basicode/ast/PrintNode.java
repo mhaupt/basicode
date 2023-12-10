@@ -28,7 +28,6 @@ public class PrintNode extends StatementNode {
     public void run(InterpreterState state) {
         if (elements.isEmpty()) {
             state.getOutput().println();
-            state.resetOutputColumn();
             return;
         }
         for (Element e : elements) {
@@ -37,19 +36,15 @@ public class PrintNode extends StatementNode {
                     Object v = ((ExpressionNode) e.payload).eval(state);
                     String s = v instanceof Double d ? DECIMAL_FORMAT.format(d) : v.toString();
                     state.getOutput().print(s);
-                    state.increaseOutputColumn(s.length());
                 }
                 case TAB -> {
                     int tab = ((Number) ((ExpressionNode) e.payload).eval(state)).intValue();
-                    int spacesToPrint = tab - state.getCurrentOutputColumn();
+                    int spacesToPrint = tab - state.getOutput().getTextCursor()[0];
                     if (spacesToPrint < 0) {
                         state.getOutput().println();
-                        state.resetOutputColumn();
                         state.getOutput().print(String.format("%" + tab + "s", ""));
-                        state.increaseOutputColumn(tab);
                     } else if (spacesToPrint > 0) {
                         state.getOutput().print(String.format("%" + spacesToPrint + "s", ""));
-                        state.increaseOutputColumn(spacesToPrint);
                     }
                     // no need to print anything for spacesToPrint == 0
                 }
@@ -57,7 +52,6 @@ public class PrintNode extends StatementNode {
                     String sep = (String) e.payload;
                     if (",".equals(sep)) {
                         state.getOutput().println();
-                        state.resetOutputColumn();
                     }
                 }
             }
@@ -66,7 +60,6 @@ public class PrintNode extends StatementNode {
         Element last = elements.get(elements.size() - 1);
         if (!SEP_NO_NEWLINE.equals(last)) {
             state.getOutput().println();
-            state.resetOutputColumn();
         }
     }
 
