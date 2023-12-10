@@ -35,4 +35,8 @@ public interface BasicOutput {
 
     default char getCharAt(int ho, int ve) { return ' '; }
 
+    default void setGraphicsCursor(double h, double v) {}
+
+    default GraphicsCursor getGraphicsCursor() { throw new IllegalStateException("graphics mode not supported"); }
+
 }

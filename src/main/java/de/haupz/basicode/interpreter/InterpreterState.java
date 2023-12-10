@@ -49,10 +49,6 @@ public class InterpreterState {
 
     private int dataPtr = 0;
 
-    public record GraphicsCursor(double h, double v) {}
-
-    private GraphicsCursor graphicsCursor = new GraphicsCursor(0.0, 0.0);
-
     public InterpreterState(ProgramNode program, BasicInput in, BasicOutput out, Configuration configuration) {
         this.program = program;
         this.in = in;
@@ -249,14 +245,6 @@ public class InterpreterState {
 
     public void increaseOutputColumn(int w) {
         currentOutputColumn += w;
-    }
-
-    public void setGraphicsCursor(double h, double v) {
-        graphicsCursor = new GraphicsCursor(h, v);
-    }
-
-    public GraphicsCursor getGraphicsCursor() {
-        return graphicsCursor;
     }
 
 }

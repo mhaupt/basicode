@@ -1,9 +1,6 @@
 package de.haupz.basicode.ui;
 
-import de.haupz.basicode.io.BasicInput;
-import de.haupz.basicode.io.BasicOutput;
-import de.haupz.basicode.io.KeyPress;
-import de.haupz.basicode.io.StopKeyHandler;
+import de.haupz.basicode.io.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -79,6 +76,8 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
     private boolean acceptStopKey = true;
 
     private StopKeyHandler stopKeyHandler;
+
+    private GraphicsCursor graphicsCursor = new GraphicsCursor(0.0, 0.0);
 
     public BasicContainer() {
         super();
@@ -366,6 +365,16 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
     @Override
     public void registerStopKeyHandler(StopKeyHandler stopKeyHandler) {
         this.stopKeyHandler = stopKeyHandler;
+    }
+
+    @Override
+    public void setGraphicsCursor(double h, double v) {
+        graphicsCursor = new GraphicsCursor(h, v);
+    }
+
+    @Override
+    public GraphicsCursor getGraphicsCursor() {
+        return graphicsCursor;
     }
 
 }
