@@ -40,8 +40,8 @@ public class PrintStreamOutput implements BasicOutput {
     }
 
     @Override
-    public int[] getTextCursor() {
-        return new int[]{col,row};
+    public TextCursor getTextCursor() {
+        return new TextCursor(col, row);
     }
 
 }

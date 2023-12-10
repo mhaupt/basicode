@@ -216,8 +216,8 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
     }
 
     @Override
-    public int[] getTextCursor() {
-        return new int[] { curColumn, curLine };
+    public TextCursor getTextCursor() {
+        return new TextCursor(curColumn, curLine);
     }
 
     @Override

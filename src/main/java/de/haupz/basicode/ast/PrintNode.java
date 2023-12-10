@@ -39,7 +39,7 @@ public class PrintNode extends StatementNode {
                 }
                 case TAB -> {
                     int tab = ((Number) ((ExpressionNode) e.payload).eval(state)).intValue();
-                    int spacesToPrint = tab - state.getOutput().getTextCursor()[0];
+                    int spacesToPrint = tab - state.getOutput().getTextCursor().col();
                     if (spacesToPrint < 0) {
                         state.getOutput().println();
                         state.getOutput().print(String.format("%" + tab + "s", ""));

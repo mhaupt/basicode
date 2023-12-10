@@ -3,6 +3,7 @@ package de.haupz.basicode.subroutines;
 import de.haupz.basicode.array.BasicArray1D;
 import de.haupz.basicode.interpreter.InterpreterState;
 import de.haupz.basicode.io.GraphicsCursor;
+import de.haupz.basicode.io.TextCursor;
 import de.haupz.basicode.ui.Sound;
 
 import java.awt.*;
@@ -204,9 +205,9 @@ public class Subroutines {
      * @param state the interpreter state.
      */
     public static void gosub120(InterpreterState state) {
-        int[] coordinates = state.getOutput().getTextCursor();
-        state.setVar("HO", Double.valueOf(coordinates[0]));
-        state.setVar("VE", Double.valueOf(coordinates[1]));
+        TextCursor coordinates = state.getOutput().getTextCursor();
+        state.setVar("HO", Double.valueOf(coordinates.col()));
+        state.setVar("VE", Double.valueOf(coordinates.row()));
     }
 
     /**
