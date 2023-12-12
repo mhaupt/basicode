@@ -353,8 +353,8 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
     private Thread sleepingThread;
 
     @Override
-    public void setSleepingThread(Thread sleepingThread) {
-        this.sleepingThread = sleepingThread;
+    public void setReadyToInterrupt(boolean ready) {
+        sleepingThread = ready ? Thread.currentThread() : null;
     }
 
     @Override

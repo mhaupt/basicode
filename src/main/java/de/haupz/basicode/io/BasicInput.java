@@ -32,7 +32,7 @@ public interface BasicInput {
      */
     default int lastChar() { return 0; }
 
-    default void setSleepingThread(Thread sleepingThread) {}
+    default void setReadyToInterrupt(boolean ready) {}
 
     default void toggleAcceptStopKey(boolean acceptStopKey) {}
 
