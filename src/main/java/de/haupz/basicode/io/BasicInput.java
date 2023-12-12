@@ -32,10 +32,26 @@ public interface BasicInput {
      */
     default int lastChar() { return 0; }
 
+    /**
+     * Instruct the input to note that a waiting operation is under way, and that the input can interrupt this if a key
+     * is pressed.
+     *
+     * @param ready if {@code true}, input will be ready to interrupt a waiting operation; if {@code false}, it won't.
+     */
     default void setReadyToInterrupt(boolean ready) {}
 
+    /**
+     * Control whether pressing a stop key (e.g., ESC) will terminate program execution.
+     *
+     * @param acceptStopKey if {@code trye}, the stop key will terminate program execution; if {@code false}, it won't.
+     */
     default void toggleAcceptStopKey(boolean acceptStopKey) {}
 
+    /**
+     * Register a handler to be invoked when the stop key is pressed.
+     *
+     * @param stopKeyHandler the handler.
+     */
     default void registerStopKeyHandler(StopKeyHandler stopKeyHandler) {}
 
 }

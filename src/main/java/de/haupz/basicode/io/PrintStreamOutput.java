@@ -2,6 +2,12 @@ package de.haupz.basicode.io;
 
 import java.io.PrintStream;
 
+/**
+ * <p>An implementation of the {@link BasicOutput} interface that uses the standard Java {@link PrintStream} class.</p>
+ *
+ * <p>This is used for testing purposes, and for simple console output. It does not support advanced features, such as
+ * graphics mode.</p>
+ */
 public class PrintStreamOutput implements BasicOutput {
 
     private int col = 0;
