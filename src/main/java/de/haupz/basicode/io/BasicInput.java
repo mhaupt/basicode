@@ -1,7 +1,5 @@
 package de.haupz.basicode.io;
 
-import de.haupz.basicode.interpreter.InterpreterState;
-
 import java.io.IOException;
 
 public interface BasicInput {
@@ -12,7 +10,7 @@ public interface BasicInput {
 
     default int lastChar() { return 0; }
 
-    default void setSleepingThread(Thread sleepingThread) {}
+    default void setReadyToInterrupt(boolean ready) {}
 
     default void toggleAcceptStopKey(boolean acceptStopKey) {}
 

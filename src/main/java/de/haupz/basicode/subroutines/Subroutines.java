@@ -232,13 +232,13 @@ public class Subroutines {
             return;
         }
         int sd = state.getStdVar("SD").intValue();
-        state.getInput().setSleepingThread(Thread.currentThread());
+        state.getInput().setReadyToInterrupt(true);
         try {
             Thread.sleep(sd * 100);
         } catch (InterruptedException e) {
             // ignore
         }
-        state.getInput().setSleepingThread(null);
+        state.getInput().setReadyToInterrupt(false);
     }
 
     public static void gosub600(InterpreterState state) {
