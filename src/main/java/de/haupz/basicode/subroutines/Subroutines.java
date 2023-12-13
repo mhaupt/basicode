@@ -80,6 +80,10 @@ public class Subroutines {
 
     private static final Stroke STROKE = new BasicStroke(3);
 
+    private static Number getStdVar(InterpreterState state, String id) {
+        return (Number) state.getVar(id).get();
+    }
+
     private static void setColours(InterpreterState state) {
         BasicArray1D cc = (BasicArray1D) state.getArray("CC").get();
         int fg = ((Double) cc.at(0, -1)).intValue();
@@ -103,8 +107,8 @@ public class Subroutines {
     }
 
     public static void gosub110(InterpreterState state) {
-        int ho = state.getStdVar("HO").intValue();
-        int ve = state.getStdVar("VE").intValue();
+        int ho = getStdVar(state, "HO").intValue();
+        int ve = getStdVar(state, "VE").intValue();
         state.getOutput().setTextCursor(ho, ve);
     }
 
@@ -137,8 +141,8 @@ public class Subroutines {
     }
 
     public static void gosub220(InterpreterState state) {
-        int ho = state.getStdVar("HO").intValue();
-        int ve = state.getStdVar("VE").intValue();
+        int ho = getStdVar(state, "HO").intValue();
+        int ve = getStdVar(state, "VE").intValue();
         char c = state.getOutput().getCharAt(ho, ve);
         state.setVar("IN", Double.valueOf(Character.toUpperCase(c)));
     }
@@ -159,7 +163,7 @@ public class Subroutines {
     }
 
     public static void gosub280(InterpreterState state) {
-        int fr = state.getStdVar("FR").intValue();
+        int fr = getStdVar(state, "FR").intValue();
         state.getInput().toggleAcceptStopKey(fr == 0);
     }
 
@@ -177,7 +181,7 @@ public class Subroutines {
             new DecimalFormat(decimalFormat(9), DecimalFormatSymbols.getInstance(Locale.ENGLISH));
 
     public static void gosub300(InterpreterState state) {
-        double sr = state.getStdVar("SR").doubleValue();
+        double sr = getStdVar(state, "SR").doubleValue();
         String str = STANDARD_DECIMAL_FORMAT.format(sr);
         state.setVar("SR$", str);
     }
@@ -194,9 +198,9 @@ public class Subroutines {
     }
 
     public static void gosub310(InterpreterState state) {
-        double sr = state.getStdVar("SR").doubleValue();
-        int cn = state.getStdVar("CN").intValue();
-        int ct = state.getStdVar("CT").intValue();
+        double sr = getStdVar(state, "SR").doubleValue();
+        int cn = getStdVar(state, "CN").intValue();
+        int ct = getStdVar(state, "CT").intValue();
         String s;
         if (cannotDisplay(sr, cn, ct)) {
             s = fill(ct, '*');
@@ -218,9 +222,9 @@ public class Subroutines {
         if (state.getConfiguration().nosound()) {
             return;
         }
-        int sp = state.getStdVar("SP").intValue();
-        int sd = state.getStdVar("SD").intValue();
-        int sv = state.getStdVar("SV").intValue();
+        int sp = getStdVar(state, "SP").intValue();
+        int sd = getStdVar(state, "SD").intValue();
+        int sv = getStdVar(state, "SV").intValue();
         int frequency = (int) (440.0 * Math.pow(2.0, 100.0 * (sp - 69) / 1200.0));
         int duration = 100 * sd; // sd is in 0.1 s (100 ms)
         int volume = (int) (100/15.0 * sv); // volume is 0..100, mapping from 0..15
@@ -231,7 +235,7 @@ public class Subroutines {
         if (state.getConfiguration().nowait()) {
             return;
         }
-        int sd = state.getStdVar("SD").intValue();
+        int sd = getStdVar(state, "SD").intValue();
         state.getInput().setReadyToInterrupt(true);
         try {
             Thread.sleep(sd * 100);
@@ -257,8 +261,8 @@ public class Subroutines {
 
     public static void gosub620(InterpreterState state) {
         BufferedImage im = state.getOutput().getImage();
-        double ho = state.getStdVar("HO").doubleValue();
-        double ve = state.getStdVar("VE").doubleValue();
+        double ho = getStdVar(state, "HO").doubleValue();
+        double ve = getStdVar(state, "VE").doubleValue();
         checkBoundaries("HO", ho);
         checkBoundaries("VE", ve);
         Graphics2D g2 = (Graphics2D) im.getGraphics();
@@ -274,8 +278,8 @@ public class Subroutines {
 
     public static void gosub630(InterpreterState state) {
         BufferedImage im = state.getOutput().getImage();
-        double ho = state.getStdVar("HO").doubleValue();
-        double ve = state.getStdVar("VE").doubleValue();
+        double ho = getStdVar(state, "HO").doubleValue();
+        double ve = getStdVar(state, "VE").doubleValue();
         GraphicsCursor gc = state.getOutput().getGraphicsCursor();
         checkBoundaries("HO", ho);
         checkBoundaries("VE", ve);
@@ -292,12 +296,12 @@ public class Subroutines {
 
     public static void gosub650(InterpreterState state) {
         BufferedImage im = state.getOutput().getImage();
-        double ho = state.getStdVar("HO").doubleValue();
-        double ve = state.getStdVar("VE").doubleValue();
+        double ho = getStdVar(state, "HO").doubleValue();
+        double ve = getStdVar(state, "VE").doubleValue();
         checkBoundaries("HO", ho);
         checkBoundaries("VE", ve);
         String sr = (String) state.getVar("SR$").get();
-        int cn = state.getStdVar("CN").intValue();
+        int cn = getStdVar(state, "CN").intValue();
         Graphics2D g2 = (Graphics2D) im.getGraphics();
         setColours(state);
         Color c = cn == 0 ? state.getOutput().getForegroundColour() : state.getOutput().getBackgroundColour();
