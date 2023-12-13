@@ -192,42 +192,82 @@ public class InterpreterState {
         return Optional.ofNullable(vars.get(id));
     }
 
+    /**
+     * Set an array. This is <em>not</em> setting a value at some index in an array, but rather binding an array to a
+     * variable name.
+     *
+     * @param id the array variable's name.
+     * @param value the array.
+     */
     public void setArray(String id, BasicArray value) {
         arrays.put(id, value);
     }
 
+    /**
+     * Retrieve an array, if it exists.
+     *
+     * @param id the array's variable name.
+     * @return the array, wrapped in an {@link Optional}, if it exists; otherwise, {@code empty}.
+     */
     public Optional<BasicArray> getArray(String id) {
         return Optional.ofNullable(arrays.get(id));
     }
 
+    /**
+     * Remove a single variable. Do nothing if it doesn't exist.
+     *
+     * @param id the variable's name.
+     */
     public void removeVar(String id) {
         vars.remove(id);
     }
 
+    /**
+     * Remove all variables.
+     */
     public void clearVars() {
         vars.clear();
     }
 
+    /**
+     * Note that program execution should terminate upon the next possible occasion.
+     */
     public void terminate() {
         end = true;
     }
 
+    /**
+     * @return {@code true} if the interpreter has been notified to terminate.
+     */
     public boolean shouldEnd() {
         return end;
     }
 
+    /**
+     * @return {@code true} if the next operation the interpreter should execute is a jump to a specific line.
+     */
     public boolean isLineJumpNext() {
         return lineJump;
     }
 
+    /**
+     * Note that a jump should be executed. The target of the jump should be set using {@link #setLineJumpTarget(int)}.
+     */
     public void requestLineJump() {
         lineJump = true;
     }
 
+    /**
+     * Note that a jump has been completed, and execution can proceed normally.
+     */
     public void lineJumpDone() {
         lineJump = false;
     }
 
+    /**
+     * @return the target line number of a jump. This value is valid only while {@link #requestLineJump()} is
+     * {@code true}.
+     */
     public int getLineJumpTarget() {
         return lineJumpTarget;
     }
