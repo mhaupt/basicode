@@ -139,6 +139,14 @@ public class Subroutines {
      */
     private static final Stroke STROKE = new BasicStroke(3);
 
+    /**
+     * Retrieve a numeric "standard" variable from the interpreter state. This is a slightly unsafe method, insofar as
+     * it assumes that (1) the variable exists, and (2) the variable is a number.
+     *
+     * @param state the interpreter state to retrieve the variable from.
+     * @param id the name of the variable.
+     * @return the variable's numerical value.
+     */
     private static Number getStdVar(InterpreterState state, String id) {
         return (Number) state.getVar(id).get();
     }
