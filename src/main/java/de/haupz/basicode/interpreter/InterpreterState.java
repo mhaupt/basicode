@@ -192,10 +192,6 @@ public class InterpreterState {
         return Optional.ofNullable(vars.get(id));
     }
 
-    public Number getStdVar(String id) {
-        return (Number) vars.get(id);
-    }
-
     public void setArray(String id, BasicArray value) {
         arrays.put(id, value);
     }
