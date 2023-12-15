@@ -272,102 +272,202 @@ public class InterpreterState {
         return lineJumpTarget;
     }
 
+    /**
+     * Note that a return from a {@code GOSUB} should be executed.
+     */
     public void requestReturn() {
         ret = true;
     }
 
+    /**
+     * Note that a return from a {@code GOSUB} has been completed.
+     */
     public void returnDone() {
         ret = false;
     }
 
+    /**
+     * @return {@code true} if the next operation the interpreter should execute is a return from a {@code GOSUB}.
+     */
     public boolean isReturnNext() {
         return ret;
     }
 
+    /**
+     * Set the target line number (as given in the BASIC source code) of a jump.
+     *
+     * @param target the line number.
+     */
     public void setLineJumpTarget(int target) {
         lineJumpTarget = target;
     }
 
+    /**
+     * @return the index of the next statement to be executed in the {@link #program}'s statement list.
+     */
     public int getStatementIndex() {
         return statementIndex;
     }
 
+    /**
+     * Increment the {@link #program}'s statement index.
+     */
     public void incStatementIndex() {
         ++statementIndex;
     }
 
+    /**
+     * Set the index of the next statement to be executed in the {@link #program}'s statement list.
+     *
+     * @param nextStmt the index of the next statement to be executed.
+     */
     public void setNextStatement(int nextStmt) {
         statementIndex = nextStmt;
     }
 
+    /**
+     * Push a "return address" on the call stack. This is the next statement after a {@code GOSUB} statement, for
+     * instance.
+     */
     public void pushReturnIndex() {
         callStack.push(statementIndex + 1);
     }
 
+    /**
+     * @return the statement index from the top of the call stack.
+     */
     public int getReturnIndex() {
         return callStack.pop();
     }
 
+    /**
+     * Clear the entire call stack.
+     */
     public void clearCallStack() {
         callStack.removeAllElements();
     }
 
+    /**
+     * @return the interpreter's call stack.
+     */
     public Stack<Integer> getCallStack() {
         return callStack;
     }
 
+    /**
+     * Check whether a loop using a given iterator variable is currently running.
+     *
+     * @param id the name of the iterator variable.
+     * @return {@code true} if the variable name is an iterator variable in a running {@code FOR} loop.
+     */
     public boolean isRunningLoop(String id) {
         return runningForLoops.containsKey(id);
     }
 
+    /**
+     * Note the start of a {@code FOR} loop by memorising its iterator variable, end value, and step width in a
+     * {@link For} record.
+     *
+     * @param id the name of the iterator variable used in the loop.
+     * @param end the end value of the loop's iterator variable.
+     * @param step the step width by which the iterator variable is to be incremented/decremented after each iteration.
+     */
     public void startLoop(String id, Number end, Number step) {
         runningForLoops.put(id, new For(statementIndex, end, step));
     }
 
+    /**
+     * Note that the loop with the given iterator variable has ended.
+     *
+     * @param id the name of the iterator variable.
+     */
     public void stopLoop(String id) {
         runningForLoops.remove(id);
     }
 
+    /**
+     * Retrieve the {@link For} record for a running loop with the given iterator variable.
+     *
+     * @param id the iterator variable for which the loop information is to be retrieved.
+     * @return the corresponding {@link For} record, or {@code null}, if there is no running loop with the given
+     * iterator variable.
+     */
     public For getLoop(String id) {
         return runningForLoops.get(id);
     }
 
+    /**
+     * Note that the interpreter should next execute a loop backedge jump.
+     */
     public void requestBackedge() {
         backedge = true;
     }
 
+    /**
+     * Note that a backedge jump has just been completed.
+     */
     public void backedgeDone() {
         backedge = false;
     }
 
+    /**
+     * @return {@code true} if the next operation to be performed by the interpreter should be a loop backedge jump.
+     */
     public boolean isBackedgeNext() {
         return backedge;
     }
 
+    /**
+     * Note the statement index of a loop head ({@code FOR} statement), to be targeted by a loop backedge jump.
+     *
+     * @param b the statement index of the {@code FOR} statement to jump to.
+     */
     public void setBackedgeTarget(int b) {
         backedgeTarget = b;
     }
 
+    /**
+     * @return the current backedge target (a statement index referencing a {@code FOR} statement).
+     */
     public int getBackedgeTarget() {
         return backedgeTarget;
     }
 
+    /**
+     * Note that the interpreter should skip the execution of the remainder of the current line. This is relevant for
+     * {@code IF} statements, for example, if the condition does not hold but the {@code THEN} branch consists of
+     * multiple statements separated by colons.
+     */
     public void requestSkipLine() {
         skipLine = true;
     }
 
+    /**
+     * @return {@code trye} if the next operation the interpreter should perform is to skip the remainder of the current
+     * line of code.
+     */
     public boolean isSkipLine() {
         return skipLine;
     }
 
+    /**
+     * Note that the interpreter has finished skipping the remainder of the current line of code.
+     */
     public void skipLineDone() {
         skipLine = false;
     }
 
+    /**
+     * Reset the {@code DATA} pointer to 0, so that the next {@code READ} statement will read from the first
+     * {@code DATA} element again.
+     */
     public void resetDataPtr() {
         dataPtr = 0;
     }
 
+    /**
+     * @return the next {@code DATA} element to be read, and increment the {@link #dataPtr}.
+     */
     public Object readNextDataItem() {
         List<Object> dataList = program.getDataList();
         if (dataPtr >= dataList.size()) {
