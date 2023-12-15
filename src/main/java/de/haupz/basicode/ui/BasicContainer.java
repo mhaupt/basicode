@@ -13,20 +13,49 @@ import java.util.Arrays;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+/**
+ * <p>The {@code BasicContainer} is the actual GUI of a running BASICODE interpreter. By virtue of implementing the
+ * {@link BasicOutput} and {@link BasicInput} interfaces, it is capable of displaying content in text and graphics mode,
+ * and of handling keyboard input.</p>
+ *
+ * <p>The class is currently what is commonly referred to as a "big ball of mud", or "God class", in that it clumps
+ * together all of the aforementioned features without regard for separation of concerns. It's up for a refactoring.</p>
+ */
 public class BasicContainer extends JComponent implements BasicInput, BasicOutput {
 
+    /**
+     * The width of a character in pixels.
+     */
     public static final int C_WIDTH = 24;
 
+    /**
+     * The height of a character in pixels.
+     */
     public static final int C_HEIGHT = 24;
 
+    /**
+     * The number of columns in text mode.
+     */
     public static final int COLUMNS = 40;
 
+    /**
+     * The number of lines in text mode.
+     */
     public static final int LINES = 25;
 
+    /**
+     * The width of the display in pixels.
+     */
     public static final int WIDTH = C_WIDTH * COLUMNS;
 
+    /**
+     * The height of the display in pixels.
+     */
     public static final int HEIGHT = C_HEIGHT * LINES;
 
+    /**
+     * The font used to render text in text mode and graphics mode.
+     */
     public static final Font FONT;
 
     static {
@@ -38,22 +67,57 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
         }
     }
 
+    /**
+     * In text mode, the text buffer contains all content that is visible on screen. It is a precise
+     * character-by-character mapping. Where there is no character being displayed, the text buffer contains a space,
+     * rather than a {@code '\0'}. The first index is lines; the second, columns.
+     */
     private final char[][] textBuffer = new char[LINES][COLUMNS];
 
+    /**
+     * The current line of the cursor in text mode.
+     */
     private int curLine;
 
+    /**
+     * The current column of the cursor in text mode.
+     */
     private int curColumn;
 
+    /**
+     * <p>A special array to store information about characters that should be displayed in reverse mode in text
+     * mode.</p>
+     *
+     * <p>It's a two-dimensional {@code boolean} array, organised in the same fashion as the {@link #textBuffer} array
+     * (lines first). Column arrays are created on demand. This array is essentially an overlay of the
+     * {@link #textBuffer}; where it contains a {@code true} value, the corresponding character is to be displayed in
+     * reverse mode.</p>
+     */
     private final boolean[][] reverse = new boolean[LINES][];
 
+    /**
+     * If {@code true}, the GUI is in graphics mode. If {@code false}, it's in text mode.
+     */
     private boolean isGraphicsMode = false;
 
+    /**
+     * The representation of the display in graphics mode.
+     */
     private final BufferedImage image;
 
+    /**
+     * A thread to take care of key events.
+     */
     private KeyThread keyThread;
 
+    /**
+     * Key events are stored in this queue.
+     */
     private BlockingQueue<KeyPress> keyEvents = new LinkedBlockingQueue<>();
 
+    /**
+     * This array maps the BASICODE colour codes (0..7) directly to the corresponding colours.
+     */
     private static final Color[] COLOR_MAP = new Color[] {
             Color.BLACK,
             Color.BLUE,
@@ -65,10 +129,19 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
             Color.WHITE
     };
 
+    /**
+     * The number of colours supported by BASICODE.
+     */
     private static final int N_COLORS = COLOR_MAP.length;
 
-    private Color backgroundColour = COLOR_MAP[1]; // initlally, blue
+    /**
+     * The background colour for both text and graphics mode.
+     */
+    private Color backgroundColour = COLOR_MAP[1]; // initially, blue
 
+    /**
+     * The foreground colour for both text and graphics mode.
+     */
     private Color foregroundColour = COLOR_MAP[6]; // initially, yellow
 
     private volatile boolean collectingKeyEvents;
