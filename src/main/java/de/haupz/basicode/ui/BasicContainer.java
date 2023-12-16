@@ -1,5 +1,6 @@
 package de.haupz.basicode.ui;
 
+import de.haupz.basicode.interpreter.InterpreterState;
 import de.haupz.basicode.io.*;
 
 import javax.swing.*;
@@ -144,14 +145,31 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
      */
     private Color foregroundColour = COLOR_MAP[6]; // initially, yellow
 
+    /**
+     * This is {@code true} while the interpreter is running and ready to process key events. During shutdown, this is
+     * set to {@code false}, to allow an orderly termination of the key events processing thread.
+     */
     private volatile boolean collectingKeyEvents;
 
+    /**
+     * If this is {@code true}, the interpreter can be terminated by pressing the stop key. See
+     * {@link de.haupz.basicode.subroutines.Subroutines#gosub280(InterpreterState)}}.
+     */
     private boolean acceptStopKey = true;
 
+    /**
+     * A handler for when the stop key is pressed.
+     */
     private StopKeyHandler stopKeyHandler;
 
+    /**
+     * The cursor in graphics mode.
+     */
     private GraphicsCursor graphicsCursor = new GraphicsCursor(0.0, 0.0);
 
+    /**
+     * Construct a {@code BasicContainer}, and enable key event processing.
+     */
     public BasicContainer() {
         super();
         setSize(WIDTH, HEIGHT);
@@ -163,11 +181,18 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
         addKeyListener(makeKeyListener());
     }
 
+    /**
+     * Shut down the GUI by ending the processing of key events.
+     */
     public void shutdown() {
         collectingKeyEvents = false;
         keyThread.interrupt();
     }
 
+    /**
+     * Clear the buffer for text mode by filling it with space characters, and reset all information about reverse
+     * characters. Also set the text cursor to the top left corner.
+     */
     public void clearTextBuffer() {
         for (char[] line : textBuffer) {
             Arrays.fill(line, ' ');
@@ -177,6 +202,11 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
         curColumn = 0;
     }
 
+    /**
+     * Paint the BASICODE GUI component. In text mode, this also clears the screen.
+     *
+     * @param g the {@code Graphics} object to use for painting.
+     */
     @Override
     public void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
@@ -187,6 +217,12 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
         }
     }
 
+    /**
+     * Depending on whether BASICODE is in graphics mode or text mode, draw the current GUI contents. In text mode, the
+     * entire text output will be repainted.
+     *
+     * @param g the {@code Graphics} context in which to paint
+     */
     @Override
     public void paintChildren(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
@@ -227,6 +263,11 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
         }
     }
 
+    /**
+     * Print a string in text mode.
+     *
+     * @param s the string to print.
+     */
     @Override
     public void print(String s) {
         if (reverse[curLine] != null) {
@@ -235,6 +276,11 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
         printInternal(s);
     }
 
+    /**
+     * Print a string in text mode, in reverse mode.
+     *
+     * @param s the string to print in reverse mode.
+     */
     @Override
     public void printReverse(String s) {
         if (reverse[curLine] == null) {
@@ -244,18 +290,32 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
         printInternal(s);
     }
 
+    /**
+     * Helper method: copy the characters from the string argument to the {@linkplain #textBuffer text buffer}.
+     *
+     * @param s the string to transfer to the text buffer.
+     */
     private void printInternal(String s) {
         System.arraycopy(s.toCharArray(), 0, textBuffer[curLine], curColumn, s.length());
         curColumn += s.length();
         repaint();
     }
 
+    /**
+     * In text mode, print a string, followed by a newline.
+     *
+     * @param s the string to print.
+     */
     @Override
     public void println(String s) {
         print(s);
         println();
     }
 
+    /**
+     * In text mode, print a newline. This may trigger scrolling if the text cursor advances past the maximum number of
+     * lines that can be displayed.
+     */
     @Override
     public void println() {
         curLine++;
@@ -270,11 +330,17 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
         }
     }
 
+    /**
+     * Repaint the GUI.
+     */
     @Override
     public void flush() {
         repaint();
     }
 
+    /**
+     * Switch the BASICODE GUI to text mode, and clear the display.
+     */
     @Override
     public void textMode() {
         isGraphicsMode = false;
@@ -282,17 +348,29 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
         repaint();
     }
 
+    /**
+     * Set the text cursor to the given coordinates.
+     *
+     * @param ho the horizontal coordinate, starting at 0.
+     * @param ve the vertical coordinate, starting at 0.
+     */
     @Override
     public void setTextCursor(int ho, int ve) {
         curColumn = ho;
         curLine = ve;
     }
 
+    /**
+     * @return the current text cursor coordinates.
+     */
     @Override
     public TextCursor getTextCursor() {
         return new TextCursor(curColumn, curLine);
     }
 
+    /**
+     * Switch the BASICODE GUI to graphics mode, and clear the display.
+     */
     @Override
     public void graphicsMode() {
         isGraphicsMode = true;
@@ -302,16 +380,28 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
         repaint();
     }
 
+    /**
+     * @return the graphics content in graphics mode.
+     */
     @Override
     public BufferedImage getImage() {
         return image;
     }
 
+    /**
+     * @return the font used to display text in both text and graphics mode.
+     */
     @Override
     public Font getFont() {
         return FONT;
     }
 
+    /**
+     * Read a single line of text. This is a blocking operation.
+     *
+     * @return the line of text that was entered.
+     * @throws IOException in case anything goes wrong.
+     */
     @Override
     public String readLine() throws IOException {
         String s = "";
@@ -328,8 +418,18 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
         return s;
     }
 
+    /**
+     * Lock object to process key events between threads.
+     */
     private final Object keyLock = new Object();
 
+    /**
+     * <p>The {@code KeyThread} is a simple thread that processes key events. In AWT and Swing, this needs to happen in
+     * a thread that's separate from the "main" or event processing thread, as it would otherwise block execution.</p>
+     *
+     * <p>The key events processing thread stores any key event in the {@link #keyEvents} queue, from which they can be
+     * consumed.</p>
+     */
     class KeyThread extends Thread {
         @Override
         public void run() {
@@ -348,6 +448,16 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
         }
     }
 
+    /**
+     * <p>Transform an AWT {@link KeyEvent} to a BASICODE {@link KeyPress}, mapping Java key characters to BASICODE
+     * codes in the process.</p>
+     *
+     * <p>The BASICODE conventions require some codes that are normally different on machines this interpreter will run
+     * on. This method takes care of that.</p>
+     *
+     * @param e a key event to map.
+     * @return the mapped key event.
+     */
     private KeyPress mapKey(KeyEvent e) {
         char c = switch (e.getKeyChar()) {
             case 10 -> 13;
@@ -356,6 +466,11 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
         return new KeyPress(e.getKeyCode(), c);
     }
 
+    /**
+     * @return a key listener to be registered in the GUI component. The listener takes care of filling the
+     * {@link #keyEvents} queue, and also notifies the {@link #stopKeyHandler} in case the stop key (here: escape) was
+     * pressed.
+     */
     public KeyListener makeKeyListener() {
         return new KeyAdapter() {
             @Override
@@ -374,6 +489,12 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
         };
     }
 
+    /**
+     * Read a single character. This is a blocking operation.
+     *
+     * @return the character that was entered.
+     * @throws IOException in case anything goes wrong.
+     */
     @Override
     public int readChar() throws IOException {
         keyEvents.clear();
@@ -384,6 +505,9 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
         }
     }
 
+    /**
+     * @return the character from the last key that was pressed, if any; 0 otherwise.
+     */
     @Override
     public int lastChar() {
         synchronized (keyLock) {
@@ -394,12 +518,24 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
         }
     }
 
+    /**
+     * Helper: ensure a colour number is in the allowed range.
+     *
+     * @param name the name of the colour (foreground, background), for debugging purposes.
+     * @param c the colour code to test.
+     */
     private void ensureColourRange(String name, int c) {
         if (c < 0 || c >= N_COLORS) {
             throw new IllegalStateException(name + " colour out of range: " + c);
         }
     }
 
+    /**
+     * Set the foregreound and background colours for text or graphics mode.
+     *
+     * @param fg the foreground colour.
+     * @param bg the background colour.
+     */
     @Override
     public void setColours(int fg, int bg) {
         ensureColourRange("foreground", fg);
@@ -408,43 +544,82 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
         backgroundColour = COLOR_MAP[bg];
     }
 
+    /**
+     * @return the background colour.
+     */
     @Override
     public Color getBackgroundColour() {
         return backgroundColour;
     }
 
+    /**
+     * @return the foreground colour.
+     */
     @Override
     public Color getForegroundColour() {
         return foregroundColour;
     }
 
+    /**
+     * @param ho the horizontal position.
+     * @param ve the vertical position.
+     * @return the character at the indicated position in text mode.
+     */
     @Override
     public char getCharAt(int ho, int ve) {
         return textBuffer[ve][ho];
     }
 
+    /**
+     * Used to remember a thread that needs to be interrupted when a key is pressed.
+     */
     private Thread sleepingThread;
 
+    /**
+     * Instruct the input to note that a waiting operation is under way, and that the input can interrupt this if a key
+     * is pressed.
+     *
+     * @param ready if {@code true}, input will be ready to interrupt a waiting operation; if {@code false}, it won't.
+     */
     @Override
     public void setReadyToInterrupt(boolean ready) {
         sleepingThread = ready ? Thread.currentThread() : null;
     }
 
+    /**
+     * Control whether pressing a stop key (e.g., ESC) will terminate program execution.
+     *
+     * @param acceptStopKey if {@code trye}, the stop key will terminate program execution; if {@code false}, it won't.
+     */
     @Override
     public void toggleAcceptStopKey(boolean acceptStopKey) {
         this.acceptStopKey = acceptStopKey;
     }
 
+    /**
+     * Register a stop key handler for the GUI.
+     *
+     * @param stopKeyHandler the handler.
+     */
     @Override
     public void registerStopKeyHandler(StopKeyHandler stopKeyHandler) {
         this.stopKeyHandler = stopKeyHandler;
     }
 
+    /**
+     * Set the coordinates of the internal graphics cursor.
+     *
+     * @param h the horizontal coordinate.
+     * @param v the vertical coordinate.
+     */
     @Override
     public void setGraphicsCursor(double h, double v) {
         graphicsCursor = new GraphicsCursor(h, v);
     }
 
+    /**
+     * @return the current position of the internal graphics cursor.
+     */
     @Override
     public GraphicsCursor getGraphicsCursor() {
         return graphicsCursor;
