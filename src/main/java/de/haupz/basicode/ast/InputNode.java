@@ -1,11 +1,19 @@
 package de.haupz.basicode.ast;
 
 import de.haupz.basicode.interpreter.InterpreterState;
+import de.haupz.basicode.io.BasicInput;
 
 import java.io.IOException;
 
+/**
+ * {@code INPUT}. The implementation here does not display a prompt. It uses {@link BasicInput#readLine()} to read a
+ * string, which it then stores in a variable, attempting to convert it to a number if the variable name indicates that.
+ */
 public class InputNode extends StatementNode {
 
+    /**
+     * The name of the variable to store the input in.
+     */
     private final String id;
 
     public InputNode(String id) {
