@@ -4,6 +4,9 @@ import de.haupz.basicode.interpreter.InterpreterState;
 
 import java.util.List;
 
+/**
+ * {@code ON ... GOSUB}.
+ */
 public class OnGosubNode extends DependentJumpNode {
 
     public OnGosubNode(ExpressionNode expression, List<Integer> targets) {

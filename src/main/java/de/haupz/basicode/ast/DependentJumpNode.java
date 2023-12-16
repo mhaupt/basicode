@@ -4,10 +4,21 @@ import de.haupz.basicode.interpreter.InterpreterState;
 
 import java.util.List;
 
+/**
+ * A node class to represent {@code ON ... GOTO} and {@code ON ... GOSUB} statements. It provides a shared method to
+ * determine the jump target from a value and list of targets. The subclasses override
+ * {@link BasicNode#run(InterpreterState)} to implement the actual jump.
+ */
 public abstract class DependentJumpNode extends StatementNode {
 
+    /**
+     * The expression based on which value a jump is to be executed.
+     */
     private final ExpressionNode expression;
 
+    /**
+     * The list of target source code lines.
+     */
     private final List<Integer> targets;
 
     public DependentJumpNode(ExpressionNode expression, List<Integer> targets) {
@@ -15,6 +26,12 @@ public abstract class DependentJumpNode extends StatementNode {
         this.targets = targets;
     }
 
+    /**
+     * Compute a jump target from a value derived from evaluating {@link #expression}.
+     *
+     * @param state the interpreter state.
+     * @return the target line number, retrieved from {@link #targets}.
+     */
     protected int computeTarget(InterpreterState state) {
         Object value = expression.eval(state);
         if (value instanceof Number n) {
