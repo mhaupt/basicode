@@ -1,9 +1,10 @@
 package de.haupz.basicode.ast;
 
-import de.haupz.basicode.interpreter.InterpreterState;
-
 import java.util.Optional;
 
+/**
+ * Subtraction ({@code -}).
+ */
 public class SubtractNode extends TypeAdjustingNode {
 
     public SubtractNode(ExpressionNode expression1, ExpressionNode expression2) {

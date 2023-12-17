@@ -2,6 +2,9 @@ package de.haupz.basicode.ast;
 
 import java.util.Optional;
 
+/**
+ * Inequality comparison ({@code <>}) for numbers or strings.
+ */
 public class NeqNode extends TypeAdjustingNode {
 
     public NeqNode(ExpressionNode expression1, ExpressionNode expression2) {

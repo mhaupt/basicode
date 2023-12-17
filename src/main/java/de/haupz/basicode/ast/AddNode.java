@@ -1,9 +1,10 @@
 package de.haupz.basicode.ast;
 
-import de.haupz.basicode.interpreter.InterpreterState;
-
 import java.util.Optional;
 
+/**
+ * Addition for numbers, or string concatenation ({@code +}).
+ */
 public class AddNode extends TypeAdjustingNode {
 
     public AddNode(ExpressionNode expression1, ExpressionNode expression2) {

@@ -2,6 +2,9 @@ package de.haupz.basicode.ast;
 
 import java.util.Optional;
 
+/**
+ * Equality comparison ({@code =}) for numbers or strings.
+ */
 public class EqNode extends TypeAdjustingNode {
 
     public EqNode(ExpressionNode expression1, ExpressionNode expression2) {

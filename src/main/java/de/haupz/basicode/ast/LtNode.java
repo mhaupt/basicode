@@ -2,6 +2,9 @@ package de.haupz.basicode.ast;
 
 import java.util.Optional;
 
+/**
+ * Less-than comparison ({@code <}) for numbers or strings.
+ */
 public class LtNode extends TypeAdjustingNode {
 
     public LtNode(ExpressionNode expression1, ExpressionNode expression2) {

@@ -2,6 +2,9 @@ package de.haupz.basicode.ast;
 
 import java.util.Optional;
 
+/**
+ * {@code AND}.
+ */
 public class AndNode extends TypeAdjustingNode {
 
     public AndNode(ExpressionNode expression1, ExpressionNode expression2) {

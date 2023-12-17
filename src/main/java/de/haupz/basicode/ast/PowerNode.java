@@ -2,6 +2,9 @@ package de.haupz.basicode.ast;
 
 import java.util.Optional;
 
+/**
+ * Power operation ({@code ^}).
+ */
 public class PowerNode extends TypeAdjustingNode {
 
     public PowerNode(ExpressionNode expression1, ExpressionNode expression2) {

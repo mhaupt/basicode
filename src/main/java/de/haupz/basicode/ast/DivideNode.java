@@ -1,9 +1,10 @@
 package de.haupz.basicode.ast;
 
-import de.haupz.basicode.interpreter.InterpreterState;
-
 import java.util.Optional;
 
+/**
+ * Division ({@code /}).
+ */
 public class DivideNode extends TypeAdjustingNode {
 
     public DivideNode(ExpressionNode expression1, ExpressionNode expression2) {
