@@ -2,6 +2,9 @@ package de.haupz.basicode.ast;
 
 import de.haupz.basicode.interpreter.InterpreterState;
 
+/**
+ * {@code RUN}. Delete variables and call stack, reset the data pointer, and restart the program.
+ */
 public class RunNode extends StatementNode {
 
     @Override

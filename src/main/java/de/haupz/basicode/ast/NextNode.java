@@ -2,6 +2,12 @@ package de.haupz.basicode.ast;
 
 import de.haupz.basicode.interpreter.InterpreterState;
 
+/**
+ * {@code NEXT}. This node does all the heavy lifting for loop execution. It increments (or decrements) the loop
+ * iterator variable, checks whether loop execution should end, and signals the interpreter to either
+ * {@linkplain InterpreterState#stopLoop(String) stop the loop}, or to {@linkplain InterpreterState#requestBackedge()
+ * perform a backedge jump}.
+ */
 public class NextNode extends StatementNode {
 
     private final String id;
