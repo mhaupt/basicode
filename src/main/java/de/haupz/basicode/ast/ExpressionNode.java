@@ -5,6 +5,11 @@ import de.haupz.basicode.parser.Token;
 
 import java.util.List;
 
+/**
+ * The super class of all AST nodes representing BASICODE expressions. It overrides
+ * {@link BasicNode#run(InterpreterState)} to throw an exception, as this method will not be used in the entire
+ * hierarchy.
+ */
 public abstract class ExpressionNode extends BasicNode {
 
     @Override

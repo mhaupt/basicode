@@ -2,10 +2,19 @@ package de.haupz.basicode.ast;
 
 import de.haupz.basicode.interpreter.InterpreterState;
 
+/**
+ * {@code RIGHT$}.
+ */
 public class RightsNode extends ExpressionNode {
 
+    /**
+     * The string from which to extract a suffix.
+     */
     private final ExpressionNode expression1;
 
+    /**
+     * An expression to yield the length of the suffix.
+     */
     private final ExpressionNode expression2;
 
     public RightsNode(ExpressionNode expression1, ExpressionNode expression2) {

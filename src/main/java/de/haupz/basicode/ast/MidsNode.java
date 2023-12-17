@@ -2,12 +2,24 @@ package de.haupz.basicode.ast;
 
 import de.haupz.basicode.interpreter.InterpreterState;
 
+/**
+ * {@code MID$}.
+ */
 public class MidsNode extends ExpressionNode {
 
+    /**
+     * An expression to yield the string from which to extract a substring.
+     */
     private final ExpressionNode expression1;
 
+    /**
+     * An expression to yield the beginning index of the substring.
+     */
     private final ExpressionNode expression2;
 
+    /**
+     * An expression to yield the length of the substring.
+     */
     private final ExpressionNode expression3;
 
     public MidsNode(ExpressionNode expression1, ExpressionNode expression2, ExpressionNode expression3) {
