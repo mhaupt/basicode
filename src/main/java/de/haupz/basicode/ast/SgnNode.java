@@ -1,9 +1,10 @@
 package de.haupz.basicode.ast;
 
-import de.haupz.basicode.interpreter.InterpreterState;
-
 import java.util.Optional;
 
+/**
+ * {@code SGN}.
+ */
 public class SgnNode extends WrappingExpressionNode {
 
     public SgnNode(ExpressionNode expression) {

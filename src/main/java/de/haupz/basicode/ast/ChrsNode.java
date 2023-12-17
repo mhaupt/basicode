@@ -1,9 +1,10 @@
 package de.haupz.basicode.ast;
 
-import de.haupz.basicode.interpreter.InterpreterState;
-
 import java.util.Optional;
 
+/**
+ * {@code CHR$}.
+ */
 public class ChrsNode extends WrappingExpressionNode {
 
     public ChrsNode(ExpressionNode expression) {

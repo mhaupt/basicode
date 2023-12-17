@@ -2,6 +2,9 @@ package de.haupz.basicode.ast;
 
 import java.util.Optional;
 
+/**
+ * {@code NOT}.
+ */
 public class NotNode extends WrappingExpressionNode {
 
     public NotNode(ExpressionNode expression) {

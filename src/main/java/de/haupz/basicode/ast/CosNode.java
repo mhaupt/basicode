@@ -1,9 +1,10 @@
 package de.haupz.basicode.ast;
 
-import de.haupz.basicode.interpreter.InterpreterState;
-
 import java.util.Optional;
 
+/**
+ * {@code COS}.
+ */
 public class CosNode extends WrappingExpressionNode {
 
     public CosNode(ExpressionNode expression) {

@@ -1,9 +1,10 @@
 package de.haupz.basicode.ast;
 
-import de.haupz.basicode.interpreter.InterpreterState;
-
 import java.util.Optional;
 
+/**
+ * {@code ASC}.
+ */
 public class AscNode extends WrappingExpressionNode {
 
     public AscNode(ExpressionNode expression) {

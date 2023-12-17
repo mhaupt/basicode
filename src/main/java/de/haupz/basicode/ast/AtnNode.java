@@ -1,9 +1,10 @@
 package de.haupz.basicode.ast;
 
-import de.haupz.basicode.interpreter.InterpreterState;
-
 import java.util.Optional;
 
+/**
+ * {@code ATN}.
+ */
 public class AtnNode extends WrappingExpressionNode {
 
     public AtnNode(ExpressionNode expression) {

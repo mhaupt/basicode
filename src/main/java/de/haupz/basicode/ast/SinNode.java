@@ -2,6 +2,9 @@ package de.haupz.basicode.ast;
 
 import java.util.Optional;
 
+/**
+ * {@code SIN}.
+ */
 public class SinNode extends WrappingExpressionNode {
 
     public SinNode(ExpressionNode expression) {

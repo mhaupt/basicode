@@ -2,6 +2,9 @@ package de.haupz.basicode.ast;
 
 import java.util.Optional;
 
+/**
+ * {@code TAN}.
+ */
 public class TanNode extends WrappingExpressionNode {
 
     public TanNode(ExpressionNode expression) {
