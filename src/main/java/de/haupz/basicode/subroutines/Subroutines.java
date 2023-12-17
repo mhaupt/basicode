@@ -530,6 +530,24 @@ public class Subroutines {
     }
 
     /**
+     * {@code GOSUB 560}: write to a file. The string contained in {@code SR$} will be written to the currently open
+     * output file, and afterwards, {@code IN} will contain an error code (0: OK).
+     *
+     * @param state the interpreter state.
+     */
+    public static void gosub560(InterpreterState state) {
+        String sr = (String) state.getVar("SR$").get();
+        int errorCode = 0;
+        PrintStream out = state.getCurrentOutFile();
+        if (null == out) {
+            errorCode = -1;
+        } else {
+            out.print(sr);
+        }
+        state.setVar("IN", Double.valueOf(errorCode));
+    }
+
+    /**
      * {@code GOSUB 580}: close the currently open file.
      *
      * @param state the interpreter state.
