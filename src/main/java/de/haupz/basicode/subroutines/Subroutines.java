@@ -8,12 +8,16 @@ import de.haupz.basicode.ui.Sound;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
+import java.io.*;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.FileAttribute;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.*;
@@ -473,6 +477,81 @@ public class Subroutines {
             // ignore
         }
         state.getInput().setReadyToInterrupt(false);
+    }
+
+    /**
+     * <p>{@code GOSUB 500}: open a file for reading or writing.</p>
+     *
+     * <p>The file name is passed in {@code NF$}. Furthermore, the variable {@code NF} has the following meanings:<ul>
+     *     <li>0, 2, 4, 6: read mode</li>
+     *     <li>1, 3, 5, 7: write mode</li>
+     * </ul>
+     * In the original BASICODE conventions, the different numbers would refer to read and write mode on different kinds
+     * of devices (e.g., cassette tape, floppy disks, microdrive). These are all irrelevant here; the fila named in
+     * {@code NF$} will always be opened as a file on the host file system the BASICODE interpreter is running on.</p>
+     *
+     * <p>After this, the {@code IN} variable will contain an error code (0: everything OK).</p>
+     *
+     * @param state the interpreter state.
+     */
+    public static void gosub500(InterpreterState state) {
+        String fileName = (String) state.getVar("NF$").get();
+        int mode = getStdVar(state, "NF").intValue();
+        Path p = Paths.get(fileName);
+        int errorCode = 0;
+        if (mode == 0 || mode == 2 || mode == 4 || mode == 6) {
+            // read mode: file should exist
+            if (null == state.getCurrentOutFile() && Files.exists(p)) {
+                try {
+                    BufferedReader in = Files.newBufferedReader(p);
+                    state.setCurrentInFile(in);
+                } catch (IOException ioe) {
+                    errorCode = -1;
+                }
+            } else {
+                errorCode = -1;
+            }
+        } else if (mode == 1 || mode == 3 || mode == 5 || mode == 7) {
+            // write mode; simply create the file
+            if (null == state.getCurrentInFile()) {
+                try {
+                    PrintStream out = new PrintStream(Files.newOutputStream(p));
+                    state.setCurrentOutFile(out);
+                } catch (IOException e) {
+                    errorCode = -1;
+                }
+            } else {
+                errorCode = -1;
+            }
+        } else {
+            errorCode = -1; // illegal mode
+        }
+        state.setVar("IN", Double.valueOf(errorCode));
+    }
+
+    /**
+     * {@code GOSUB 580}: close the currently open file.
+     *
+     * @param state the interpreter state.
+     */
+    public static void gosub580(InterpreterState state) {
+        int errorCode = 0;
+        // By convention, there can only be one open file at any given time. The subroutine for GOSUB 500 above ensures
+        // this, so that we can safely ignore the mode.
+        BufferedReader in = state.getCurrentInFile();
+        if (null != in) {
+            try {
+                in.close();
+            } catch (IOException e) {
+                errorCode = -1;
+            }
+        }
+        PrintStream out = state.getCurrentOutFile();
+        if (null != out) {
+            out.flush();
+            out.close();
+        }
+        state.setVar("IN", Double.valueOf(errorCode));
     }
 
     /**

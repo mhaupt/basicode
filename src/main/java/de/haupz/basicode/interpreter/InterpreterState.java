@@ -7,6 +7,8 @@ import de.haupz.basicode.ast.ProgramNode;
 import de.haupz.basicode.io.BasicInput;
 import de.haupz.basicode.io.BasicOutput;
 
+import java.io.BufferedReader;
+import java.io.PrintStream;
 import java.util.*;
 
 /**
@@ -112,6 +114,16 @@ public class InterpreterState {
      * statement would read from.
      */
     private int dataPtr = 0;
+
+    /**
+     * The currently open file output, or {@code null} if none is open.
+     */
+    private PrintStream currentOutFile;
+
+    /**
+     * The currently open file input, or {@code null} if none is open.
+     */
+    private BufferedReader currentInFile;
 
     /**
      * Create an interpreter state, and initialise BASICODE standard variables.
@@ -476,4 +488,34 @@ public class InterpreterState {
         return dataList.get(dataPtr++);
     }
 
+    /**
+     * @return the current output file.
+     */
+    public PrintStream getCurrentOutFile() {
+        return currentOutFile;
+    }
+
+    /**
+     * Set the current output file.
+     * @param currentOutFile the output file.
+     */
+    public void setCurrentOutFile(PrintStream currentOutFile) {
+        this.currentOutFile = currentOutFile;
+    }
+
+    /**
+     * @return the current input file.
+     */
+    public BufferedReader getCurrentInFile() {
+        return currentInFile;
+    }
+
+    /**
+     * Set the current input file.
+     *
+     * @param currentInFile the current input file.
+     */
+    public void setCurrentInFile(BufferedReader currentInFile) {
+        this.currentInFile = currentInFile;
+    }
 }
