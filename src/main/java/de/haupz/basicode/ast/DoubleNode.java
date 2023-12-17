@@ -2,6 +2,9 @@ package de.haupz.basicode.ast;
 
 import de.haupz.basicode.interpreter.InterpreterState;
 
+/**
+ * A numerical literal value.
+ */
 public class DoubleNode extends ValueNode {
 
     private final double value;

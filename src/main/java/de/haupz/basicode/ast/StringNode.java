@@ -2,6 +2,9 @@ package de.haupz.basicode.ast;
 
 import de.haupz.basicode.interpreter.InterpreterState;
 
+/**
+ * A string literal value.
+ */
 public class StringNode extends ValueNode {
 
     private final String value;
