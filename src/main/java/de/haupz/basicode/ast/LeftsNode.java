@@ -2,10 +2,19 @@ package de.haupz.basicode.ast;
 
 import de.haupz.basicode.interpreter.InterpreterState;
 
+/**
+ * {@code LEFT$}.
+ */
 public class LeftsNode extends ExpressionNode {
 
+    /**
+     * The string from which to retrieve a prefix.
+     */
     private final ExpressionNode expression1;
 
+    /**
+     * An expression to yield the length of the prefix.
+     */
     private final ExpressionNode expression2;
 
     public LeftsNode(ExpressionNode expression1, ExpressionNode expression2) {

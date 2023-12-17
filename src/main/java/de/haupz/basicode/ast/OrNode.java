@@ -2,6 +2,9 @@ package de.haupz.basicode.ast;
 
 import java.util.Optional;
 
+/**
+ * {@code OR}.
+ */
 public class OrNode extends TypeAdjustingNode {
 
     public OrNode(ExpressionNode expression1, ExpressionNode expression2) {

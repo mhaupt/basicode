@@ -4,17 +4,53 @@ import de.haupz.basicode.array.ArrayType;
 import de.haupz.basicode.array.BasicArray;
 import de.haupz.basicode.interpreter.InterpreterState;
 
+/**
+ * <p>{@code LET}. This node implements assignments to variables and into arrays, for both numerical and string
+ * types.</p>
+ *
+ * <p>The implementation performs an optional {@link LHS#checkPreInit(InterpreterState)} pre-initialisation of the
+ * left-hand side, evaluates the right-hand side, and finally executes the actual assignment.</p>
+ */
 public class LetNode extends StatementNode {
 
+    /**
+     * {@code LHS} is the representation of the left-hand side of an assignment. This is necessary because assignments
+     * to variables differ from assignments to array elements.
+     */
     public static abstract class LHS {
+        /**
+         * The name of the left-hand side (the name of a variable or array).
+         */
         protected String id;
         protected LHS(String id) {
             this.id = id;
         }
+
+        /**
+         * Since the right-hand side expression of an assignment can contain the left-hand side, it needs to be
+         * existent with a default value so that the right-hand side can be evaluated. This is what this method is
+         * meant to ensure.
+         *
+         * @param state the interpreter state.
+         */
         protected abstract void checkPreInit(InterpreterState state);
+
+        /**
+         * Execute the actual assignment of the value, depending on the nature of the left-hand side.
+         *
+         * @param state the interpreter state.
+         * @param value the result of the evaluation of the right-hand side of the assignment, meant to be assigned to
+         *              the variable or array element represented by the left-hand side.
+         */
         protected abstract void assign(InterpreterState state, Object value);
     }
 
+    /**
+     * A representation of an assignment left-hand side that is a {@code Variable}, regardless of its type (number or
+     * string). The implementation ensures the variable, if it does not yet exist, is
+     * {@linkplain LHS#checkPreInit(InterpreterState) initialised with a default value}. It also performs a type check
+     * when the {@linkplain LHS#assign(InterpreterState, Object) assignment is executed}.
+     */
     public static class Variable extends LHS {
         public Variable(String id) {
             super(id);
@@ -39,6 +75,12 @@ public class LetNode extends StatementNode {
         }
     }
 
+    /**
+     * A representation of an assignment left-hand side that is an {@code Array}, regardless of the type of its elements
+     * (number or string). As arrays are pre-initialised when they are created, the implementation does not ensure
+     * {@linkplain LHS#checkPreInit(InterpreterState) pre-initialisation}. It does, however, perform a type check when
+     * the {@linkplain LHS#assign(InterpreterState, Object) assignment is executed}.
+     */
     public static class Array extends LHS {
         private final VarNode getArray;
         private final ExpressionNode dim1;
@@ -93,8 +135,14 @@ public class LetNode extends StatementNode {
         }
     }
 
+    /**
+     * The left-hand side of this assignment.
+     */
     private LHS lhs;
 
+    /**
+     * The right-hand side of this assignment.
+     */
     private ExpressionNode expression;
 
     public LetNode(LHS lhs, ExpressionNode expression) {

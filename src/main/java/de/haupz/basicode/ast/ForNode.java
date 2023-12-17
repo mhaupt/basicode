@@ -2,14 +2,34 @@ package de.haupz.basicode.ast;
 
 import de.haupz.basicode.interpreter.InterpreterState;
 
+/**
+ * {@code FOR ... TO ... STEP}. This node implements BASICODE's {@code FOR} loop heads. It is constructed from four
+ * different elements: the name of the iterator variable, an expression to initialise the iterator, an expression that
+ * yields the end value, and an expression that yields the step width. Each of these expressions is evaluated exactly
+ * once, i.e., when this node is first evaluated and the loop is not yet running. The node is also the jump target of
+ * the loop's backedge, and will be executed as such, but ensures that the initialisation of the three aforementioned
+ * state parts is not repeated while the loop is running.
+ */
 public class ForNode extends StatementNode {
 
+    /**
+     * The name of the loop iterator variable.
+     */
     private final String id;
 
+    /**
+     * An expression used to initialise the loop iterator.
+     */
     private final ExpressionNode init;
 
+    /**
+     * An expression to determine the end value of the loop iterator.
+     */
     private final ExpressionNode end;
 
+    /**
+     * An expression to determine the loop iterator's step width.
+     */
     private final ExpressionNode step;
 
     public ForNode(String id, ExpressionNode init, ExpressionNode end, ExpressionNode step) {

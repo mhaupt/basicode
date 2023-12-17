@@ -2,6 +2,9 @@ package de.haupz.basicode.ast;
 
 import java.util.Optional;
 
+/**
+ * Greater-or-equal comparison ({@code >=}) for numbers or strings.
+ */
 public class GeqNode extends TypeAdjustingNode {
 
     public GeqNode(ExpressionNode expression1, ExpressionNode expression2) {

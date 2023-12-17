@@ -7,6 +7,19 @@ import java.text.DecimalFormatSymbols;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * <p>{@code PRINT}.</p>
+ *
+ * <p>Internally, the arguments to a {@code PRINT} statements are represented as a list of {@link Element} tuples. Each
+ * of these has a {@link ElementType} type and possibly carries a payload.</p>
+ *
+ * <p>The element types are as follows:<ul>
+ *     <li>{@code EXPRESSION}: a plain old variable, string, number, expression, whatever.</li>
+ *     <li>{@code TAB}: a {@code TAB} expression, moving the text cursor to a specific place on the output line.</li>
+ *     <li>{@code SEPARATOR}: a semicolon or comma, indicating whether the cursor should stay on the same line after
+ *     printing the previous element, or whether it should advance to the next line.</li>
+ * </ul></p>
+ */
 public class PrintNode extends StatementNode {
 
     public static final DecimalFormat DECIMAL_FORMAT =

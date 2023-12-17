@@ -1,9 +1,10 @@
 package de.haupz.basicode.ast;
 
-import de.haupz.basicode.interpreter.InterpreterState;
-
 import java.util.Optional;
 
+/**
+ * Multiplication ({@code *}).
+ */
 public class MultiplyNode extends TypeAdjustingNode {
 
     public MultiplyNode(ExpressionNode expression1, ExpressionNode expression2) {

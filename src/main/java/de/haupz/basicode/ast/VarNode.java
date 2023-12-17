@@ -2,6 +2,9 @@ package de.haupz.basicode.ast;
 
 import de.haupz.basicode.interpreter.InterpreterState;
 
+/**
+ * Retrieving a variable. This works for both ordinary variables and arrays.
+ */
 public class VarNode extends ExpressionNode {
 
     private final String id;

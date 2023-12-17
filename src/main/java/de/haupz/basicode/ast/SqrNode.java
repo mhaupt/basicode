@@ -2,6 +2,9 @@ package de.haupz.basicode.ast;
 
 import java.util.Optional;
 
+/**
+ * {@code SQR}.
+ */
 public class SqrNode extends WrappingExpressionNode {
 
     public SqrNode(ExpressionNode expression) {

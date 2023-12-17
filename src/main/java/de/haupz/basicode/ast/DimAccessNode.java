@@ -3,12 +3,25 @@ package de.haupz.basicode.ast;
 import de.haupz.basicode.array.BasicArray;
 import de.haupz.basicode.interpreter.InterpreterState;
 
+/**
+ * Reading from an array.
+ */
 public class DimAccessNode extends ExpressionNode {
 
+    /**
+     * A node representing the operation to retrieve the array.
+     */
     private final VarNode getArray;
 
+    /**
+     * The first dimension of the array access.
+     */
     private final ExpressionNode dim1;
 
+    /**
+     * The second dimension of the array access. This can be {@code null}, in which case the access is to a
+     * one-dimensional array.
+     */
     private final ExpressionNode dim2;
 
     public DimAccessNode(String id, ExpressionNode dim1, ExpressionNode dim2) {

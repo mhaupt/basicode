@@ -11,6 +11,10 @@ import java.util.List;
 
 import de.haupz.basicode.ast.*;
 
+/**
+* The BASIC parser for the BASICODE interpreter. The parser is straightforward, and directly generates AST nodes for
+* interpretation.
+*/
 public class BasicParser {
     List<Object> dataList = new ArrayList<>();
 }

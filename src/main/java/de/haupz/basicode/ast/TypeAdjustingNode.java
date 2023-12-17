@@ -4,6 +4,14 @@ import de.haupz.basicode.interpreter.InterpreterState;
 
 import java.util.Optional;
 
+/**
+ * <p>A superclass for expressions with two arguments that must have certain types. This applies to many mathematical
+ * operations.</p>
+ *
+ * <p>The node, when executed, will evaluate its arguments, and wrap execution of the actual functionality in a call to
+ * {@link #evalWithTypes(Object,Object)}. If that call returns {@link Optional#empty()}, an exception will be
+ * thrown.</p>
+ */
 public abstract class TypeAdjustingNode extends ExpressionNode {
 
     private final ExpressionNode expression1;

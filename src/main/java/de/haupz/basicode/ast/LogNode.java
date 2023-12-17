@@ -2,6 +2,9 @@ package de.haupz.basicode.ast;
 
 import java.util.Optional;
 
+/**
+ * {@code LOG}.
+ */
 public class LogNode extends WrappingExpressionNode {
 
     public LogNode(ExpressionNode expression) {
