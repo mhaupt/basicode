@@ -15,14 +15,32 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * The main entry point for running BASICODE programs. This class, when run, accepts a collection of
+ * {@linkplain Configuration command line flags} as well as the name of a BASICODE source file, and will run that file,
+ * displaying any output in the BASICODE GUI.
+ */
 public class Main {
 
+    /**
+     * The GUI component.
+     */
     static BasicContainer bc;
 
+    /**
+     * The main frame for the GUI component.
+     */
     static BasicFrame bf;
 
+    /**
+     * Run a BASICODE program.
+     *
+     * @param code the source code to run, as a string.
+     * @param configuration the configuration for the interpreter.
+     * @throws Throwable in case anything goes wrong.
+     */
     public static void run(String code, Configuration configuration) throws Throwable {
-        final var parser = new BasicParser(new StringReader(code));
+        final BasicParser parser = new BasicParser(new StringReader(code));
         ProgramNode prog = parser.program();
         InterpreterState state = new InterpreterState(prog, bc, bc, configuration);
         bc.registerStopKeyHandler(() -> state.terminate());
