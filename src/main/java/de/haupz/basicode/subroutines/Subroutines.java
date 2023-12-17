@@ -530,6 +530,28 @@ public class Subroutines {
     }
 
     /**
+     * {@code GOSUB 540}: read a line from a file. Afterwards, {@code IN$} will contain the line, and {@code IN} will be
+     * an error code (0: OK).
+     *
+     * @param state the interpreter state.
+     */
+    public static void gosub540(InterpreterState state) {
+        int errorCode = 0;
+        BufferedReader in = state.getCurrentInFile();
+        if (null == in) {
+            errorCode = -1;
+        } else {
+            try {
+                String s = in.readLine();
+                state.setVar("IN$", s);
+            } catch (IOException e) {
+                errorCode = e instanceof EOFException ? 1 : -1;
+            }
+        }
+        state.setVar("IN", errorCode);
+    }
+
+    /**
      * {@code GOSUB 560}: write to a file. The string contained in {@code SR$} will be written to the currently open
      * output file, and afterwards, {@code IN} will contain an error code (0: OK).
      *
