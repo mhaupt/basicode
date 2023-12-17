@@ -22,15 +22,11 @@ public class Main {
     static BasicFrame bf;
 
     public static void run(String code, Configuration configuration) throws Throwable {
-        System.out.println("================================================================================");
-        System.out.println(code);
-        System.out.println("--------------------------------------------------------------------------------");
         final var parser = new BasicParser(new StringReader(code));
         ProgramNode prog = parser.program();
         InterpreterState state = new InterpreterState(prog, bc, bc, configuration);
         bc.registerStopKeyHandler(() -> state.terminate());
         prog.run(state);
-        System.out.println("================================================================================");
     }
 
     public static void main(String[] args) throws Throwable {
