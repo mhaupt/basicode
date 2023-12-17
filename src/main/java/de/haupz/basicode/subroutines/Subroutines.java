@@ -444,10 +444,10 @@ public class Subroutines {
             return;
         }
         int sp = getStdVar(state, "SP").intValue();
-        int sd = getStdVar(state, "SD").intValue();
+        double sd = getStdVar(state, "SD").doubleValue();
         int sv = getStdVar(state, "SV").intValue();
         int frequency = (int) (440.0 * Math.pow(2.0, 100.0 * (sp - 69) / 1200.0));
-        int duration = 100 * sd; // sd is in 0.1 s (100 ms)
+        int duration = (int) (100 * sd); // sd is in 0.1 s (100 ms)
         int volume = (int) (100/15.0 * sv); // volume is 0..100, mapping from 0..15
         Sound.play(frequency, duration, volume);
     }
