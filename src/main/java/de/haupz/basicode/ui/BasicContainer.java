@@ -152,6 +152,16 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
     private volatile boolean collectingKeyEvents;
 
     /**
+     * The character used to represent a newline on the host OS.
+     */
+    public static final char HOST_NEWLINE = 10;
+
+    /**
+     * The character used to represent a newline in BASICODE.
+     */
+    public static final char BASICODE_NEWLINE = 13;
+
+    /**
      * If this is {@code true}, the interpreter can be terminated by pressing the stop key. See
      * {@link de.haupz.basicode.subroutines.Subroutines#gosub280(InterpreterState)}}.
      */
@@ -408,13 +418,13 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
         char c;
         do {
             c = (char) readChar();
-            if (c != '\n') {
+            if (c != BASICODE_NEWLINE) {
                 print("" + c);
                 s += c;
             } else {
                 println();
             }
-        } while (c != '\n');
+        } while (c != BASICODE_NEWLINE);
         return s;
     }
 
@@ -460,7 +470,7 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
      */
     private KeyPress mapKey(KeyEvent e) {
         char c = switch (e.getKeyChar()) {
-            case 10 -> 13;
+            case HOST_NEWLINE -> BASICODE_NEWLINE;
             default -> e.getKeyChar();
         };
         return new KeyPress(e.getKeyCode(), c);
