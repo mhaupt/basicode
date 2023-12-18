@@ -66,7 +66,7 @@ public class BasicArray2D extends BasicArray {
     @Override
     public Object at(int a, int b) {
         checkBoundaries(a, b);
-        return data[a * dim1 + b];
+        return data[a * dim2 + b];
     }
 
     /**
@@ -79,7 +79,7 @@ public class BasicArray2D extends BasicArray {
     @Override
     public void setAt(int a, int b, Object v) {
         checkBoundaries(a, b);
-        data[a * dim1 + b] = v;
+        data[a * dim2 + b] = v;
     }
 
     /**
