@@ -70,6 +70,23 @@ be found in the `de.haupz.basicode.ast` package. Many of the AST node
 come with a piece of JavaDoc commentary that describes how they work, so 
 I'll refer to those for further details.
 
+### Files and Printing
+
+BASICODE supports reading from and writing to files on different kinds of 
+media that were in use at the time when it was invented. These include 
+cassette tapes, floppy disks, and microdrives. Since this BASICODE 
+implementation would typically not have access to such media, it defaults to 
+always opening files on the file system the implementation is running on.
+
+If file names are given without any directory prefix (which would be unusual 
+in BASICODE to begin with), files will be expected to be located, and can be 
+expected to be created, in the directory the `java` command to start 
+BASICODE was issued.
+
+Similarly to file I/O, printer output is also emulated. The BASICODE 
+implementation will open a file named `BASICODE-printer.txt` that will 
+contain any output sent to the printer.
+
 ### Tests
 
 The grammar and basic functionality of the BASICODE implementation are 
