@@ -45,6 +45,7 @@ public class Main {
         InterpreterState state = new InterpreterState(prog, bc, bc, configuration);
         bc.registerStopKeyHandler(() -> state.terminate());
         prog.run(state);
+        state.closeFiles();
     }
 
     public static void main(String[] args) throws Throwable {

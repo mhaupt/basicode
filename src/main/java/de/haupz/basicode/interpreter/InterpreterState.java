@@ -8,6 +8,7 @@ import de.haupz.basicode.io.BasicInput;
 import de.haupz.basicode.io.BasicOutput;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.*;
 
@@ -124,6 +125,11 @@ public class InterpreterState {
      * The currently open file input, or {@code null} if none is open.
      */
     private BufferedReader currentInFile;
+
+    /**
+     * The "printer".
+     */
+    private PrintStream printer;
 
     /**
      * Create an interpreter state, and initialise BASICODE standard variables.
@@ -518,4 +524,43 @@ public class InterpreterState {
     public void setCurrentInFile(BufferedReader currentInFile) {
         this.currentInFile = currentInFile;
     }
+
+    /**
+     * @return the printer.
+     */
+    public PrintStream getPrinter() {
+        return printer;
+    }
+
+    /**
+     * Set the printer.
+     *
+     * @param printer the printer.
+     */
+    public void setPrinter(PrintStream printer) {
+        this.printer = printer;
+    }
+
+    /**
+     * Close all open files maintained by the interpreter state. This is about the {@link #currentInFile},
+     * {@link #currentOutFile}, and {@link #printer}.
+     */
+    public void closeFiles() {
+        if (null != currentInFile) {
+            try {
+                currentInFile.close();
+            } catch (IOException e) {
+                // ignore
+            }
+        }
+        if (null != currentOutFile) {
+            currentOutFile.flush();
+            currentOutFile.close();
+        }
+        if (null != printer) {
+            printer.flush();
+            printer.close();
+        }
+    }
+
 }

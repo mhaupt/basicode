@@ -17,7 +17,6 @@ import java.lang.reflect.Modifier;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.FileAttribute;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.*;
@@ -142,6 +141,12 @@ public class Subroutines {
      * pleasant looking line width.
      */
     private static final Stroke STROKE = new BasicStroke(3);
+
+    /**
+     * The name of the file printer output will be written to. BASICODE supports printing on an actual printer, which
+     * this implementation emulates by writing to a file.
+     */
+    public static final String PRINTER_FILE = "BASICODE-printer.txt";
 
     /**
      * Retrieve a numeric "standard" variable from the interpreter state. This is a slightly unsafe method, insofar as
@@ -423,6 +428,46 @@ public class Subroutines {
     public static void gosub330(InterpreterState state) {
         String srs = (String) state.getVar("SR$").get();
         state.setVar("SR$", srs.toUpperCase());
+    }
+
+    /**
+     * Helper method: ensure the interpreter state has a valid printer reference.
+     *
+     * @param state the interpreter state.
+     * @return the printer.
+     */
+    private static PrintStream ensurePrinter(InterpreterState state) {
+        PrintStream printer = state.getPrinter();
+        if (null == printer) {
+            try {
+                printer = new PrintStream(Files.newOutputStream(Paths.get(PRINTER_FILE)));
+            } catch (IOException ioe) {
+                throw new IllegalStateException("could not open printer file " + PRINTER_FILE, ioe);
+            }
+            state.setPrinter(printer);
+        }
+        return printer;
+    }
+
+    /**
+     * {@code GOSUB 350}: write the text contained in {@code SR$} to the printer, without a newline at the end.
+     *
+     * @param state the interpreter state.
+     */
+    public static void gosub350(InterpreterState state) {
+        String sr = (String) state.getVar("SR$").get();
+        PrintStream printer = ensurePrinter(state);
+        printer.print(sr);
+    }
+
+    /**
+     * {@code GOSUB 360}: write a newline to the printer.
+     *
+     * @param state the interpreter state.
+     */
+    public static void gosub360(InterpreterState state) {
+        PrintStream printer = ensurePrinter(state);
+        printer.println();
     }
 
     /**
