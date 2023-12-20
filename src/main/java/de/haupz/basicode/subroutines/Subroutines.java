@@ -593,7 +593,7 @@ public class Subroutines {
                 errorCode = e instanceof EOFException ? 1 : -1;
             }
         }
-        state.setVar("IN", errorCode);
+        state.setVar("IN", Double.valueOf(errorCode));
     }
 
     /**
