@@ -161,16 +161,25 @@ public class Subroutines {
     }
 
     /**
-     * Set the foreground and background colours from the {@code CC} standard array stored in the
-     * {@linkplain InterpreterState interpreter state}.
+     * <p>Set the foreground and background colours from the {@code CC} standard array stored in the
+     * {@linkplain InterpreterState interpreter state}. Also, return the actual painting colour as determined by
+     * {@code CN}.</p>
+     *
+     * <p>The variable {@code CN} can be used to control this. If it has the value 0, the foreground colour will be used
+     * for drawing. If it has the value 1, the background colour will be used instead. This can be used to erase
+     * something that has been drawn.</p>
      *
      * @param state the current interpreter state, at the time of execution.
+     * @return the actual painting colour.
      */
-    private static void setColours(InterpreterState state) {
+    private static Color establishColours(InterpreterState state) {
         BasicArray1D cc = (BasicArray1D) state.getArray("CC").get();
         int fg = ((Double) cc.at(0, -1)).intValue();
         int bg = ((Double) cc.at(1, -1)).intValue();
         state.getOutput().setColours(fg, bg);
+        int cn = getStdVar(state, "CN").intValue();
+        Color c = cn == 0 ? state.getOutput().getForegroundColour() : state.getOutput().getBackgroundColour();
+        return c;
     }
 
     /**
@@ -204,7 +213,7 @@ public class Subroutines {
      * @param state the interpreter state.
      */
     public static void gosub100(InterpreterState state) {
-        setColours(state);
+        establishColours(state);
         state.getOutput().textMode();
     }
 
@@ -650,7 +659,7 @@ public class Subroutines {
      * @param state the interpreter state.
      */
     public static void gosub600(InterpreterState state) {
-        setColours(state);
+        establishColours(state);
         state.getOutput().graphicsMode();
         state.setVar("HG", 320.0);
         state.setVar("VG", 200.0);
@@ -684,8 +693,8 @@ public class Subroutines {
         checkBoundaries("HO", ho);
         checkBoundaries("VE", ve);
         Graphics2D g2 = (Graphics2D) im.getGraphics();
-        setColours(state);
-        g2.setPaint(state.getOutput().getForegroundColour());
+        Color c = establishColours(state);
+        g2.setPaint(c);
         g2.setStroke(STROKE);
         double h = im.getWidth() * ho;
         double v = im.getHeight() * ve;
@@ -711,8 +720,8 @@ public class Subroutines {
         checkBoundaries("HO", ho);
         checkBoundaries("VE", ve);
         Graphics2D g2 = (Graphics2D) im.getGraphics();
-        setColours(state);
-        g2.setPaint(state.getOutput().getForegroundColour());
+        Color c = establishColours(state);
+        g2.setPaint(c);
         g2.setStroke(STROKE);
         double nh = im.getWidth() * ho;
         double nv = im.getHeight() * ve;
@@ -737,10 +746,8 @@ public class Subroutines {
         checkBoundaries("HO", ho);
         checkBoundaries("VE", ve);
         String sr = (String) state.getVar("SR$").get();
-        int cn = getStdVar(state, "CN").intValue();
         Graphics2D g2 = (Graphics2D) im.getGraphics();
-        setColours(state);
-        Color c = cn == 0 ? state.getOutput().getForegroundColour() : state.getOutput().getBackgroundColour();
+        Color c = establishColours(state);
         g2.setPaint(c);
         g2.setFont(state.getOutput().getFont());
         FontMetrics fm = g2.getFontMetrics();
