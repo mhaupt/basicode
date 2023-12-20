@@ -121,9 +121,9 @@ public class ProgramNode extends BasicNode {
                 LineAndStatement las = statementIndexToLineNumberAndStatement.get(state.getStatementIndex());
                 stackDump = String.format("at line %d, statement %d", las.line, las.statement);
                 if (!stack.isEmpty()) {
-                    stackDump += stack.reversed().stream().map(stmt -> {
+                    stackDump += '\n' + stack.reversed().stream().map(stmt -> {
                         LineAndStatement sdlas = statementIndexToLineNumberAndStatement.get(stmt - 1);
-                        return String.format("\nat line %d, statement %d", sdlas.line, sdlas.statement);
+                        return String.format("at line %d, statement %d", sdlas.line, sdlas.statement);
                     }).collect(Collectors.joining("\n"));
                 }
                 throw new IllegalStateException(stackDump, e);
