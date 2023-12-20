@@ -588,7 +588,11 @@ public class Subroutines {
         } else {
             try {
                 String s = in.readLine();
-                state.setVar("IN$", s);
+                if (null == s) {
+                    errorCode = 1;
+                } else {
+                    state.setVar("IN$", s);
+                }
             } catch (IOException e) {
                 errorCode = e instanceof EOFException ? 1 : -1;
             }
