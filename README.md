@@ -11,7 +11,8 @@ to Java bytecodes. The whole thing should be _simple_, first and foremost.
 ## Building and Running
 
 If you're not interested in building the project before trying it, you can 
-use the executable JAR file `basicode.jar` in the project root.
+download an executable JAR file (`basicode.jar`) from the
+[release page](https://github.com/mhaupt/basicode/releases).
 
 The project was built using Java 21 and Maven. Once those are installed, just 
 running `mvn package` on the command line should be enough to build 
