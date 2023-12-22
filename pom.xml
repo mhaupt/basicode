@@ -63,26 +63,61 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.1.1</version>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <archive>
+                        <manifest>
+                            <mainClass>de.haupz.basicode.Main</mainClass>
+                        </manifest>
+                    </archive>
+                    <outputDirectory>${project.basedir}</outputDirectory>
+                    <finalName>${project.artifactId}</finalName>
+                </configuration>
                 <executions>
                     <execution>
+                        <id>assemble</id>
                         <phase>package</phase>
                         <goals>
                             <goal>single</goal>
                         </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.coderplus.maven.plugins</groupId>
+                <artifactId>copy-rename-maven-plugin</artifactId>
+                <version>1.0.1</version>
+                <executions>
+                    <execution>
+                        <id>rename-jar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>rename</goal>
+                        </goals>
                         <configuration>
-                            <archive>
-                                <manifest>
-                                    <mainClass>de.haupz.basicode.Main</mainClass>
-                                </manifest>
-                            </archive>
-                            <descriptorRefs>
-                                <descriptorRef>jar-with-dependencies</descriptorRef>
-                            </descriptorRefs>
-                            <finalName>basicode</finalName>
-                            <appendAssemblyId>false</appendAssemblyId>
+                            <sourceFile>${project.basedir}/basicode-jar-with-dependencies.jar</sourceFile>
+                            <destinationFile>${project.basedir}/basicode.jar</destinationFile>
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.3.1</version>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>${project.basedir}</directory>
+                            <includes>
+                                <include>basicode.jar</include>
+                            </includes>
+                        </fileset>
+                    </filesets>
+                </configuration>
             </plugin>
         </plugins>
         <testResources>
