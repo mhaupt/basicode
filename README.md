@@ -126,4 +126,4 @@ Clarke. It's included here thanks to being licenced with [CC BY-SA 3.0](https://
 
 I'm immensely grateful to Thomas Rademacher of [basicode.de](https://basicode.de/)
 for introducing me to BASICODE. Many thanks to Bernd Bock and other members of
-[Joyce e.V.](https://joyce.de/) for encouragement and bug reports.
+[Joyce-User-AG](https://joyce.de/) for encouragement and bug reports.
