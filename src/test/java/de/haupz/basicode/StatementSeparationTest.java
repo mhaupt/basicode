@@ -34,4 +34,16 @@ public class StatementSeparationTest extends InterpreterTest {
                 """);
     }
 
+    @Test
+    public void testTrailingColon() {
+        testInterpreter("""
+                1000 PRINT 1:PRINT 2:
+                1010 PRINT 3
+                """, """
+                1
+                2
+                3
+                """);
+    }
+
 }
