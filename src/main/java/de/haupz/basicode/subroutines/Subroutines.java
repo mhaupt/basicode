@@ -690,8 +690,10 @@ public class Subroutines {
         BufferedImage im = state.getOutput().getImage();
         double ho = getStdVar(state, "HO").doubleValue();
         double ve = getStdVar(state, "VE").doubleValue();
-        checkBoundaries("HO", ho);
-        checkBoundaries("VE", ve);
+        if (state.getConfiguration().enforceBoundaries()) {
+            checkBoundaries("HO", ho);
+            checkBoundaries("VE", ve);
+        }
         Graphics2D g2 = (Graphics2D) im.getGraphics();
         Color c = establishColours(state);
         g2.setPaint(c);
@@ -717,8 +719,10 @@ public class Subroutines {
         double ho = getStdVar(state, "HO").doubleValue();
         double ve = getStdVar(state, "VE").doubleValue();
         GraphicsCursor gc = state.getOutput().getGraphicsCursor();
-        checkBoundaries("HO", ho);
-        checkBoundaries("VE", ve);
+        if (state.getConfiguration().enforceBoundaries()) {
+            checkBoundaries("HO", ho);
+            checkBoundaries("VE", ve);
+        }
         Graphics2D g2 = (Graphics2D) im.getGraphics();
         Color c = establishColours(state);
         g2.setPaint(c);
@@ -743,8 +747,10 @@ public class Subroutines {
         BufferedImage im = state.getOutput().getImage();
         double ho = getStdVar(state, "HO").doubleValue();
         double ve = getStdVar(state, "VE").doubleValue();
-        checkBoundaries("HO", ho);
-        checkBoundaries("VE", ve);
+        if (state.getConfiguration().enforceBoundaries()) {
+            checkBoundaries("HO", ho);
+            checkBoundaries("VE", ve);
+        }
         String sr = (String) state.getVar("SR$").get();
         Graphics2D g2 = (Graphics2D) im.getGraphics();
         Color c = establishColours(state);

@@ -8,9 +8,11 @@ package de.haupz.basicode.interpreter;
  * GOSUB 450}.
  * @param nosound ignore any sound-related subroutine calls.
  * @param hold wait for a key to be pressed before terminating.
+ * @param enforceBoundaries enforce that {@code HO}/{@code VE} coordinates in graphics mode are not allowed to be
+ *                          outside the 0 <= x <= 1 range.
  */
-public record Configuration(boolean nowait, boolean nosound, boolean hold) {
+public record Configuration(boolean nowait, boolean nosound, boolean hold, boolean enforceBoundaries) {
     public Configuration() {
-        this(false, false, false);
+        this(false, false, false, false);
     }
 }

@@ -52,17 +52,19 @@ public class Main {
         boolean nowait = false;
         boolean nosound = false;
         boolean hold = false;
+        boolean enforceBoundaries = false;
         String filename = "";
         for (String arg : args) {
             switch (arg) {
                 case "-nowait" -> nowait = true;
                 case "-nosound" -> nosound = true;
                 case "-hold" -> hold = true;
+                case "-enforceBoundaries" -> enforceBoundaries = true;
                 default -> filename = arg;
             }
         }
 
-        Configuration configuration = new Configuration(nowait, nosound, hold);
+        Configuration configuration = new Configuration(nowait, nosound, hold, enforceBoundaries);
 
         if (filename.isEmpty()) {
             throw new IllegalStateException("no file given");
