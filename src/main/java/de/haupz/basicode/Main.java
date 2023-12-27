@@ -8,6 +8,9 @@ import de.haupz.basicode.parser.BasicParser;
 import de.haupz.basicode.ui.BasicContainer;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.io.File;
+import java.io.IOException;
 import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -31,6 +34,34 @@ public class Main {
      * The main frame for the GUI component.
      */
     static BasicFrame bf;
+
+    /**
+     * Let the user pick a {@code .bas} file to run.
+     *
+     * @return the absolute path to the chosen file, or the empty string in case no file was chosen.
+     */
+    private static String chooseFile() {
+        File dir = new File(System.getProperty("user.dir"));
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("BASIC files", "bas");
+        JFileChooser fc = new JFileChooser(dir);
+        fc.setFileFilter(filter);
+        int choice = fc.showOpenDialog(null);
+        return choice == JFileChooser.APPROVE_OPTION ? fc.getSelectedFile().getAbsolutePath() : "";
+    }
+
+    /**
+     * Read a BASIC source file and return its contents.
+     *
+     * @param filename the file name (possibly an absolute path).
+     * @return the contents of the file.
+     * @throws IOException in case anything goes wrong with opening and reading the file.
+     */
+    private static String getSource(String filename) throws IOException {
+        Path path = Paths.get(filename);
+        List<String> sourceLines = Files.readAllLines(path);
+        String source = sourceLines.stream().collect(Collectors.joining("\n"));
+        return source;
+    }
 
     /**
      * Run a BASICODE program.
@@ -67,20 +98,20 @@ public class Main {
         Configuration configuration = new Configuration(nowait, nosound, hold, enforceBoundaries);
 
         if (filename.isEmpty()) {
-            throw new IllegalStateException("no file given");
+            filename = chooseFile();
         }
-        Path path = Paths.get(filename);
-        List<String> sourceLines = Files.readAllLines(path);
-        String source = sourceLines.stream().collect(Collectors.joining("\n"));
 
         bc = new BasicContainer();
-        SwingUtilities.invokeLater(() -> {
-            bf = new BasicFrame(bc);
-            bf.setVisible(true);
-        });
+        bf = new BasicFrame(bc);
 
-        run(source, configuration);
-        System.out.println("done.");
+        if (!filename.isEmpty()) {
+            String source = getSource(filename);
+            SwingUtilities.invokeLater(() -> {
+                bf.setVisible(true);
+            });
+            run(source, configuration);
+        }
+
         bc.shutdown();
         bf.dispose();
     }
