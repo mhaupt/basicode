@@ -36,6 +36,39 @@ public class Main {
     static BasicFrame bf;
 
     /**
+     * A record type to serve as a tuple for processed command line arguments.
+     *
+     * @param filename a file name.
+     * @param config configuration parameters.
+     */
+    record FilenameAndConfig(String filename, Configuration config) {}
+
+    /**
+     * Parse the command line arguments (passed in from {@link #main(String[])} and return a
+     * {@linkplain FilenameAndConfig tuple} of filename and interpreter configuration.
+     *
+     * @param args the command line arguments to parse.
+     * @return a filename-and-configuration.
+     */
+    private static FilenameAndConfig parseArguments(String[] args) {
+        boolean nowait = false;
+        boolean nosound = false;
+        boolean hold = false;
+        boolean enforceBoundaries = false;
+        String filename = "";
+        for (String arg : args) {
+            switch (arg) {
+                case "-nowait" -> nowait = true;
+                case "-nosound" -> nosound = true;
+                case "-hold" -> hold = true;
+                case "-enforceBoundaries" -> enforceBoundaries = true;
+                default -> filename = arg;
+            }
+        }
+        return new FilenameAndConfig(filename, new Configuration(nowait, nosound, hold, enforceBoundaries));
+    }
+
+    /**
      * Let the user pick a {@code .bas} file to run.
      *
      * @return the absolute path to the chosen file, or the empty string in case no file was chosen.
@@ -80,23 +113,8 @@ public class Main {
     }
 
     public static void main(String[] args) throws Throwable {
-        boolean nowait = false;
-        boolean nosound = false;
-        boolean hold = false;
-        boolean enforceBoundaries = false;
-        String filename = "";
-        for (String arg : args) {
-            switch (arg) {
-                case "-nowait" -> nowait = true;
-                case "-nosound" -> nosound = true;
-                case "-hold" -> hold = true;
-                case "-enforceBoundaries" -> enforceBoundaries = true;
-                default -> filename = arg;
-            }
-        }
-
-        Configuration configuration = new Configuration(nowait, nosound, hold, enforceBoundaries);
-
+        FilenameAndConfig fnc = parseArguments(args);
+        String filename = fnc.filename;
         if (filename.isEmpty()) {
             filename = chooseFile();
         }
@@ -109,7 +127,7 @@ public class Main {
             SwingUtilities.invokeLater(() -> {
                 bf.setVisible(true);
             });
-            run(source, configuration);
+            run(source, fnc.config);
         }
 
         bc.shutdown();
