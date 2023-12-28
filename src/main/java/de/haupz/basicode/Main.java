@@ -103,7 +103,7 @@ public class Main {
      * @param configuration the configuration for the interpreter.
      * @throws Throwable in case anything goes wrong.
      */
-    public static void run(String code, Configuration configuration) throws Throwable {
+    public static void run(String code, Configuration configuration) throws Exception {
         final BasicParser parser = new BasicParser(new StringReader(code));
         ProgramNode prog = parser.program();
         InterpreterState state = new InterpreterState(prog, bc, bc, configuration);
@@ -112,26 +112,23 @@ public class Main {
         state.closeFiles();
     }
 
-    public static void main(String[] args) throws Throwable {
+    public static void main(String[] args) throws Exception {
         FilenameAndConfig fnc = parseArguments(args);
         String filename = fnc.filename;
         if (filename.isEmpty()) {
             filename = chooseFile();
         }
-
-        bc = new BasicContainer();
-        bf = new BasicFrame(bc);
-
         if (!filename.isEmpty()) {
             String source = getSource(filename);
-            SwingUtilities.invokeLater(() -> {
+            bc = new BasicContainer();
+            SwingUtilities.invokeAndWait(() -> {
+                bf = new BasicFrame(bc);
                 bf.setVisible(true);
             });
             run(source, fnc.config);
+            bc.shutdown();
+            bf.dispose();
         }
-
-        bc.shutdown();
-        bf.dispose();
     }
 
 }
