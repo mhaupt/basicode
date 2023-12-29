@@ -32,7 +32,8 @@ $ java -jar basicode.jar -hold examples/hello.bas
 ```
 
 This works for other BASICODE programs, as long as you point to the right 
-`basicode.jar` and BASIC source file.
+`basicode.jar` and BASIC source file. If no BASIC source file is given, a 
+dialogue will open that lets you choose one.
 
 ## Implementation Notes
 
