@@ -107,15 +107,19 @@ public class LetTest extends StatementTest {
         assertEquals("whoa", a.get());
     }
 
+    void checkDouble(String name, double value) {
+        Optional<Object> x = state.getVar(name);
+        assertTrue(x.isPresent());
+        assertEquals(value, x.get());
+    }
+
     @Test
     public void testDoubleScientificNotation() {
-        run(List.of("A=9.000001E-02", "B=9.000001E02"));
-        Optional<Object> a = state.getVar("A");
-        assertTrue(a.isPresent());
-        assertEquals(0.09000001, a.get());
-        Optional<Object> b = state.getVar("B");
-        assertTrue(b.isPresent());
-        assertEquals(900.0001, b.get());
+        run(List.of("A=9.000001E-02", "B=9.000001E02", "C=1E5", "D=1E-5"));
+        checkDouble("A", 0.09000001);
+        checkDouble("B", 900.0001);
+        checkDouble("C", 100000.0);
+        checkDouble("D", 0.00001);
     }
 
 }

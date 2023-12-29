@@ -30,7 +30,7 @@ TOKEN: {
     < EOL: "\n" >
 // numbers and other values
 |   < NUMBER: (<DIGIT>)+ >
-|   < FLOAT: (<NUMBER>)? "." <NUMBER> (("E"|"e") ("-")? <NUMBER>)? >
+|   < FLOAT: (<NUMBER>)? (".")? <NUMBER> (("E"|"e") ("-")? <NUMBER>)? >
 |   < DIGIT: ["0"-"9"] >
 |   < STRING: "\"" (~["\"","\n"])* "\"" >
 // keywords
