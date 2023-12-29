@@ -1,3 +1,7 @@
+## 0.10
+
+*   File picker pops up if no BASICODE source file is given on the command line.
+
 ## 0.9
 
 First release. Haughtily high releaase number. Rather complete but "here be 
