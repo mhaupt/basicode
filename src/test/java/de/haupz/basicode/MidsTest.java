@@ -43,4 +43,18 @@ public class MidsTest extends ExpressionTest {
         testExpression("MID$(\"ABC\",2,-1)", "BC", String.class);
     }
 
+    @Test
+    public void testDifferentLengths() {
+        testExpression("MID$(\"BASICODE\",6,1)", "O", String.class);
+        testExpression("MID$(\"BASICODE\",6,2)", "OD", String.class);
+        testExpression("MID$(\"BASICODE\",8,1)", "E", String.class);
+    }
+
+    @Test
+    public void testOmitLengthArgument() {
+        testExpression("MID$(\"BASICODE\",6)", "ODE", String.class);
+        testExpression("MID$(\"BASICODE\",7)", "DE", String.class);
+        testExpression("MID$(\"BASICODE\",8)", "E", String.class);
+    }
+
 }

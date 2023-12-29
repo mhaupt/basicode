@@ -449,7 +449,7 @@ ExpressionNode builtin_call():
 {
     ExpressionNode e;
     ExpressionNode f;
-    ExpressionNode g;
+    ExpressionNode g = null;
 }
 {
     <ABS> "(" e = expression() ")" { return new AbsNode(e); }
@@ -461,7 +461,7 @@ ExpressionNode builtin_call():
 |   <LEFTS> "(" e = expression() "," f = expression() ")" { return new LeftsNode(e, f); }
 |   <LEN> "(" e = expression() ")" { return new LenNode(e); }
 |   <LOG> "(" e = expression() ")" { return new LogNode(e); }
-|   <MIDS> "(" e = expression() "," f = expression() "," g = expression() ")" { return new MidsNode(e, f, g); }
+|   <MIDS> "(" e = expression() "," f = expression() ("," g = expression())? ")" { return new MidsNode(e, f, g); }
 |   <RIGHTS> "(" e = expression() "," f = expression() ")" { return new RightsNode(e, f); }
 |   <SGN> "(" e = expression() ")" { return new SgnNode(e); }
 |   <SIN> "(" e = expression() ")" { return new SinNode(e); }

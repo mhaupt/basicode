@@ -21,8 +21,8 @@ public class MidsNode extends SubstringNode {
     public Object eval(InterpreterState state) {
         String s = argToString(expression1.eval(state));
         int x = Math.max(1, argToInt(expression2.eval(state), "second"));
-        int y = argToInt(expression3.eval(state), "third");
-        if (y == 0 || x >= s.length() || s.isEmpty()) {
+        int y = expression3 == null ? s.length() - x + 1 : argToInt(expression3.eval(state), "third");
+        if (y == 0 || x > s.length() || s.isEmpty()) {
             return "";
         }
         if (y < 0) {
