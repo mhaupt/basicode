@@ -122,7 +122,7 @@ StatementNode statement():
 |   s = read_statement() { return s; }
 |   <RESTORE> { return new RestoreNode(); }
 |   (<END>|<STOP>) { return new EndNode(); }
-|   <INPUT> t = <IDENTIFIER> { return new InputNode(t.image); }
+|   s = input_statement() { return s; }
 |   <RUN> { return new RunNode(); }
 |   s = def_fn() { return s; }
 }
@@ -276,6 +276,18 @@ StatementNode read_statement():
 {
     <READ> l = lhs() { lhss.add(l); } ( "," l = lhs() { lhss.add(l); } )*
     { return new ReadNode(lhss); }
+}
+
+StatementNode input_statement():
+{
+    Token p = null;
+    Token t;
+}
+{
+    <INPUT> (p = <STRING> ";")? t = <IDENTIFIER>
+    {
+        return new InputNode(p == null ? null : p.image.substring(1, p.image.length() - 1), t.image);
+    }
 }
 
 StatementNode def_fn():
