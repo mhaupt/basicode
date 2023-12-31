@@ -14,7 +14,7 @@ public class AscNode extends WrappingExpressionNode {
     @Override
     Optional<Object> evalWithTypes(Object value) {
         if (value instanceof String s) {
-            return Optional.of(s.length() == 0 ? -1 : (int) s.charAt(0));
+            return Optional.of(Double.valueOf(s.length() == 0 ? -1 : s.charAt(0)));
         }
         return Optional.empty();
     }

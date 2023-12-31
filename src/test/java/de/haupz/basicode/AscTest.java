@@ -6,17 +6,17 @@ public class AscTest extends ExpressionTest {
 
     @Test
     public void testSingleCharacter() {
-        testExpression("ASC(\"A\")", 65, Integer.class);
+        testExpression("ASC(\"A\")", 65.0, Double.class);
     }
 
     @Test
     public void testString() {
-        testExpression("ASC(\"BCD\")", 66, Integer.class);
+        testExpression("ASC(\"BCD\")", 66.0, Double.class);
     }
 
     @Test
     public void testEmptyString() {
-        testExpression("ASC(\"\")", -1, Integer.class);
+        testExpression("ASC(\"\")", -1.0, Double.class);
     }
 
 }
