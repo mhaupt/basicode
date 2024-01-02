@@ -306,8 +306,18 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
      * @param s the string to transfer to the text buffer.
      */
     private void printInternal(String s) {
-        System.arraycopy(s.toCharArray(), 0, textBuffer[curLine], curColumn, s.length());
-        curColumn += s.length();
+        int start = 0;
+        while (start < s.length()) {
+            int spaceOnLine = COLUMNS - curColumn;
+            String slice = s.substring(start, Math.min(start + spaceOnLine, s.length()));
+            int numChars = slice.length();
+            System.arraycopy(slice.toCharArray(), 0, textBuffer[curLine], curColumn, numChars);
+            curColumn += numChars;
+            if (curColumn >= COLUMNS) {
+                println();
+            }
+            start += numChars;
+        }
         repaint();
     }
 
@@ -333,8 +343,10 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
         if (curLine >= LINES) {
             for (int l = 0; l < LINES - 1; ++l) {
                 System.arraycopy(textBuffer[l+1], 0, textBuffer[l], 0, COLUMNS);
+                reverse[l+1] = reverse[l];
             }
             Arrays.fill(textBuffer[LINES-1], ' ');
+            reverse[LINES-1] = null;
             curLine--;
             repaint();
         }
