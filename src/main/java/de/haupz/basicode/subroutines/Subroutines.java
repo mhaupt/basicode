@@ -4,6 +4,7 @@ import de.haupz.basicode.array.BasicArray1D;
 import de.haupz.basicode.interpreter.InterpreterState;
 import de.haupz.basicode.io.GraphicsCursor;
 import de.haupz.basicode.io.TextCursor;
+import de.haupz.basicode.ui.BasicContainer;
 import de.haupz.basicode.ui.Sound;
 
 import java.awt.*;
@@ -225,6 +226,14 @@ public class Subroutines {
     public static void gosub110(InterpreterState state) {
         int ho = getStdVar(state, "HO").intValue();
         int ve = getStdVar(state, "VE").intValue();
+        if (ho >= BasicContainer.COLUMNS) {
+            ho = BasicContainer.COLUMNS - 1;
+            state.setVar("HO", Double.valueOf(ho));
+        }
+        if (ve >= BasicContainer.LINES) {
+            ve = BasicContainer.LINES - 1;
+            state.setVar("VE", Double.valueOf(ve));
+        }
         state.getOutput().setTextCursor(ho, ve);
     }
 
