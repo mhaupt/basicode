@@ -300,7 +300,9 @@ public class Subroutines {
     public static void gosub220(InterpreterState state) {
         int ho = getStdVar(state, "HO").intValue();
         int ve = getStdVar(state, "VE").intValue();
-        char c = state.getOutput().getCharAt(ho, ve);
+        char c = ho < 0 || ho >= BasicContainer.COLUMNS || ve < 0 || ve >= BasicContainer.LINES ?
+                0 :
+                state.getOutput().getCharAt(ho, ve);
         state.setVar("IN", Double.valueOf(Character.toUpperCase(c)));
     }
 
