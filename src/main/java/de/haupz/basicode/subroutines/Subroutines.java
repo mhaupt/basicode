@@ -429,6 +429,11 @@ public class Subroutines {
         int cn = getStdVar(state, "CN").intValue();
         int ct = getStdVar(state, "CT").intValue();
         String s;
+        // Special case: if no decimal places are given, and SR is negative, and SR would then evaluate to 0 for
+        // printing, we must avoid printing SR as "-0" because BASIC does not know negative zero.
+        if (cn == 0 && sr < 0 && Math.ceil(sr) == 0.0) {
+            sr = -sr;
+        }
         if (cannotDisplay(sr, cn, ct)) {
             s = fill(ct, '*');
         } else {

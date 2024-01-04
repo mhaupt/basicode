@@ -69,4 +69,16 @@ public class NumberFormatTest extends InterpreterTest {
                 """);
     }
 
+    @Test
+    public void testNegativeZero() {
+        testInterpreter("""
+                1000 GOTO 20
+                1010 CT=3:CN=0:SR=-1E-05:GOSUB310
+                1020 PRINT SR$
+                1030 GOTO 950
+                """, """
+                  0
+                """);
+    }
+
 }
