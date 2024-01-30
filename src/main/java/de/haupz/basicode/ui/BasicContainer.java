@@ -483,9 +483,27 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
     private KeyPress mapKey(KeyEvent e) {
         char c = switch (e.getKeyChar()) {
             case HOST_NEWLINE -> BASICODE_NEWLINE;
+            case 65535 -> mapFnKey(e.getKeyCode());
             default -> e.getKeyChar();
         };
+        System.err.printf("code %d char %d, [%c]\n", e.getKeyCode(), (int) e.getKeyChar(), e.getKeyChar());
         return new KeyPress(e.getKeyCode(), c);
+    }
+
+    /**
+     * Map a non-character key to a BASICODE character.
+     *
+     * @param code the key code corresponding to the {@link KeyPress} event being mapped.
+     * @return the BASICODE character corresponding to the code.
+     */
+    private char mapFnKey(int code) {
+        return (char) switch (code) {
+            case KeyEvent.VK_LEFT -> 28;
+            case KeyEvent.VK_RIGHT -> 29;
+            case KeyEvent.VK_DOWN -> 30;
+            case KeyEvent.VK_UP -> 31;
+            default -> 0;
+        };
     }
 
     /**
@@ -496,7 +514,7 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
     public KeyListener makeKeyListener() {
         return new KeyAdapter() {
             @Override
-            public void keyTyped(KeyEvent e) {
+            public void keyPressed(KeyEvent e) {
                 synchronized (keyLock) {
                     keyEvents.add(mapKey(e));
                     if (acceptStopKey && e.getKeyChar() == 27) {
