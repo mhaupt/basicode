@@ -483,7 +483,6 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
     private KeyPress mapKey(KeyEvent e) {
         char c = switch (e.getKeyChar()) {
             case HOST_NEWLINE -> BASICODE_NEWLINE;
-            case 65535 -> mapFnKey(e.getKeyCode());
             default -> e.getKeyChar();
         };
         System.err.printf("code %d char %d, [%c]\n", e.getKeyCode(), (int) e.getKeyChar(), e.getKeyChar());
@@ -513,17 +512,32 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
      */
     public KeyListener makeKeyListener() {
         return new KeyAdapter() {
+            private void finishHandling() {
+                if (sleepingThread != null) {
+                    sleepingThread.interrupt();
+                }
+                keyLock.notify();
+            }
             @Override
             public void keyPressed(KeyEvent e) {
+                // Process this only if it's a "function" (non-character) key.
+                if (e.getKeyChar() == 65535) {
+                    char c = mapFnKey(e.getKeyCode());
+                    if (c != 0) {
+                        System.err.printf("code %d char %d, [%c]\n", e.getKeyCode(), (int) e.getKeyChar(), e.getKeyChar());
+                        keyEvents.add(new KeyPress(e.getKeyCode(), c));
+                        finishHandling();
+                    }
+                }
+            }
+            @Override
+            public void keyTyped(KeyEvent e) {
                 synchronized (keyLock) {
                     keyEvents.add(mapKey(e));
                     if (acceptStopKey && e.getKeyChar() == 27) {
                         stopKeyHandler.stopKeyPressed();
                     }
-                    if (sleepingThread != null) {
-                        sleepingThread.interrupt();
-                    }
-                    keyLock.notify();
+                    finishHandling();
                 }
             }
         };
