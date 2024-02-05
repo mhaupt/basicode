@@ -520,13 +520,15 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
             }
             @Override
             public void keyPressed(KeyEvent e) {
-                // Process this only if it's a "function" (non-character) key.
-                if (e.getKeyChar() == 65535) {
-                    char c = mapFnKey(e.getKeyCode());
-                    if (c != 0) {
-                        System.err.printf("code %d char %d, [%c]\n", e.getKeyCode(), (int) e.getKeyChar(), e.getKeyChar());
-                        keyEvents.add(new KeyPress(e.getKeyCode(), c));
-                        finishHandling();
+                synchronized (keyLock) {
+                    // Process this only if it's a "function" (non-character) key.
+                    if (e.getKeyChar() == 65535) {
+                        char c = mapFnKey(e.getKeyCode());
+                        if (c != 0) {
+                            System.err.printf("code %d char %d, [%c]\n", e.getKeyCode(), (int) e.getKeyChar(), e.getKeyChar());
+                            keyEvents.add(new KeyPress(e.getKeyCode(), c));
+                            finishHandling();
+                        }
                     }
                 }
             }
