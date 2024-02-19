@@ -94,7 +94,7 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
      * {@link #textBuffer}; where it contains a {@code true} value, the corresponding character is to be displayed in
      * reverse mode.</p>
      */
-    private final boolean[][] reverse = new boolean[LINES][];
+    private final boolean[][] reverse = new boolean[LINES][COLUMNS];
 
     /**
      * If {@code true}, the GUI is in graphics mode. If {@code false}, it's in text mode.
@@ -204,10 +204,10 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
      * characters. Also set the text cursor to the top left corner.
      */
     public void clearTextBuffer() {
-        for (char[] line : textBuffer) {
-            Arrays.fill(line, ' ');
+        for (int i = 0; i < LINES; ++i) {
+            Arrays.fill(textBuffer[i], ' ');
+            Arrays.fill(reverse[i], false);
         }
-        Arrays.fill(reverse, null);
         curLine = 0;
         curColumn = 0;
     }
@@ -242,32 +242,27 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
         } else {
             g2.setFont(FONT);
             for (int l = 0; l < LINES; ++l) {
-                if (reverse[l] != null) {
-                    boolean reverseMode = false;
-                    int c = 0;
-                    while (c < COLUMNS) {
-                        int start = c;
-                        int end = start;
-                        while (end < COLUMNS && reverse[l][end] == reverseMode) {
-                            ++end;
-                        }
-                        if (end > start) {
-                            if (reverseMode) {
-                                g2.setColor(foregroundColour);
-                                g2.fillRect(start * C_WIDTH, l * C_HEIGHT, (end - start) * C_WIDTH, C_HEIGHT);
-                                g2.setColor(backgroundColour);
-                                g2.drawChars(textBuffer[l], start, end - start, start * C_WIDTH, (l + 1) * C_HEIGHT);
-                            } else {
-                                g2.setColor(foregroundColour);
-                                g2.drawChars(textBuffer[l], start, end - start, start * C_WIDTH, (l + 1) * C_HEIGHT);
-                            }
-                        }
-                        c = end;
-                        reverseMode = !reverseMode;
+                boolean reverseMode = false;
+                int c = 0;
+                while (c < COLUMNS) {
+                    int start = c;
+                    int end = start;
+                    while (end < COLUMNS && reverse[l][end] == reverseMode) {
+                        ++end;
                     }
-                } else {
-                    g2.setColor(foregroundColour);
-                    g2.drawChars(textBuffer[l], 0, COLUMNS, 0, (l + 1) * C_HEIGHT);
+                    if (end > start) {
+                        if (reverseMode) {
+                            g2.setColor(foregroundColour);
+                            g2.fillRect(start * C_WIDTH, l * C_HEIGHT, (end - start) * C_WIDTH, C_HEIGHT);
+                            g2.setColor(backgroundColour);
+                            g2.drawChars(textBuffer[l], start, end - start, start * C_WIDTH, (l + 1) * C_HEIGHT);
+                        } else {
+                            g2.setColor(foregroundColour);
+                            g2.drawChars(textBuffer[l], start, end - start, start * C_WIDTH, (l + 1) * C_HEIGHT);
+                        }
+                    }
+                    c = end;
+                    reverseMode = !reverseMode;
                 }
             }
         }
@@ -280,9 +275,7 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
      */
     @Override
     public void print(String s) {
-        if (reverse[curLine] != null) {
-            Arrays.fill(reverse[curLine], curColumn, curColumn + s.length(), false);
-        }
+        Arrays.fill(reverse[curLine], curColumn, curColumn + s.length(), false);
         printInternal(s);
     }
 
@@ -293,9 +286,6 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
      */
     @Override
     public void printReverse(String s) {
-        if (reverse[curLine] == null) {
-            reverse[curLine] = new boolean[COLUMNS];
-        }
         Arrays.fill(reverse[curLine], curColumn, curColumn + s.length(), true);
         printInternal(s);
     }
