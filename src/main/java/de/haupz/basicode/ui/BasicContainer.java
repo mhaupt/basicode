@@ -326,6 +326,7 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
                 System.arraycopy(reverse[l+1], 0, reverse[l], 0, COLUMNS);
             }
             Arrays.fill(textBuffer[LINES-1], ' ');
+            Arrays.fill(reverse[LINES-1], false);
             curLine--;
             repaint();
         }
