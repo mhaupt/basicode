@@ -275,8 +275,7 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
      */
     @Override
     public void print(String s) {
-        Arrays.fill(reverse[curLine], curColumn, curColumn + s.length(), false);
-        printInternal(s);
+        printInternal(s, false);
     }
 
     /**
@@ -286,18 +285,34 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
      */
     @Override
     public void printReverse(String s) {
-        Arrays.fill(reverse[curLine], curColumn, curColumn + s.length(), true);
-        printInternal(s);
+        printInternal(s, true);
     }
 
     /**
      * Helper method: copy the characters from the string argument to the {@linkplain #textBuffer text buffer}.
      *
      * @param s the string to transfer to the text buffer.
+     * @param r if {@code true}, print in reverse mode.
      */
-    private void printInternal(String s) {
-        System.arraycopy(s.toCharArray(), 0, textBuffer[curLine], curColumn, s.length());
-        curColumn += s.length();
+    private void printInternal(String s, boolean r) {
+        // The string might wrap around. Break it down into chunks and print these line by line.
+        char[] chars = s.toCharArray();
+        for(int chunkStart = 0, // start position of the current chunk in the chars array
+                remainingChars = chars.length - chunkStart; // this many characters remain to be printed
+            remainingChars > 0; // loop while there are still characters to print
+            remainingChars = chars.length - chunkStart // update remaining characters depending on new chunk start
+        ) {
+            int space = COLUMNS - curColumn; // this many characters still fit in the current line
+            int chunkLength = Math.min(remainingChars, space); // this many characters can be printed on this line
+            System.arraycopy(chars, chunkStart, textBuffer[curLine], curColumn, chunkLength);
+            Arrays.fill(reverse[curLine], curColumn, curColumn + chunkLength, r);
+            curColumn += chunkLength;
+            if (curColumn == COLUMNS) {
+                // wrap around if need be
+                println();
+            }
+            chunkStart += chunkLength;
+        }
         repaint();
     }
 
