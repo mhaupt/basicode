@@ -14,6 +14,8 @@ import java.util.Arrays;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import static de.haupz.basicode.io.ConsoleConfiguration.*;
+
 /**
  * <p>The {@code BasicContainer} is the actual GUI of a running BASICODE interpreter. By virtue of implementing the
  * {@link BasicOutput} and {@link BasicInput} interfaces, it is capable of displaying content in text and graphics mode,
@@ -23,50 +25,6 @@ import java.util.concurrent.LinkedBlockingQueue;
  * together all of the aforementioned features without regard for separation of concerns. It's up for a refactoring.</p>
  */
 public class BasicContainer extends JComponent implements BasicInput, BasicOutput {
-
-    /**
-     * The width of a character in pixels.
-     */
-    public static final int C_WIDTH = 24;
-
-    /**
-     * The height of a character in pixels.
-     */
-    public static final int C_HEIGHT = 24;
-
-    /**
-     * The number of columns in text mode.
-     */
-    public static final int COLUMNS = 40;
-
-    /**
-     * The number of lines in text mode.
-     */
-    public static final int LINES = 25;
-
-    /**
-     * The width of the display in pixels.
-     */
-    public static final int WIDTH = C_WIDTH * COLUMNS;
-
-    /**
-     * The height of the display in pixels.
-     */
-    public static final int HEIGHT = C_HEIGHT * LINES;
-
-    /**
-     * The font used to render text in text mode and graphics mode.
-     */
-    public static final Font FONT;
-
-    static {
-        try {
-            FONT = Font.createFont(Font.TRUETYPE_FONT,
-                    BasicContainer.class.getResourceAsStream("/amstrad_cpc464.ttf")).deriveFont(24.0f);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     /**
      * In text mode, the text buffer contains all content that is visible on screen. It is a precise
@@ -117,25 +75,6 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
     private BlockingQueue<KeyPress> keyEvents = new LinkedBlockingQueue<>();
 
     /**
-     * This array maps the BASICODE colour codes (0..7) directly to the corresponding colours.
-     */
-    private static final Color[] COLOR_MAP = new Color[] {
-            Color.BLACK,
-            Color.BLUE,
-            Color.RED,
-            Color.MAGENTA,
-            Color.GREEN,
-            Color.CYAN,
-            Color.YELLOW,
-            Color.WHITE
-    };
-
-    /**
-     * The number of colours supported by BASICODE.
-     */
-    private static final int N_COLORS = COLOR_MAP.length;
-
-    /**
      * The background colour for both text and graphics mode.
      */
     private Color backgroundColour = COLOR_MAP[1]; // initially, blue
@@ -182,9 +121,9 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
      */
     public BasicContainer() {
         super();
-        setSize(WIDTH, HEIGHT);
+        setSize(ConsoleConfiguration.WIDTH, ConsoleConfiguration.HEIGHT);
         clearTextBuffer();
-        image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+        image = new BufferedImage(ConsoleConfiguration.WIDTH, ConsoleConfiguration.HEIGHT, BufferedImage.TYPE_INT_RGB);
         keyThread = new KeyThread();
         collectingKeyEvents = true;
         keyThread.start();
@@ -223,7 +162,7 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
         super.paintComponent(g2);
         if (!isGraphicsMode) {
             g2.setBackground(backgroundColour);
-            g2.clearRect(0, 0, WIDTH, HEIGHT);
+            g2.clearRect(0, 0, ConsoleConfiguration.WIDTH, ConsoleConfiguration.HEIGHT);
         }
     }
 
@@ -238,7 +177,7 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
         Graphics2D g2 = (Graphics2D) g;
         super.paintChildren(g2);
         if (isGraphicsMode) {
-            g2.drawImage(image, 0, 0, WIDTH, HEIGHT, null);
+            g2.drawImage(image, 0, 0, ConsoleConfiguration.WIDTH, ConsoleConfiguration.HEIGHT, null);
         } else {
             g2.setFont(FONT);
             for (int l = 0; l < LINES; ++l) {
@@ -393,7 +332,7 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
         isGraphicsMode = true;
         Graphics2D g2 = (Graphics2D) image.getGraphics();
         g2.setBackground(backgroundColour);
-        g2.clearRect(0, 0, WIDTH, HEIGHT);
+        g2.clearRect(0, 0, ConsoleConfiguration.WIDTH, ConsoleConfiguration.HEIGHT);
         repaint();
     }
 
