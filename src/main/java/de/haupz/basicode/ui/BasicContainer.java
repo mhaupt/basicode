@@ -10,7 +10,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -27,32 +26,9 @@ import static de.haupz.basicode.io.ConsoleConfiguration.*;
 public class BasicContainer extends JComponent implements BasicInput, BasicOutput {
 
     /**
-     * In text mode, the text buffer contains all content that is visible on screen. It is a precise
-     * character-by-character mapping. Where there is no character being displayed, the text buffer contains a space,
-     * rather than a {@code '\0'}. The first index is lines; the second, columns.
+     * In text mode, the text buffer contains all content that is visible on screen.
      */
-    private final char[][] textBuffer = new char[LINES][COLUMNS];
-
-    /**
-     * The current line of the cursor in text mode.
-     */
-    private int curLine;
-
-    /**
-     * The current column of the cursor in text mode.
-     */
-    private int curColumn;
-
-    /**
-     * <p>A special array to store information about characters that should be displayed in reverse mode in text
-     * mode.</p>
-     *
-     * <p>It's a two-dimensional {@code boolean} array, organised in the same fashion as the {@link #textBuffer} array
-     * (lines first). Column arrays are created on demand. This array is essentially an overlay of the
-     * {@link #textBuffer}; where it contains a {@code true} value, the corresponding character is to be displayed in
-     * reverse mode.</p>
-     */
-    private final boolean[][] reverse = new boolean[LINES][COLUMNS];
+    private final TextBuffer textBuffer = new TextBuffer(LINES, COLUMNS);
 
     /**
      * If {@code true}, the GUI is in graphics mode. If {@code false}, it's in text mode.
@@ -122,7 +98,7 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
     public BasicContainer() {
         super();
         setSize(ConsoleConfiguration.WIDTH, ConsoleConfiguration.HEIGHT);
-        clearTextBuffer();
+        textBuffer.clear();
         image = new BufferedImage(ConsoleConfiguration.WIDTH, ConsoleConfiguration.HEIGHT, BufferedImage.TYPE_INT_RGB);
         keyThread = new KeyThread();
         collectingKeyEvents = true;
@@ -136,19 +112,6 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
     public void shutdown() {
         collectingKeyEvents = false;
         keyThread.interrupt();
-    }
-
-    /**
-     * Clear the buffer for text mode by filling it with space characters, and reset all information about reverse
-     * characters. Also set the text cursor to the top left corner.
-     */
-    public void clearTextBuffer() {
-        for (int i = 0; i < LINES; ++i) {
-            Arrays.fill(textBuffer[i], ' ');
-            Arrays.fill(reverse[i], false);
-        }
-        curLine = 0;
-        curColumn = 0;
     }
 
     /**
@@ -186,7 +149,7 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
                 while (c < COLUMNS) {
                     int start = c;
                     int end = start;
-                    while (end < COLUMNS && reverse[l][end] == reverseMode) {
+                    while (end < COLUMNS && textBuffer.isReverseAt(l, end) == reverseMode) {
                         ++end;
                     }
                     if (end > start) {
@@ -194,10 +157,10 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
                             g2.setColor(foregroundColour);
                             g2.fillRect(start * C_WIDTH, l * C_HEIGHT, (end - start) * C_WIDTH, C_HEIGHT);
                             g2.setColor(backgroundColour);
-                            g2.drawChars(textBuffer[l], start, end - start, start * C_WIDTH, (l + 1) * C_HEIGHT);
+                            g2.drawChars(textBuffer.getLine(l), start, end - start, start * C_WIDTH, (l + 1) * C_HEIGHT);
                         } else {
                             g2.setColor(foregroundColour);
-                            g2.drawChars(textBuffer[l], start, end - start, start * C_WIDTH, (l + 1) * C_HEIGHT);
+                            g2.drawChars(textBuffer.getLine(l), start, end - start, start * C_WIDTH, (l + 1) * C_HEIGHT);
                         }
                     }
                     c = end;
@@ -214,7 +177,8 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
      */
     @Override
     public void print(String s) {
-        printInternal(s, false);
+        textBuffer.writeString(s, false);
+        repaint();
     }
 
     /**
@@ -224,34 +188,7 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
      */
     @Override
     public void printReverse(String s) {
-        printInternal(s, true);
-    }
-
-    /**
-     * Helper method: copy the characters from the string argument to the {@linkplain #textBuffer text buffer}.
-     *
-     * @param s the string to transfer to the text buffer.
-     * @param r if {@code true}, print in reverse mode.
-     */
-    private void printInternal(String s, boolean r) {
-        // The string might wrap around. Break it down into chunks and print these line by line.
-        char[] chars = s.toCharArray();
-        for(int chunkStart = 0, // start position of the current chunk in the chars array
-                remainingChars = chars.length - chunkStart; // this many characters remain to be printed
-            remainingChars > 0; // loop while there are still characters to print
-            remainingChars = chars.length - chunkStart // update remaining characters depending on new chunk start
-        ) {
-            int space = COLUMNS - curColumn; // this many characters still fit in the current line
-            int chunkLength = Math.min(remainingChars, space); // this many characters can be printed on this line
-            System.arraycopy(chars, chunkStart, textBuffer[curLine], curColumn, chunkLength);
-            Arrays.fill(reverse[curLine], curColumn, curColumn + chunkLength, r);
-            curColumn += chunkLength;
-            if (curColumn == COLUMNS) {
-                // wrap around if need be
-                println();
-            }
-            chunkStart += chunkLength;
-        }
+        textBuffer.writeString(s, true);
         repaint();
     }
 
@@ -272,18 +209,8 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
      */
     @Override
     public void println() {
-        curLine++;
-        curColumn = 0;
-        if (curLine >= LINES) {
-            for (int l = 0; l < LINES - 1; ++l) {
-                System.arraycopy(textBuffer[l+1], 0, textBuffer[l], 0, COLUMNS);
-                System.arraycopy(reverse[l+1], 0, reverse[l], 0, COLUMNS);
-            }
-            Arrays.fill(textBuffer[LINES-1], ' ');
-            Arrays.fill(reverse[LINES-1], false);
-            curLine--;
-            repaint();
-        }
+        textBuffer.lineFeed();
+        repaint();
     }
 
     /**
@@ -300,7 +227,7 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
     @Override
     public void textMode() {
         isGraphicsMode = false;
-        clearTextBuffer();
+        textBuffer.clear();
         repaint();
     }
 
@@ -312,8 +239,7 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
      */
     @Override
     public void setTextCursor(int ho, int ve) {
-        curColumn = ho;
-        curLine = ve;
+        textBuffer.setCursor(ho, ve);
     }
 
     /**
@@ -321,7 +247,7 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
      */
     @Override
     public TextCursor getTextCursor() {
-        return new TextCursor(curColumn, curLine);
+        return new TextCursor(textBuffer.getColumn(), textBuffer.getLine());
     }
 
     /**
@@ -523,7 +449,7 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
      */
     @Override
     public char getCharAt(int ho, int ve) {
-        return textBuffer[ve][ho];
+        return textBuffer.getCharAt(ho, ve);
     }
 
     /**
