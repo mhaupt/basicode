@@ -2,9 +2,6 @@ package de.haupz.basicode.io;
 
 import java.util.Arrays;
 
-import static de.haupz.basicode.io.ConsoleConfiguration.COLUMNS;
-import static de.haupz.basicode.io.ConsoleConfiguration.LINES;
-
 /**
  * A buffer for the contents of the BASICODE console when it is in text mode. The buffer stores text as well as
  * information about whether each of the characters is printed in normal or reverse mode.
@@ -54,6 +51,7 @@ public class TextBuffer {
         this.columns = columns;
         this.textBuffer = new char[lines][columns];
         this.reverse = new boolean[lines][columns];
+        clear();
     }
 
     /**
@@ -61,7 +59,7 @@ public class TextBuffer {
      * set the text cursor to the top left corner.
      */
     public void clear() {
-        for (int i = 0; i < LINES; ++i) {
+        for (int i = 0; i < lines; ++i) {
             Arrays.fill(textBuffer[i], ' ');
             Arrays.fill(reverse[i], false);
         }
@@ -104,12 +102,12 @@ public class TextBuffer {
             remainingChars > 0; // loop while there are still characters to print
             remainingChars = chars.length - chunkStart // update remaining characters depending on new chunk start
         ) {
-            int space = COLUMNS - curColumn; // this many characters still fit in the current line
+            int space = columns - curColumn; // this many characters still fit in the current line
             int chunkLength = Math.min(remainingChars, space); // this many characters can be printed on this line
             System.arraycopy(chars, chunkStart, textBuffer[curLine], curColumn, chunkLength);
             Arrays.fill(reverse[curLine], curColumn, curColumn + chunkLength, r);
             curColumn += chunkLength;
-            if (curColumn == COLUMNS) {
+            if (curColumn == columns) {
                 // wrap around if need be
                 lineFeed();
             }
@@ -123,13 +121,13 @@ public class TextBuffer {
     public void lineFeed() {
         curLine++;
         curColumn = 0;
-        if (curLine >= LINES) {
-            for (int l = 0; l < LINES - 1; ++l) {
-                System.arraycopy(textBuffer[l+1], 0, textBuffer[l], 0, COLUMNS);
-                System.arraycopy(reverse[l+1], 0, reverse[l], 0, COLUMNS);
+        if (curLine >= lines) {
+            for (int l = 0; l < lines - 1; ++l) {
+                System.arraycopy(textBuffer[l+1], 0, textBuffer[l], 0, columns);
+                System.arraycopy(reverse[l+1], 0, reverse[l], 0, columns);
             }
-            Arrays.fill(textBuffer[LINES-1], ' ');
-            Arrays.fill(reverse[LINES-1], false);
+            Arrays.fill(textBuffer[lines-1], ' ');
+            Arrays.fill(reverse[lines-1], false);
             curLine--;
         }
     }
@@ -168,6 +166,20 @@ public class TextBuffer {
      */
     public char getCharAt(int column, int line) {
         return textBuffer[line][column];
+    }
+
+    /**
+     * @return the number of lines in this text buffer.
+     */
+    public int getLines() {
+        return lines;
+    }
+
+    /**
+     * @return the number of columns in this text buffer.
+     */
+    public int getColumns() {
+        return columns;
     }
 
 }

@@ -143,13 +143,13 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
             g2.drawImage(image, 0, 0, ConsoleConfiguration.WIDTH, ConsoleConfiguration.HEIGHT, null);
         } else {
             g2.setFont(FONT);
-            for (int l = 0; l < LINES; ++l) {
+            for (int l = 0; l < textBuffer.getLines(); ++l) {
                 boolean reverseMode = false;
                 int c = 0;
-                while (c < COLUMNS) {
+                while (c < textBuffer.getColumns()) {
                     int start = c;
                     int end = start;
-                    while (end < COLUMNS && textBuffer.isReverseAt(l, end) == reverseMode) {
+                    while (end < textBuffer.getColumns() && textBuffer.isReverseAt(l, end) == reverseMode) {
                         ++end;
                     }
                     if (end > start) {
