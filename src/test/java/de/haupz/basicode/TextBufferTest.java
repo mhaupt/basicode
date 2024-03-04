@@ -102,6 +102,20 @@ public class TextBufferTest {
     }
 
     @Test
+    public void testMakeBufferAndReverse() {
+        char[] chars = new char[ConsoleConfiguration.COLUMNS];
+        Arrays.fill(chars, ' ');
+        String spaces = new String(chars);
+        StringBuilder sb = new StringBuilder();
+        for (int l = 0; l < ConsoleConfiguration.LINES; ++l) {
+            sb.append(spaces).append('\n');
+        }
+        String emptyBuffer = sb.toString();
+        assertContentEquals(makeBuffer(emptyBuffer));
+        assertReverseEquals(makeReverse(emptyBuffer));
+    }
+
+    @Test
     public void testSize() {
         assertEquals(ConsoleConfiguration.LINES, textBuffer.getLines());
         assertEquals(ConsoleConfiguration.COLUMNS, textBuffer.getColumns());
