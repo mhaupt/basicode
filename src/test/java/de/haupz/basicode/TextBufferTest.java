@@ -133,4 +133,57 @@ public class TextBufferTest {
         assertReverseEquals(makeReverse(""));
     }
 
+    @Test
+    public void testWrite() {
+        textBuffer.writeString("Hello", false);
+        assertContentEquals(makeBuffer("Hello"));
+        assertReverseEquals(makeReverse(""));
+        assertEquals(0, textBuffer.getLine());
+        assertEquals(5, textBuffer.getColumn());
+        textBuffer.lineFeed();
+        assertEquals(1, textBuffer.getLine());
+        assertEquals(0, textBuffer.getColumn());
+    }
+
+    @Test
+    public void testWriteReverse() {
+        textBuffer.writeString("Hello", true);
+        assertContentEquals(makeBuffer("Hello"));
+        assertReverseEquals(makeReverse("RRRRR"));
+        assertEquals(0, textBuffer.getLine());
+        assertEquals(5, textBuffer.getColumn());
+        textBuffer.lineFeed();
+        assertEquals(1, textBuffer.getLine());
+        assertEquals(0, textBuffer.getColumn());
+    }
+
+    @Test
+    public void testWriteMixed() {
+        textBuffer.writeString("Hello", false);
+        textBuffer.lineFeed();
+        textBuffer.lineFeed();
+        textBuffer.writeString("world", true);
+        assertContentEquals(makeBuffer("""
+                Hello
+                
+                world"""));
+        assertReverseEquals(makeReverse("""
+                
+                
+                RRRRR"""));
+        assertEquals(5, textBuffer.getColumn());
+        assertEquals(2, textBuffer.getLine());
+    }
+
+    @Test
+    public void testWriteMixedOnSameLine() {
+        textBuffer.writeString("Hello, ", false);
+        textBuffer.writeString("world", true);
+        textBuffer.writeString("!", false);
+        assertContentEquals(makeBuffer("Hello, world!"));
+        assertReverseEquals(makeReverse("       RRRRR"));
+        assertEquals(0, textBuffer.getLine());
+        assertEquals(13, textBuffer.getColumn());
+    }
+
 }
