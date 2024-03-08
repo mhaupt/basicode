@@ -186,4 +186,97 @@ public class TextBufferTest {
         assertEquals(13, textBuffer.getColumn());
     }
 
+    @Test
+    public void testScroll() {
+        for (int i = 0; i < ConsoleConfiguration.LINES; ++i) {
+            textBuffer.writeString(Integer.toString(i), false);
+            textBuffer.lineFeed();
+        }
+        assertContentEquals(makeBuffer("""
+                1
+                2
+                3
+                4
+                5
+                6
+                7
+                8
+                9
+                10
+                11
+                12
+                13
+                14
+                15
+                16
+                17
+                18
+                19
+                20
+                21
+                22
+                23
+                24"""));
+    }
+
+    @Test
+    public void testScrollReverse() {
+        for (int i = 0; i < ConsoleConfiguration.LINES; ++i) {
+            textBuffer.writeString(Integer.toString(i), i % 7 == 0);
+            textBuffer.lineFeed();
+        }
+        assertContentEquals(makeBuffer("""
+                1
+                2
+                3
+                4
+                5
+                6
+                7
+                8
+                9
+                10
+                11
+                12
+                13
+                14
+                15
+                16
+                17
+                18
+                19
+                20
+                21
+                22
+                23
+                24"""));
+        // For readability here, we're just replacing the bits that should be reversed with R, as all other content is
+        // ignored.
+        assertReverseEquals(makeReverse("""
+                1
+                2
+                3
+                4
+                5
+                6
+                R
+                8
+                9
+                10
+                11
+                12
+                13
+                RR
+                15
+                16
+                17
+                18
+                19
+                20
+                RR
+                22
+                23
+                24"""));
+    }
+
 }
