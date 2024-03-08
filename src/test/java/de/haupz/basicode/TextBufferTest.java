@@ -279,4 +279,25 @@ public class TextBufferTest {
                 24"""));
     }
 
+    @Test
+    public void testWrap() {
+        textBuffer.writeString("0123456789ABCDE0123456789ABCDE0123456789ABCDE", false);
+        assertContentEquals(makeBuffer("""
+                0123456789ABCDE0123456789ABCDE0123456789
+                ABCDE"""));
+    }
+
+    @Test
+    public void testWrapReverse() {
+        textBuffer.writeString("0123456789ABCDE", true);
+        textBuffer.writeString("0123456789ABCDE", false);
+        textBuffer.writeString("0123456789ABCDE", true);
+        assertContentEquals(makeBuffer("""
+                0123456789ABCDE0123456789ABCDE0123456789
+                ABCDE"""));
+        assertReverseEquals(makeReverse("""
+                RRRRRRRRRRRRRRR               RRRRRRRRRR
+                RRRRR"""));
+    }
+
 }
