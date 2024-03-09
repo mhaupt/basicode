@@ -10,9 +10,10 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+
+import static de.haupz.basicode.io.ConsoleConfiguration.*;
 
 /**
  * <p>The {@code BasicContainer} is the actual GUI of a running BASICODE interpreter. By virtue of implementing the
@@ -25,76 +26,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class BasicContainer extends JComponent implements BasicInput, BasicOutput {
 
     /**
-     * The width of a character in pixels.
+     * In text mode, the text buffer contains all content that is visible on screen.
      */
-    public static final int C_WIDTH = 24;
-
-    /**
-     * The height of a character in pixels.
-     */
-    public static final int C_HEIGHT = 24;
-
-    /**
-     * The number of columns in text mode.
-     */
-    public static final int COLUMNS = 40;
-
-    /**
-     * The number of lines in text mode.
-     */
-    public static final int LINES = 25;
-
-    /**
-     * The width of the display in pixels.
-     */
-    public static final int WIDTH = C_WIDTH * COLUMNS;
-
-    /**
-     * The height of the display in pixels.
-     */
-    public static final int HEIGHT = C_HEIGHT * LINES;
-
-    /**
-     * The font used to render text in text mode and graphics mode.
-     */
-    public static final Font FONT;
-
-    static {
-        try {
-            FONT = Font.createFont(Font.TRUETYPE_FONT,
-                    BasicContainer.class.getResourceAsStream("/amstrad_cpc464.ttf")).deriveFont(24.0f);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * In text mode, the text buffer contains all content that is visible on screen. It is a precise
-     * character-by-character mapping. Where there is no character being displayed, the text buffer contains a space,
-     * rather than a {@code '\0'}. The first index is lines; the second, columns.
-     */
-    private final char[][] textBuffer = new char[LINES][COLUMNS];
-
-    /**
-     * The current line of the cursor in text mode.
-     */
-    private int curLine;
-
-    /**
-     * The current column of the cursor in text mode.
-     */
-    private int curColumn;
-
-    /**
-     * <p>A special array to store information about characters that should be displayed in reverse mode in text
-     * mode.</p>
-     *
-     * <p>It's a two-dimensional {@code boolean} array, organised in the same fashion as the {@link #textBuffer} array
-     * (lines first). Column arrays are created on demand. This array is essentially an overlay of the
-     * {@link #textBuffer}; where it contains a {@code true} value, the corresponding character is to be displayed in
-     * reverse mode.</p>
-     */
-    private final boolean[][] reverse = new boolean[LINES][];
+    private final TextBuffer textBuffer = new TextBuffer(LINES, COLUMNS);
 
     /**
      * If {@code true}, the GUI is in graphics mode. If {@code false}, it's in text mode.
@@ -115,25 +49,6 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
      * Key events are stored in this queue.
      */
     private BlockingQueue<KeyPress> keyEvents = new LinkedBlockingQueue<>();
-
-    /**
-     * This array maps the BASICODE colour codes (0..7) directly to the corresponding colours.
-     */
-    private static final Color[] COLOR_MAP = new Color[] {
-            Color.BLACK,
-            Color.BLUE,
-            Color.RED,
-            Color.MAGENTA,
-            Color.GREEN,
-            Color.CYAN,
-            Color.YELLOW,
-            Color.WHITE
-    };
-
-    /**
-     * The number of colours supported by BASICODE.
-     */
-    private static final int N_COLORS = COLOR_MAP.length;
 
     /**
      * The background colour for both text and graphics mode.
@@ -182,9 +97,9 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
      */
     public BasicContainer() {
         super();
-        setSize(WIDTH, HEIGHT);
-        clearTextBuffer();
-        image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+        setSize(ConsoleConfiguration.WIDTH, ConsoleConfiguration.HEIGHT);
+        textBuffer.clear();
+        image = new BufferedImage(ConsoleConfiguration.WIDTH, ConsoleConfiguration.HEIGHT, BufferedImage.TYPE_INT_RGB);
         keyThread = new KeyThread();
         collectingKeyEvents = true;
         keyThread.start();
@@ -200,19 +115,6 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
     }
 
     /**
-     * Clear the buffer for text mode by filling it with space characters, and reset all information about reverse
-     * characters. Also set the text cursor to the top left corner.
-     */
-    public void clearTextBuffer() {
-        for (char[] line : textBuffer) {
-            Arrays.fill(line, ' ');
-        }
-        Arrays.fill(reverse, null);
-        curLine = 0;
-        curColumn = 0;
-    }
-
-    /**
      * Paint the BASICODE GUI component. In text mode, this also clears the screen.
      *
      * @param g the {@code Graphics} object to use for painting.
@@ -223,7 +125,7 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
         super.paintComponent(g2);
         if (!isGraphicsMode) {
             g2.setBackground(backgroundColour);
-            g2.clearRect(0, 0, WIDTH, HEIGHT);
+            g2.clearRect(0, 0, ConsoleConfiguration.WIDTH, ConsoleConfiguration.HEIGHT);
         }
     }
 
@@ -238,36 +140,31 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
         Graphics2D g2 = (Graphics2D) g;
         super.paintChildren(g2);
         if (isGraphicsMode) {
-            g2.drawImage(image, 0, 0, WIDTH, HEIGHT, null);
+            g2.drawImage(image, 0, 0, ConsoleConfiguration.WIDTH, ConsoleConfiguration.HEIGHT, null);
         } else {
             g2.setFont(FONT);
-            for (int l = 0; l < LINES; ++l) {
-                if (reverse[l] != null) {
-                    boolean reverseMode = false;
-                    int c = 0;
-                    while (c < COLUMNS) {
-                        int start = c;
-                        int end = start;
-                        while (end < COLUMNS && reverse[l][end] == reverseMode) {
-                            ++end;
-                        }
-                        if (end > start) {
-                            if (reverseMode) {
-                                g2.setColor(foregroundColour);
-                                g2.fillRect(start * C_WIDTH, l * C_HEIGHT, (end - start) * C_WIDTH, C_HEIGHT);
-                                g2.setColor(backgroundColour);
-                                g2.drawChars(textBuffer[l], start, end - start, start * C_WIDTH, (l + 1) * C_HEIGHT);
-                            } else {
-                                g2.setColor(foregroundColour);
-                                g2.drawChars(textBuffer[l], start, end - start, start * C_WIDTH, (l + 1) * C_HEIGHT);
-                            }
-                        }
-                        c = end;
-                        reverseMode = !reverseMode;
+            for (int l = 0; l < textBuffer.getLines(); ++l) {
+                boolean reverseMode = false;
+                int c = 0;
+                while (c < textBuffer.getColumns()) {
+                    int start = c;
+                    int end = start;
+                    while (end < textBuffer.getColumns() && textBuffer.isReverseAt(l, end) == reverseMode) {
+                        ++end;
                     }
-                } else {
-                    g2.setColor(foregroundColour);
-                    g2.drawChars(textBuffer[l], 0, COLUMNS, 0, (l + 1) * C_HEIGHT);
+                    if (end > start) {
+                        if (reverseMode) {
+                            g2.setColor(foregroundColour);
+                            g2.fillRect(start * C_WIDTH, l * C_HEIGHT, (end - start) * C_WIDTH, C_HEIGHT);
+                            g2.setColor(backgroundColour);
+                            g2.drawChars(textBuffer.getLine(l), start, end - start, start * C_WIDTH, (l + 1) * C_HEIGHT);
+                        } else {
+                            g2.setColor(foregroundColour);
+                            g2.drawChars(textBuffer.getLine(l), start, end - start, start * C_WIDTH, (l + 1) * C_HEIGHT);
+                        }
+                    }
+                    c = end;
+                    reverseMode = !reverseMode;
                 }
             }
         }
@@ -280,10 +177,8 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
      */
     @Override
     public void print(String s) {
-        if (reverse[curLine] != null) {
-            Arrays.fill(reverse[curLine], curColumn, curColumn + s.length(), false);
-        }
-        printInternal(s);
+        textBuffer.writeString(s, false);
+        repaint();
     }
 
     /**
@@ -293,21 +188,7 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
      */
     @Override
     public void printReverse(String s) {
-        if (reverse[curLine] == null) {
-            reverse[curLine] = new boolean[COLUMNS];
-        }
-        Arrays.fill(reverse[curLine], curColumn, curColumn + s.length(), true);
-        printInternal(s);
-    }
-
-    /**
-     * Helper method: copy the characters from the string argument to the {@linkplain #textBuffer text buffer}.
-     *
-     * @param s the string to transfer to the text buffer.
-     */
-    private void printInternal(String s) {
-        System.arraycopy(s.toCharArray(), 0, textBuffer[curLine], curColumn, s.length());
-        curColumn += s.length();
+        textBuffer.writeString(s, true);
         repaint();
     }
 
@@ -328,16 +209,8 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
      */
     @Override
     public void println() {
-        curLine++;
-        curColumn = 0;
-        if (curLine >= LINES) {
-            for (int l = 0; l < LINES - 1; ++l) {
-                System.arraycopy(textBuffer[l+1], 0, textBuffer[l], 0, COLUMNS);
-            }
-            Arrays.fill(textBuffer[LINES-1], ' ');
-            curLine--;
-            repaint();
-        }
+        textBuffer.lineFeed();
+        repaint();
     }
 
     /**
@@ -354,7 +227,7 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
     @Override
     public void textMode() {
         isGraphicsMode = false;
-        clearTextBuffer();
+        textBuffer.clear();
         repaint();
     }
 
@@ -366,8 +239,7 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
      */
     @Override
     public void setTextCursor(int ho, int ve) {
-        curColumn = ho;
-        curLine = ve;
+        textBuffer.setCursor(ho, ve);
     }
 
     /**
@@ -375,7 +247,7 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
      */
     @Override
     public TextCursor getTextCursor() {
-        return new TextCursor(curColumn, curLine);
+        return new TextCursor(textBuffer.getColumn(), textBuffer.getLine());
     }
 
     /**
@@ -386,7 +258,7 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
         isGraphicsMode = true;
         Graphics2D g2 = (Graphics2D) image.getGraphics();
         g2.setBackground(backgroundColour);
-        g2.clearRect(0, 0, WIDTH, HEIGHT);
+        g2.clearRect(0, 0, ConsoleConfiguration.WIDTH, ConsoleConfiguration.HEIGHT);
         repaint();
     }
 
@@ -577,7 +449,7 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
      */
     @Override
     public char getCharAt(int ho, int ve) {
-        return textBuffer[ve][ho];
+        return textBuffer.getCharAt(ho, ve);
     }
 
     /**
