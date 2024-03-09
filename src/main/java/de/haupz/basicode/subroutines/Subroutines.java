@@ -2,6 +2,7 @@ package de.haupz.basicode.subroutines;
 
 import de.haupz.basicode.array.BasicArray1D;
 import de.haupz.basicode.interpreter.InterpreterState;
+import de.haupz.basicode.io.ConsoleConfiguration;
 import de.haupz.basicode.io.GraphicsCursor;
 import de.haupz.basicode.io.TextCursor;
 import de.haupz.basicode.ui.BasicContainer;
@@ -226,12 +227,12 @@ public class Subroutines {
     public static void gosub110(InterpreterState state) {
         int ho = getStdVar(state, "HO").intValue();
         int ve = getStdVar(state, "VE").intValue();
-        if (ho >= BasicContainer.COLUMNS) {
-            ho = BasicContainer.COLUMNS - 1;
+        if (ho >= ConsoleConfiguration.COLUMNS) {
+            ho = ConsoleConfiguration.COLUMNS - 1;
             state.setVar("HO", Double.valueOf(ho));
         }
-        if (ve >= BasicContainer.LINES) {
-            ve = BasicContainer.LINES - 1;
+        if (ve >= ConsoleConfiguration.LINES) {
+            ve = ConsoleConfiguration.LINES - 1;
             state.setVar("VE", Double.valueOf(ve));
         }
         state.getOutput().setTextCursor(ho, ve);
@@ -300,7 +301,7 @@ public class Subroutines {
     public static void gosub220(InterpreterState state) {
         int ho = getStdVar(state, "HO").intValue();
         int ve = getStdVar(state, "VE").intValue();
-        char c = ho < 0 || ho >= BasicContainer.COLUMNS || ve < 0 || ve >= BasicContainer.LINES ?
+        char c = ho < 0 || ho >= ConsoleConfiguration.COLUMNS || ve < 0 || ve >= ConsoleConfiguration.LINES ?
                 0 :
                 state.getOutput().getCharAt(ho, ve);
         state.setVar("IN", Double.valueOf(Character.toUpperCase(c)));
