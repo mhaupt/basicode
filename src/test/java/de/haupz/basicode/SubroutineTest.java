@@ -23,6 +23,18 @@ public class SubroutineTest extends InterpreterTest {
     }
 
     @Test
+    public void testGosub330() {
+        testInterpreter("""
+                1000 GOTO 20
+                1010 SR$="abcDEF{{}}[[]]"
+                1020 GOSUB 330
+                1030 PRINT SR$
+                """, """
+                ABCDEF[[]][[]]
+                """);
+    }
+
+    @Test
     public void testGoto950() {
         testInterpreter("""
                 1000 PRINT "Hello."

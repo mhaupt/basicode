@@ -5,7 +5,6 @@ import de.haupz.basicode.interpreter.InterpreterState;
 import de.haupz.basicode.io.ConsoleConfiguration;
 import de.haupz.basicode.io.GraphicsCursor;
 import de.haupz.basicode.io.TextCursor;
-import de.haupz.basicode.ui.BasicContainer;
 import de.haupz.basicode.ui.Sound;
 
 import java.awt.*;
@@ -453,7 +452,8 @@ public class Subroutines {
      */
     public static void gosub330(InterpreterState state) {
         String srs = (String) state.getVar("SR$").get();
-        state.setVar("SR$", srs.toUpperCase());
+        // {} are lower-case in the BASICODE world, and [] are upper-case
+        state.setVar("SR$", srs.toUpperCase().replace('{', '[').replace('}', ']'));
     }
 
     /**
