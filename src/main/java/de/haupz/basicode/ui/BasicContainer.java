@@ -345,7 +345,8 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
             case HOST_NEWLINE -> BASICODE_NEWLINE;
             default -> e.getKeyChar();
         };
-        System.err.printf("code %d char %d, [%c]\n", e.getKeyCode(), (int) e.getKeyChar(), e.getKeyChar());
+        System.err.printf("input: code %d char %d [%c] -- map to char %d [%c]\n",
+                e.getKeyCode(), (int) e.getKeyChar(), e.getKeyChar(), (int) c, c);
         return new KeyPress(e.getKeyCode(), c);
     }
 
