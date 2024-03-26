@@ -184,6 +184,19 @@ public class Subroutines {
     }
 
     /**
+     * Convert a single character to upper case in the BASICODE convention, where curly brackets are lower-case, and
+     * square brackets are upper-case.
+     *
+     * @param lowerCase a lower-case character.
+     * @return an upper-case character according to the BASICODE convention.
+     */
+    private static char basicodeToUpperCase(char lowerCase) {
+        return lowerCase == '{' ? '[' :
+                lowerCase == '}' ? ']' :
+                        Character.toUpperCase(lowerCase);
+    }
+
+    /**
      * <p>{@code GOTO 20}: initialise some default variables and jump to line 1010. This subroutine is, by convention, called at
      * the beginning of every BASICODE program in line 1000, and continues execution in line 1010.</p>
      *
@@ -269,7 +282,7 @@ public class Subroutines {
      */
     public static void gosub200(InterpreterState state) {
         char input = (char) state.getInput().lastChar();
-        state.setVar("IN", Double.valueOf(Character.toUpperCase(input)));
+        state.setVar("IN", Double.valueOf(basicodeToUpperCase(input)));
         state.setVar("IN$", input == 0 ? "" : "" + input);
     }
 
@@ -287,7 +300,7 @@ public class Subroutines {
             throw new IllegalStateException(e);
         }
         state.setVar("IN$", "" + input);
-        state.setVar("IN", Double.valueOf(Character.toUpperCase(input)));
+        state.setVar("IN", Double.valueOf(basicodeToUpperCase(input)));
     }
 
     /**
@@ -303,7 +316,7 @@ public class Subroutines {
         char c = ho < 0 || ho >= ConsoleConfiguration.COLUMNS || ve < 0 || ve >= ConsoleConfiguration.LINES ?
                 0 :
                 state.getOutput().getCharAt(ho, ve);
-        state.setVar("IN", Double.valueOf(Character.toUpperCase(c)));
+        state.setVar("IN", Double.valueOf(basicodeToUpperCase(c)));
     }
 
     /**
