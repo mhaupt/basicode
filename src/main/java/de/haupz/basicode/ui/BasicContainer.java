@@ -77,6 +77,16 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
     public static final char BASICODE_NEWLINE = 13;
 
     /**
+     * The character used to represent DELETE on the host OS.
+     */
+    public static final char HOST_DELETE = 8;
+
+    /**
+     * The character used to represent DELETE in BASICODE.
+     */
+    public static final char BASICODE_DELETE = 127;
+
+    /**
      * If this is {@code true}, the interpreter can be terminated by pressing the stop key. See
      * {@link de.haupz.basicode.subroutines.Subroutines#gosub280(InterpreterState)}}.
      */
@@ -343,6 +353,7 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
     private KeyPress mapKey(KeyEvent e) {
         char c = switch (e.getKeyChar()) {
             case HOST_NEWLINE -> BASICODE_NEWLINE;
+            case HOST_DELETE -> BASICODE_DELETE;
             default -> e.getKeyChar();
         };
         System.err.printf("input: code %d char %d [%c] -- map to char %d [%c]\n",
