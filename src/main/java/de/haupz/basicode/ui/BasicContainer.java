@@ -439,8 +439,9 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
             @Override
             public void keyTyped(KeyEvent e) {
                 synchronized (keyLock) {
-                    keyEvents.add(mapKey(e));
-                    if (acceptStopKey && e.getKeyChar() == 27) {
+                    KeyPress kp = mapKey(e);
+                    keyEvents.add(kp);
+                    if (acceptStopKey && kp.character() == 27) {
                         stopKeyHandler.stopKeyPressed();
                     }
                     finishHandling();

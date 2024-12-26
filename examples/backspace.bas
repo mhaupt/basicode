@@ -1,0 +1,3 @@
+1000 GOTO 20
+1010 PRINT "Hello,,";CHR$(127);" world!"
+1020 GOTO 950

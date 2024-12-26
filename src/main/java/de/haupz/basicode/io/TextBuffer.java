@@ -1,5 +1,7 @@
 package de.haupz.basicode.io;
 
+import de.haupz.basicode.ui.BasicContainer;
+
 import java.util.Arrays;
 
 /**
@@ -95,8 +97,47 @@ public class TextBuffer {
      * @param r if {@code true}, print in reverse mode.
      */
     public void writeString(String s, boolean r) {
-        // The string might wrap around. Break it down into chunks and print these line by line.
         char[] chars = s.toCharArray();
+        if (s.contains("" + BasicContainer.BASICODE_DELETE)) {
+            writeStringDelInternal(chars, r);
+        } else {
+            writeStringInternal(chars, r);
+        }
+    }
+
+    /**
+     * Interhal helper to write a string that contains backspace characters. The effect of a backspace character, when
+     * printed, is to move the cursor back one character horizontally, and to delete the character in that position by
+     * replacing it with a space. For reasons of simplicity, this method processes the characters one by one.
+     */
+    private void writeStringDelInternal(char[] chars, boolean r) {
+        for (char c : chars) {
+            if (c == BasicContainer.BASICODE_DELETE) {
+                if (curColumn > 0) {
+                    curColumn--;
+                }
+                textBuffer[curLine][curColumn] = ' ';
+                reverse[curLine][curColumn] = r;
+            } else {
+                textBuffer[curLine][curColumn] = c;
+                reverse[curLine][curColumn] = r;
+                curColumn++;
+                if (curColumn == columns) {
+                    // wrap around if need be
+                    lineFeed();
+                }
+            }
+        }
+    }
+
+    /**
+     * Internal helper to write a string that contains no backspace characters. This is an optimised implementation that
+     * breaks down the string into chunks per line to handle wrapping around.
+     *
+     * @param chars the characters to print.
+     * @param r if {@code true}, print in reverse mode.
+     */
+    private void writeStringInternal(char[] chars, boolean r) {
         for(int chunkStart = 0, // start position of the current chunk in the chars array
             remainingChars = chars.length - chunkStart; // this many characters remain to be printed
             remainingChars > 0; // loop while there are still characters to print
