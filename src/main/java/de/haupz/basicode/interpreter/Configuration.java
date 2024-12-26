@@ -10,9 +10,16 @@ package de.haupz.basicode.interpreter;
  * @param hold wait for a key to be pressed before terminating.
  * @param enforceBoundaries enforce that {@code HO}/{@code VE} coordinates in graphics mode are not allowed to be
  *                          outside the 0 <= x <= 1 range.
+ * @param showMapKeys display debugging information when keys are pressed and mapped.
  */
-public record Configuration(boolean nowait, boolean nosound, boolean hold, boolean enforceBoundaries) {
+public record Configuration(
+        boolean nowait,
+        boolean nosound,
+        boolean hold,
+        boolean enforceBoundaries,
+        boolean showMapKeys
+) {
     public Configuration() {
-        this(false, false, false, false);
+        this(false, false, false, false, false);
     }
 }

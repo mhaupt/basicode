@@ -55,6 +55,7 @@ public class Main {
         boolean nosound = false;
         boolean hold = false;
         boolean enforceBoundaries = false;
+        boolean showMapKeys = false;
         String filename = "";
         for (String arg : args) {
             switch (arg) {
@@ -62,10 +63,11 @@ public class Main {
                 case "-nosound" -> nosound = true;
                 case "-hold" -> hold = true;
                 case "-enforceBoundaries" -> enforceBoundaries = true;
+                case "-showMapKeys" -> showMapKeys = true;
                 default -> filename = arg;
             }
         }
-        return new FilenameAndConfig(filename, new Configuration(nowait, nosound, hold, enforceBoundaries));
+        return new FilenameAndConfig(filename, new Configuration(nowait, nosound, hold, enforceBoundaries, showMapKeys));
     }
 
     /**
@@ -101,7 +103,7 @@ public class Main {
      *
      * @param code the source code to run, as a string.
      * @param configuration the configuration for the interpreter.
-     * @throws Throwable in case anything goes wrong.
+     * @throws Exception in case anything goes wrong.
      */
     public static void run(String code, Configuration configuration) throws Exception {
         final BasicParser parser = new BasicParser(new StringReader(code));
@@ -120,7 +122,7 @@ public class Main {
         }
         if (!filename.isEmpty()) {
             String source = getSource(filename);
-            bc = new BasicContainer();
+            bc = new BasicContainer(fnc.config);
             SwingUtilities.invokeAndWait(() -> {
                 bf = new BasicFrame(bc);
                 bf.setVisible(true);

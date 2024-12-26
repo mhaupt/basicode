@@ -1,5 +1,6 @@
 package de.haupz.basicode.ui;
 
+import de.haupz.basicode.interpreter.Configuration;
 import de.haupz.basicode.interpreter.InterpreterState;
 import de.haupz.basicode.io.*;
 
@@ -118,6 +119,11 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
     private StopKeyHandler stopKeyHandler;
 
     /**
+     * Configuration flag for debugging purposes.
+     */
+    private boolean showMapKeys;
+
+    /**
      * The cursor in graphics mode.
      */
     private GraphicsCursor graphicsCursor = new GraphicsCursor(0.0, 0.0);
@@ -125,7 +131,7 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
     /**
      * Construct a {@code BasicContainer}, and enable key event processing.
      */
-    public BasicContainer() {
+    public BasicContainer(Configuration config) {
         super();
         setSize(ConsoleConfiguration.WIDTH, ConsoleConfiguration.HEIGHT);
         textBuffer.clear();
@@ -134,6 +140,7 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
         collectingKeyEvents = true;
         keyThread.start();
         addKeyListener(makeKeyListener());
+        showMapKeys = config.showMapKeys();
     }
 
     /**
@@ -376,8 +383,10 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
             case HOST_DELETE -> BASICODE_DELETE;
             default -> e.getKeyChar();
         };
-        System.err.printf("input: code %d char %d [%c] -- map to char %d [%c]\n",
-                e.getKeyCode(), (int) e.getKeyChar(), e.getKeyChar(), (int) c, c);
+        if (showMapKeys) {
+            System.err.printf("mapKey: code %d char %d [%c] -- map to char %d [%c]\n",
+                    e.getKeyCode(), (int) e.getKeyChar(), e.getKeyChar(), (int) c, c);
+        }
         return new KeyPress(e.getKeyCode(), c);
     }
 
@@ -417,7 +426,10 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
                     if (e.getKeyChar() == 65535) {
                         char c = mapFnKey(e.getKeyCode());
                         if (c != 0) {
-                            System.err.printf("code %d char %d, [%c]\n", e.getKeyCode(), (int) e.getKeyChar(), e.getKeyChar());
+                            if (showMapKeys) {
+                                System.err.printf("mapFnKey: code %d char %d, [%c]\n",
+                                        e.getKeyCode(), (int) e.getKeyChar(), e.getKeyChar());
+                            }
                             keyEvents.add(new KeyPress(e.getKeyCode(), c));
                             finishHandling();
                         }
