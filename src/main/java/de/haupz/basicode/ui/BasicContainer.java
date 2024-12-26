@@ -87,6 +87,26 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
     public static final char BASICODE_DELETE = 127;
 
     /**
+     * The character used to represent "cursor left" in BASICODE.
+     */
+    public static final char BASICODE_LEFT = 28;
+
+    /**
+     * The character used to represent "cursor right" in BASICODE.
+     */
+    public static final char BASICODE_RIGHT = 29;
+
+    /**
+     * The character used to represent "cursor down" in BASICODE.
+     */
+    public static final char BASICODE_DOWN = 30;
+
+    /**
+     * The character used to represent "cursor up" in BASICODE.
+     */
+    public static final char BASICODE_UP = 31;
+
+    /**
      * If this is {@code true}, the interpreter can be terminated by pressing the stop key. See
      * {@link de.haupz.basicode.subroutines.Subroutines#gosub280(InterpreterState)}}.
      */
@@ -369,10 +389,10 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
      */
     private char mapFnKey(int code) {
         return (char) switch (code) {
-            case KeyEvent.VK_LEFT -> 28;
-            case KeyEvent.VK_RIGHT -> 29;
-            case KeyEvent.VK_DOWN -> 30;
-            case KeyEvent.VK_UP -> 31;
+            case KeyEvent.VK_LEFT -> BASICODE_LEFT;
+            case KeyEvent.VK_RIGHT -> BASICODE_RIGHT;
+            case KeyEvent.VK_DOWN -> BASICODE_DOWN;
+            case KeyEvent.VK_UP -> BASICODE_UP;
             default -> 0;
         };
     }
