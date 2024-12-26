@@ -583,6 +583,7 @@ public class Subroutines {
         int mode = getStdVar(state, "NF").intValue();
         Path p = Paths.get(fileName);
         int errorCode = 0;
+        String fileError = "error with file " + fileName + ": ";
         if (mode == 0 || mode == 2 || mode == 4 || mode == 6) {
             // read mode: file should exist
             if (null == state.getCurrentOutFile() && Files.exists(p)) {
@@ -590,9 +591,11 @@ public class Subroutines {
                     BufferedReader in = Files.newBufferedReader(p);
                     state.setCurrentInFile(in);
                 } catch (IOException ioe) {
+                    fileError += ioe.getMessage();
                     errorCode = -1;
                 }
             } else {
+                fileError += null != state.getCurrentOutFile() ? "a file is already open" : "does not exist";
                 errorCode = -1;
             }
         } else if (mode == 1 || mode == 3 || mode == 5 || mode == 7) {
@@ -601,14 +604,20 @@ public class Subroutines {
                 try {
                     PrintStream out = new PrintStream(Files.newOutputStream(p));
                     state.setCurrentOutFile(out);
-                } catch (IOException e) {
+                } catch (IOException ioe) {
+                    fileError += ioe.getMessage();
                     errorCode = -1;
                 }
             } else {
+                fileError += "a file is already open";
                 errorCode = -1;
             }
         } else {
+            fileError += "invalid mode: " + mode;
             errorCode = -1; // illegal mode
+        }
+        if (errorCode != 0) {
+            System.err.println(fileError);
         }
         state.setVar("IN", Double.valueOf(errorCode));
     }
@@ -673,11 +682,13 @@ public class Subroutines {
             } catch (IOException e) {
                 errorCode = -1;
             }
+            state.setCurrentInFile(null);
         }
         PrintStream out = state.getCurrentOutFile();
         if (null != out) {
             out.flush();
             out.close();
+            state.setCurrentOutFile(null);
         }
         state.setVar("IN", Double.valueOf(errorCode));
     }
