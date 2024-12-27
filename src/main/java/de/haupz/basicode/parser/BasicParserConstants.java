@@ -184,6 +184,7 @@ public interface BasicParserConstants {
     "\"*\"",
     "\"/\"",
     "\"^\"",
+    "\"EXP\"",
   };
 
 }
