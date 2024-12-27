@@ -1,3 +1,11 @@
+## 0.11
+
+*   Passes BC3-Test, with one exception: "SR 270 berechnet nicht den
+    Stringraum" ("subroutine 270 does not compute string space"): the test 
+    expects memory to be less after allocating a long string. Since memory 
+    management is entirely the JVM's job in this BASICODE implementation, we
+    cannot honour the expectation of memory being utterly limited.
+
 ## 0.10
 
 *   File picker pops up if no BASICODE source file is given on the command line.
