@@ -17,7 +17,7 @@ public class LogNode extends WrappingExpressionNode {
             if (d <= 0) {
                 throw new IllegalStateException("illegal LOG argument: " + d);
             }
-            return Optional.of(Math.log10(d));
+            return Optional.of(Math.log(d));
         }
         return Optional.empty();
     }

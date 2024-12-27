@@ -6,9 +6,9 @@ public class LogTest extends ExpressionTest {
 
     @Test
     public void testLog() {
-        testExpression("LOG(10)", 1.0, Double.class);
-        testExpression("LOG(100)", 2.0, Double.class);
-        testExpression("LOG(23)", 1.36172784, Double.class);
+        testExpression("LOG(2.71828)", 1.0, Double.class);
+        testExpression("LOG(10)", 2.30258509, Double.class);
+        testExpression("LOG(23)", 3.13549421, Double.class);
     }
 
     @Test
