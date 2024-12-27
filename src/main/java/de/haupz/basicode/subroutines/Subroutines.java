@@ -624,7 +624,7 @@ public class Subroutines {
 
     /**
      * {@code GOSUB 540}: read a line from a file. Afterwards, {@code IN$} will contain the line, and {@code IN} will be
-     * an error code (0: OK).
+     * an error code (0: OK). After reading the last line, {@code IN} will be 1.
      *
      * @param state the interpreter state.
      */
@@ -638,10 +638,15 @@ public class Subroutines {
                 String s = in.readLine();
                 if (null == s) {
                     errorCode = 1;
+                    state.setVar("IN$", "");
                 } else {
+                    if (!in.ready()) {
+                        errorCode = 1;
+                    }
                     state.setVar("IN$", s);
                 }
             } catch (IOException e) {
+                state.setVar("IN$", "");
                 errorCode = e instanceof EOFException ? 1 : -1;
             }
         }
@@ -661,7 +666,7 @@ public class Subroutines {
         if (null == out) {
             errorCode = -1;
         } else {
-            out.print(sr);
+            out.println(sr);
         }
         state.setVar("IN", Double.valueOf(errorCode));
     }
