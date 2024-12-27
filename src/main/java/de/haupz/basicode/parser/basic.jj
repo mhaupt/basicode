@@ -412,6 +412,7 @@ ExpressionNode unary_expression():
 }
 {
     "-" e = unary_expression() { return new NegateNode(e); }
+|   "+" e = unary_expression() { return e; } // effectively, ignore unary +
 |   e = unary_expression_not_plus_minus() { return e; }
 }
 
