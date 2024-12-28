@@ -1,3 +1,7 @@
+## upcoming
+
+*   bug fixes: EXP/LOG, unary +, case sensitivity of variables
+
 ## 0.11
 
 *   Passes BC3-Test, with one exception: "SR 270 berechnet nicht den
