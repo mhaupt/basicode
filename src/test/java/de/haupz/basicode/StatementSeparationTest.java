@@ -40,9 +40,9 @@ public class StatementSeparationTest extends InterpreterTest {
                 1000 PRINT 1:PRINT 2:
                 1010 PRINT 3
                 """, """
-                1
-                2
-                3
+                 1\s
+                 2\s
+                 3\s
                 """);
     }
 

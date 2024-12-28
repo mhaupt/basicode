@@ -11,9 +11,9 @@ public class ForTest extends InterpreterTest {
                 20 PRINT I
                 30 NEXT I
                 """, """
-                1
-                2
-                3
+                 1\s
+                 2\s
+                 3\s
                 """);
     }
 
@@ -24,7 +24,7 @@ public class ForTest extends InterpreterTest {
                 20 PRINT I
                 30 NEXT I
                 """, """
-                10
+                 10\s
                 """);
     }
 
@@ -35,10 +35,10 @@ public class ForTest extends InterpreterTest {
                 20 PRINT I
                 30 NEXT I
                 """, """
-                1
-                4
-                7
-                10
+                 1\s
+                 4\s
+                 7\s
+                 10\s
                 """);
     }
 
@@ -49,9 +49,9 @@ public class ForTest extends InterpreterTest {
                 20 PRINT I
                 30 NEXT I
                 """, """
-                20
-                13
-                6
+                 20\s
+                 13\s
+                 6\s
                 """);
     }
 
@@ -62,14 +62,14 @@ public class ForTest extends InterpreterTest {
                 20 PRINT I
                 30 NEXT I
                 """, """
-                1.1
-                2
-                2.9
-                3.8
-                4.7
-                5.6
-                6.5
-                7.4
+                 1.1\s
+                 2\s
+                 2.9\s
+                 3.8\s
+                 4.7\s
+                 5.6\s
+                 6.5\s
+                 7.4\s
                 """);
     }
 
@@ -80,11 +80,11 @@ public class ForTest extends InterpreterTest {
                 20 PRINT I
                 30 NEXT I
                 """, """
-                7.2
-                5.9
-                4.6
-                3.3
-                2
+                 7.2\s
+                 5.9\s
+                 4.6\s
+                 3.3\s
+                 2\s
                 """);
     }
 
@@ -95,9 +95,9 @@ public class ForTest extends InterpreterTest {
                 20 PRINT I
                 30 NEXT I
                 """, """
-                1
-                1.7
-                2.4
+                 1\s
+                 1.7\s
+                 2.4\s
                 """);
     }
 
@@ -108,8 +108,8 @@ public class ForTest extends InterpreterTest {
                 20 PRINT I
                 30 NEXT I
                 """, """
-                1.1
-                2.1
+                 1.1\s
+                 2.1\s
                 """);
     }
 
@@ -120,9 +120,9 @@ public class ForTest extends InterpreterTest {
                 20 PRINT I
                 30 NEXT I
                 """, """
-                1
-                2
-                3
+                 1\s
+                 2\s
+                 3\s
                 """);
     }
 
@@ -165,11 +165,11 @@ public class ForTest extends InterpreterTest {
                 1020 PRINT X
                 1010 FOR X=0 TO 1:PRINT X:NEXT X
                 """, """
-                0
-                1
-                2
-                0
-                1
+                 0\s
+                 1\s
+                 2\s
+                 0\s
+                 1\s
                 """);
     }
 
@@ -179,10 +179,10 @@ public class ForTest extends InterpreterTest {
                 1000 FOR I=1 TO 3:PRINT I:NEXT I
                 1010 PRINT I
                 """, """
-                1
-                2
-                3
-                4
+                 1\s
+                 2\s
+                 3\s
+                 4\s
                 """);
     }
 
@@ -196,14 +196,14 @@ public class ForTest extends InterpreterTest {
                 1040 PRINT X:IF X<5 THEN NEXT X
                 1050 PRINT "end"
                 """, """
-                0
+                 0\s
                 one
-                2
+                 2\s
                 three
-                4
+                 4\s
                 five
                 five out
-                6
+                 6\s
                 end
                 """);
     }

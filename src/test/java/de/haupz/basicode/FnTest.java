@@ -10,7 +10,7 @@ public class FnTest extends InterpreterTest {
                 10 DEF FNMU(X)=X*3
                 20 PRINT FNMU(2)
                 """, """
-                6
+                 6\s
                 """);
     }
 
@@ -20,7 +20,7 @@ public class FnTest extends InterpreterTest {
                 10 DEF FN MU(X)=X*3
                 20 PRINT FNMU(2)
                 """, """
-                6
+                 6\s
                 """);
     }
 
@@ -30,7 +30,7 @@ public class FnTest extends InterpreterTest {
                 10 DEF FNMU(X)=X*3
                 20 PRINT FN MU(2)
                 """, """
-                6
+                 6\s
                 """);
     }
 
@@ -40,7 +40,7 @@ public class FnTest extends InterpreterTest {
                 10 DEF FN MU(X)=X*3
                 20 PRINT FN MU(2)
                 """, """
-                6
+                 6\s
                 """);
     }
 
@@ -50,13 +50,13 @@ public class FnTest extends InterpreterTest {
                 10 DEF FNMU(X)=X*3
                 20 PRINT FNmu(2)
                 """, """
-                6
+                 6\s
                 """);
         testInterpreter("""
                 10 DEF FNmu(X)=X*3
                 20 PRINT FNMU(2)
                 """, """
-                6
+                 6\s
                 """);
     }
 

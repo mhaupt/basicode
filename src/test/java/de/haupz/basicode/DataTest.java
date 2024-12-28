@@ -11,9 +11,9 @@ public class DataTest extends InterpreterTest {
                 20 PRINT A:PRINT B$:PRINT C
                 30 DATA 23,"Hello.",42.2
                 """, """
-                23
+                 23\s
                 Hello.
-                42.2
+                 42.2\s
                 """);
     }
 
@@ -28,12 +28,12 @@ public class DataTest extends InterpreterTest {
                 60 DATA 23,"Hello.",42.2
                 70 DATA 0,"nope",0
                 """, """
-                23
+                 23\s
                 Hello.
-                42.2
-                23
+                 42.2\s
+                 23\s
                 Hello.
-                42.2
+                 42.2\s
                 """);
     }
 
@@ -44,9 +44,9 @@ public class DataTest extends InterpreterTest {
                 20 PRINT A:PRINT B$:PRINT C
                 30 DATA 23,"Hello.",42.2
                 """, """
-                23
+                 23\s
                 Hello.
-                42.2
+                 42.2\s
                 """);
     }
 
@@ -61,12 +61,12 @@ public class DataTest extends InterpreterTest {
                 60 DATA 23,"Hello.",42.2
                 70 DATA 0,"nope",0
                 """, """
-                23
+                 23\s
                 Hello.
-                42.2
-                23
+                 42.2\s
+                 23\s
                 Hello.
-                42.2
+                 42.2\s
                 """);
     }
 
@@ -77,8 +77,8 @@ public class DataTest extends InterpreterTest {
                 20 PRINT A:PRINT B
                 30 DATA -4,-3.2
                 """, """
-                -4
-                -3.2
+                -4\s
+                -3.2\s
                 """);
     }
 
@@ -114,9 +114,9 @@ public class DataTest extends InterpreterTest {
                 1020 FOR J=1 TO 3:PRINT AR(J):NEXT J
                 1030 DATA 23,42,148
                 """, """
-                23
-                42
-                148
+                 23\s
+                 42\s
+                 148\s
                 """);
     }
 
@@ -128,9 +128,9 @@ public class DataTest extends InterpreterTest {
                 1020 FOR J=1 TO 3:PRINT AR(J,J):NEXT J
                 1030 DATA 23,42,148
                 """, """
-                23
-                42
-                148
+                 23\s
+                 42\s
+                 148\s
                 """);
     }
 

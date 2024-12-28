@@ -7,11 +7,13 @@ public class PrintTest extends InterpreterTest {
     @Test
     public void testPrintComma() {
         testInterpreter("""
-                10 PRINT 1,2,3
+                10 PRINT 1,22,333
+                20 PRINT "012345678901234567890123456789"
                 """, """
-                1
-                2
-                3
+                 1\s
+                 22\s
+                 333\s
+                012345678901234567890123456789
                 """);
     }
 
@@ -19,14 +21,14 @@ public class PrintTest extends InterpreterTest {
     public void testPrintSemicolon() {
         testInterpreter("""
                 10 PRINT 1;2;3
-                """, "123\n");
+                """, " 1  2  3 \n");
     }
 
     @Test
     public void testPrintSemicolonNoNewLine() {
         testInterpreter("""
                 10 PRINT 1;2;3;
-                """, "123");
+                """, " 1  2  3 ");
     }
 
     @Test
@@ -71,9 +73,9 @@ public class PrintTest extends InterpreterTest {
         testInterpreter("""
                 1000 PRINT 1:PRINT:PRINT 2
                 """, """
-                1
+                 1\s
                 
-                2
+                 2\s
                 """);
     }
 

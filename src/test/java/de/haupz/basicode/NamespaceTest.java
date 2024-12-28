@@ -15,8 +15,8 @@ public class NamespaceTest extends InterpreterTest {
                 1050 PRINT X(1)
                 1060 GOTO 950
                 """, """
-                23
-                42
+                 23\s
+                 42\s
                 """);
     }
 
@@ -31,8 +31,8 @@ public class NamespaceTest extends InterpreterTest {
                 1050 PRINT X(1)
                 1060 GOTO 950
                 """, """
-                23
-                42
+                 23\s
+                 42\s
                 """);
     }
 

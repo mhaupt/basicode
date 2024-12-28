@@ -62,12 +62,12 @@ public class SimpleInterpreterTest extends InterpreterTest {
 
     @Test
     public void testInteger() {
-        testInterpreter("10 PRINT 23", "23\n");
+        testInterpreter("10 PRINT 23", " 23 \n");
     }
 
     @Test
     public void testExpression() {
-        testInterpreter("10 PRINT 3+4", "7\n");
+        testInterpreter("10 PRINT 3+4", " 7 \n");
     }
 
     @Test
@@ -77,7 +77,9 @@ public class SimpleInterpreterTest extends InterpreterTest {
                 20 BB=42
                 30 CC=AA+BB
                 40 PRINT CC
-                """, "65\n");
+                """, """
+                 65\s
+                """);
     }
 
 }
