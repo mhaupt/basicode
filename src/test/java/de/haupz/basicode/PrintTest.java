@@ -5,14 +5,23 @@ import org.junit.jupiter.api.Test;
 public class PrintTest extends InterpreterTest {
 
     @Test
-    public void testPrintComma() {
+    public void testPrintCommaNumbers() {
         testInterpreter("""
                 10 PRINT 1,22,333
                 20 PRINT "012345678901234567890123456789"
                 """, """
-                 1\s
-                 22\s
-                 333\s
+                 1       22      333\s
+                012345678901234567890123456789
+                """);
+    }
+
+    @Test
+    public void testPrintCommaStrings() {
+        testInterpreter("""
+                10 PRINT "A","B","C"
+                20 PRINT "012345678901234567890123456789"
+                """, """
+                A       B       C
                 012345678901234567890123456789
                 """);
     }

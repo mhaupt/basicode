@@ -64,7 +64,9 @@ public class PrintNode extends StatementNode {
                 case SEPARATOR -> {
                     String sep = (String) e.payload;
                     if (",".equals(sep)) {
-                        state.getOutput().println();
+                        // advance to the next multiple of 8
+                        int spacesToPrint = 8 - (state.getOutput().getTextCursor().col() % 8);
+                        state.getOutput().print(String.format("%" + spacesToPrint + "s", ""));
                     }
                 }
             }

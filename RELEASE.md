@@ -1,6 +1,7 @@
 ## upcoming
 
-*   bug fixes: EXP/LOG, unary +, case sensitivity of variables
+*   bug fixes: EXP/LOG, unary +, case sensitivity of variables, comma 
+    separator in PRINT
 
 ## 0.11
 
