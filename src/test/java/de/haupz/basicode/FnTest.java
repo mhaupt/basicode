@@ -44,4 +44,20 @@ public class FnTest extends InterpreterTest {
                 """);
     }
 
+    @Test
+    public void testCaseInsensitive() {
+        testInterpreter("""
+                10 DEF FNMU(X)=X*3
+                20 PRINT FNmu(2)
+                """, """
+                6
+                """);
+        testInterpreter("""
+                10 DEF FNmu(X)=X*3
+                20 PRINT FNMU(2)
+                """, """
+                6
+                """);
+    }
+
 }

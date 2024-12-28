@@ -23,7 +23,7 @@ public class LetNode extends StatementNode {
          */
         protected String id;
         protected LHS(String id) {
-            this.id = id;
+            this.id = id.toUpperCase();
         }
 
         /**

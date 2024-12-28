@@ -24,7 +24,7 @@ public class FnCallNode extends ExpressionNode {
     private final ExpressionNode argument;
 
     public FnCallNode(String id, ExpressionNode argument) {
-        this.id = id;
+        this.id = id.toUpperCase();
         getFn = new VarNode(id, false);
         this.argument = argument;
     }

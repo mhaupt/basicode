@@ -30,7 +30,7 @@ public class DimCreateNode extends StatementNode {
     private final ExpressionNode dim2;
 
     public DimCreateNode(String id, ExpressionNode dim1, ExpressionNode dim2) {
-        this.id = id;
+        this.id = id.toUpperCase();
         this.dim1 = dim1;
         this.dim2 = dim2;
     }

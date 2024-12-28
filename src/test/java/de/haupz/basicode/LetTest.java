@@ -122,4 +122,24 @@ public class LetTest extends StatementTest {
         checkDouble("D", 0.00001);
     }
 
+    @Test
+    public void testCaseInsensitiveDouble() {
+        run(List.of("A=1", "a=2"));
+        Optional<Object> au = state.getVar("A");
+        Optional<Object> al = state.getVar("a");
+        assertTrue(au.isPresent());
+        assertFalse(al.isPresent());
+        assertEquals(2.0, au.get());
+    }
+
+    @Test
+    public void testCaseInsensitiveString() {
+        run(List.of("A$=\"hello\"", "a$=\"world\""));
+        Optional<Object> au = state.getVar("A$");
+        Optional<Object> al = state.getVar("a$");
+        assertTrue(au.isPresent());
+        assertFalse(al.isPresent());
+        assertEquals("world", au.get());
+    }
+
 }

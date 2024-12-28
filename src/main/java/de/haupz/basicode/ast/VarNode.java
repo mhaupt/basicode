@@ -12,7 +12,7 @@ public class VarNode extends ExpressionNode {
     private final boolean isArray;
 
     public VarNode(String id, boolean isArray) {
-        this.id = id;
+        this.id = id.toUpperCase();
         this.isArray = isArray;
     }
 

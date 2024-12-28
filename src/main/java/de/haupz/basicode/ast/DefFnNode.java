@@ -24,7 +24,7 @@ public class DefFnNode extends StatementNode {
     private final ExpressionNode expression;
 
     public DefFnNode(String id, String arg, ExpressionNode expression) {
-        this.id = id;
+        this.id = id.toUpperCase();
         this.arg = arg;
         this.expression = expression;
     }

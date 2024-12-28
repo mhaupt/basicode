@@ -209,4 +209,32 @@ public class DimTest extends StatementTest {
         assertTrue(state.getVar("B").isEmpty());
     }
 
+    @Test
+    public void testRedim() {
+        run(List.of("DIM A(1)", "DIM A(2)"));
+        Optional<BasicArray> a = state.getArray("A");
+        assertTrue(a.isPresent());
+        assertEquals(3, a.get().getDim1());
+        assertThrows(IllegalStateException.class, () -> a.get().getDim2());
+    }
+
+    @Test
+    public void testCaseInsensitive() {
+        run(List.of("DIM A(1)", "DIM a(2)"));
+        Optional<BasicArray> au = state.getArray("A");
+        Optional<BasicArray> al = state.getArray("a");
+        assertTrue(au.isPresent());
+        assertFalse(al.isPresent());
+        assertEquals(3, au.get().getDim1());
+        assertThrows(IllegalStateException.class, () -> au.get().getDim2());
+    }
+
+    @Test
+    public void testCaseInsensitiveAccess() {
+        run(List.of("DIM A(1)", "a(1)=23", "AA=A(1)"));
+        Optional<Object> aa = state.getVar("AA");
+        assertTrue(aa.isPresent());
+        assertEquals(23.0, aa.get());
+    }
+
 }
