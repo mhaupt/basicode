@@ -30,4 +30,45 @@ public class LexerTest {
         assertEquals("2342", lexer.getText());
     }
 
+    @Test
+    public void testNumberWhitespace() {
+        Lexer lexer = lex("  2342 ");
+        assertEquals(Number, lexer.getSymbol());
+        assertEquals("2342", lexer.getText());
+    }
+
+    @Test
+    public void testNumbersSeparatedBySpace() {
+        Lexer lexer = lex("2342  4223");
+        assertEquals(Number, lexer.getSymbol());
+        assertEquals("2342", lexer.getText());
+        assertEquals(Number, lexer.getSymbol());
+        assertEquals("4223", lexer.getText());
+    }
+
+    @Test
+    public void testNumbersSeparatedByNewline() {
+        Lexer lexer = lex("""
+                2342
+                4223
+                """);
+        assertEquals(Number, lexer.getSymbol());
+        assertEquals("2342", lexer.getText());
+        assertEquals(Number, lexer.getSymbol());
+        assertEquals("4223", lexer.getText());
+    }
+
+    @Test
+    public void testNoneAfterSymbol() {
+        Lexer lexer = lex("2342");
+        assertEquals(Number, lexer.getSymbol());
+        assertEquals("2342", lexer.getText());
+        assertEquals(None, lexer.getSymbol());
+
+        lexer = lex("2342  ");
+        assertEquals(Number, lexer.getSymbol());
+        assertEquals("2342", lexer.getText());
+        assertEquals(None, lexer.getSymbol());
+    }
+
 }
