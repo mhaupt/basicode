@@ -75,11 +75,11 @@ public class LexerTest {
     public void testString() {
         Lexer lexer = lex("\"Hello, world!\"");
         assertEquals(String, lexer.getSymbol());
-        assertEquals("Hello, world!", lexer.getText());
+        assertEquals("\"Hello, world!\"", lexer.getText());
 
         lexer = lex("  \"  Hello, world!  \"  ");
         assertEquals(String, lexer.getSymbol());
-        assertEquals("  Hello, world!  ", lexer.getText());
+        assertEquals("\"  Hello, world!  \"", lexer.getText());
     }
 
 }

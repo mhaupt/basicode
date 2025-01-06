@@ -96,11 +96,10 @@ public class Lexer {
     private void lexString() {
         text = new StringBuilder();
         do {
-            ++currentCharPos; // skip leading "
             text.append(currentChar());
+            ++currentCharPos;
         } while ('"' != currentChar());
-        // remove trailing "
-        text.deleteCharAt(text.length() - 1);
+        text.append(currentChar());
         sym = String;
     }
 
