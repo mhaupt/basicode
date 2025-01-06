@@ -92,8 +92,7 @@ public class Lexer {
      */
     private void consumeNumberPart() {
         while (Character.isDigit(currentChar())) {
-            text.append(currentChar());
-            ++currentCharPos;
+            text.append(consumeChar());
         }
     }
 
@@ -103,8 +102,7 @@ public class Lexer {
     private void lexString() {
         text = new StringBuilder();
         do {
-            text.append(currentChar());
-            ++currentCharPos;
+            text.append(consumeChar());
         } while ('"' != currentChar() && '\n' != currentChar() && !endOfBuffer());
         if ('\n' == currentChar() || endOfBuffer()) {
             throw new LexerException("string does not end: " + text.toString());
@@ -121,10 +119,21 @@ public class Lexer {
     }
 
     /**
-     * @return the next character from the input.
+     * @return the current character from the input.
      */
     private char currentChar() {
         return !endOfBuffer() ? currentLine.charAt(currentCharPos) : '\0';
+    }
+
+    /**
+     * Consume the current character from the input, and advance to the next.
+     *
+     * @return the current character from the input.
+     */
+    private char consumeChar() {
+        char c = currentChar();
+        ++currentCharPos;
+        return c;
     }
 
     /**
@@ -170,7 +179,7 @@ public class Lexer {
      */
     private void skipWhiteSpace() {
         while (Character.isWhitespace(currentChar())) {
-            ++currentCharPos;
+            consumeChar();
             while (endOfBuffer()) {
                 if (fillBuffer() == -1) {
                     return;
