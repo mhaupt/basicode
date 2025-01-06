@@ -98,7 +98,10 @@ public class Lexer {
         do {
             text.append(currentChar());
             ++currentCharPos;
-        } while ('"' != currentChar());
+        } while ('"' != currentChar() && '\n' != currentChar() && !endOfBuffer());
+        if ('\n' == currentChar() || endOfBuffer()) {
+            throw new LexerException("string does not end: " + text.toString());
+        }
         text.append(currentChar());
         sym = String;
     }

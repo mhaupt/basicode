@@ -1,13 +1,13 @@
 package de.haupz.basicode.grammar;
 
 import de.haupz.basicode.rdparser.Lexer;
+import de.haupz.basicode.rdparser.LexerException;
 import org.junit.jupiter.api.Test;
 
 import java.io.StringReader;
 
 import static de.haupz.basicode.rdparser.Symbol.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class LexerTest {
 
@@ -80,6 +80,18 @@ public class LexerTest {
         lexer = lex("  \"  Hello, world!  \"  ");
         assertEquals(String, lexer.getSymbol());
         assertEquals("\"  Hello, world!  \"", lexer.getText());
+    }
+
+    @Test
+    public void testStringDoesNotEnd() {
+        Lexer lexer1 = lex("\"Hello, world!");
+        assertThrows(LexerException.class, () -> lexer1.getSymbol(), "string does not end: \"Hello, world!");
+
+        Lexer lexer2 = lex("""
+                "Hello,\s
+                world!"
+                """);
+        assertThrows(LexerException.class, () -> lexer2.getSymbol(), "string does not end: \"Hello, ");
     }
 
 }
