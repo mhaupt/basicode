@@ -69,6 +69,8 @@ public class Lexer {
 
         if (Character.isDigit(currentChar())) {
             lexNumber();
+        } else if ('"' == currentChar()) {
+            lexString();
         } else {
             sym = None;
         }
@@ -86,6 +88,20 @@ public class Lexer {
             ++currentCharPos;
         }
         sym = Number;
+    }
+
+    /**
+     * Handle a string from the input.
+     */
+    private void lexString() {
+        text = new StringBuilder();
+        do {
+            ++currentCharPos; // skip leading "
+            text.append(currentChar());
+        } while ('"' != currentChar());
+        // remove trailing "
+        text.deleteCharAt(text.length() - 1);
+        sym = String;
     }
 
     /**

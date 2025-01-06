@@ -71,4 +71,15 @@ public class LexerTest {
         assertEquals(None, lexer.getSymbol());
     }
 
+    @Test
+    public void testString() {
+        Lexer lexer = lex("\"Hello, world!\"");
+        assertEquals(String, lexer.getSymbol());
+        assertEquals("Hello, world!", lexer.getText());
+
+        lexer = lex("  \"  Hello, world!  \"  ");
+        assertEquals(String, lexer.getSymbol());
+        assertEquals("  Hello, world!  ", lexer.getText());
+    }
+
 }

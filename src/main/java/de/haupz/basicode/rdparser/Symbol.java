@@ -5,7 +5,8 @@ package de.haupz.basicode.rdparser;
  */
 public enum Symbol {
     None,
-    Number;
+    Number,
+    String;
 
     /**
      * The textual representation of a symbol, if it has one. If it doesn't, the string is empty.
