@@ -67,8 +67,8 @@ public class Lexer {
             skipWhiteSpace();
         } while (endOfBuffer() || Character.isWhitespace(currentChar()));
 
-        if (Character.isDigit(currentChar())) {
-            lexNumber();
+        if (Character.isDigit(currentChar()) || ('.' == currentChar() && Character.isDigit(peekChar()))) {
+            lexNumerical();
         } else if ('"' == currentChar()) {
             lexString();
         } else {
@@ -81,14 +81,33 @@ public class Lexer {
     /**
      * Handle a number or floating-point number from the input.
      */
-    private void lexNumber() {
+    private void lexNumerical() {
         text = new StringBuilder();
-        consumeNumberPart();
         sym = Number;
+        if (Character.isDigit(currentChar())) {
+            consumeNumberPart();
+        }
+        boolean decimalPoint = '.' == currentChar();
+        boolean exponent = Character.toUpperCase(currentChar()) == 'E';
+        if (decimalPoint || exponent) {
+            sym = Float;
+            text.append(consumeChar());
+            if (decimalPoint) {
+                consumeNumberPart();
+            }
+            exponent = Character.toUpperCase(currentChar()) == 'E';
+            if (exponent) {
+                text.append(consumeChar());
+                if ('-' == currentChar()) {
+                    text.append(consumeChar());
+                }
+                consumeNumberPart();
+            }
+        }
     }
 
     /**
-     * Lex a plain number consisting solely of digits. This is a helper for the {@link #lexNumber()} method.
+     * Lex a plain number consisting solely of digits. This is a helper for the {@link #lexNumerical()} method.
      */
     private void consumeNumberPart() {
         while (Character.isDigit(currentChar())) {
@@ -134,6 +153,16 @@ public class Lexer {
         char c = currentChar();
         ++currentCharPos;
         return c;
+    }
+
+    /**
+     * @return the following character from the input buffer; or '\0' if there is no such character. This can be the
+     * case at the end of an input line, as tokens do not span multiple lines.
+     */
+    private char peekChar() {
+        return !endOfBuffer() && currentCharPos <= currentLine.length() - 1 ?
+                currentLine.charAt(currentCharPos + 1) :
+                '\0';
     }
 
     /**

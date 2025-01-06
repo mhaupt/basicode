@@ -3,6 +3,8 @@ package de.haupz.basicode.grammar;
 import de.haupz.basicode.rdparser.Lexer;
 import de.haupz.basicode.rdparser.LexerException;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.StringReader;
 
@@ -92,6 +94,14 @@ public class LexerTest {
                 world!"
                 """);
         assertThrows(LexerException.class, () -> lexer2.getSymbol(), "string does not end: \"Hello, ");
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"1.2", "1.2e3", "1.2E3", "1.2e-3", "1.2E-3", ".1", ".1e2", ".1E2", ".1e-2", ".1E-2"})
+    public void testFloat(String s) {
+        Lexer lexer = lex(s);
+        assertEquals(Float, lexer.getSymbol());
+        assertEquals(s, lexer.getText());
     }
 
 }
