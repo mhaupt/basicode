@@ -79,15 +79,22 @@ public class Lexer {
     }
 
     /**
-     * Handle a number from the input.
+     * Handle a number or floating-point number from the input.
      */
     private void lexNumber() {
         text = new StringBuilder();
+        consumeNumberPart();
+        sym = Number;
+    }
+
+    /**
+     * Lex a plain number consisting solely of digits. This is a helper for the {@link #lexNumber()} method.
+     */
+    private void consumeNumberPart() {
         while (Character.isDigit(currentChar())) {
             text.append(currentChar());
             ++currentCharPos;
         }
-        sym = Number;
     }
 
     /**
