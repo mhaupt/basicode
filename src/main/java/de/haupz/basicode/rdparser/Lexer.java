@@ -67,10 +67,16 @@ public class Lexer {
             skipWhiteSpace();
         } while (endOfBuffer() || Character.isWhitespace(currentChar()));
 
-        if (Character.isDigit(currentChar()) || ('.' == currentChar() && Character.isDigit(peekChar()))) {
+        if (Character.isDigit(currentChar()) || ('.' == currentChar() && peekIsDigit())) {
             lexNumerical();
         } else if ('"' == currentChar()) {
             lexString();
+        } else if (Character.isLetter(currentChar())) {
+            sym = None;
+            lexKeyword(); // keywords take precedence
+            if (None == sym) {
+                lexIdentifier();
+            }
         } else {
             sym = None;
         }
@@ -116,6 +122,20 @@ public class Lexer {
     }
 
     /**
+     * Lex a keyword.
+     */
+    private void lexKeyword() {
+
+    }
+
+    /**
+     * Lex an identifier.
+     */
+    private void lexIdentifier() {
+
+    }
+
+    /**
      * Handle a string from the input.
      */
     private void lexString() {
@@ -156,13 +176,23 @@ public class Lexer {
     }
 
     /**
-     * @return the following character from the input buffer; or '\0' if there is no such character. This can be the
-     * case at the end of an input line, as tokens do not span multiple lines.
+     * @return the following {@code n} character from the input buffer; or an empty string if that is not possible. This
+     * can be the case at the end of an input line, as tokens do not span multiple lines.
      */
-    private char peekChar() {
-        return !endOfBuffer() && currentCharPos <= currentLine.length() - 1 ?
-                currentLine.charAt(currentCharPos + 1) :
-                '\0';
+    private String peek(int n) {
+        return !endOfBuffer() && currentCharPos <= currentLine.length() - n ?
+                currentLine.substring(currentCharPos + 1, currentCharPos + n + 1) :
+                "";
+    }
+
+    /**
+     * Check if the next character from the input is a digit. This is a helper to keep expressions tidy.
+     *
+     * @return {@code true} iff the next character from the input is a digit.
+     */
+    private boolean peekIsDigit() {
+        String peek = peek(1);
+        return peek.isEmpty() ? false : Character.isDigit(peek.charAt(0));
     }
 
     /**
