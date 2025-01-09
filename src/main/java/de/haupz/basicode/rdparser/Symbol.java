@@ -7,12 +7,31 @@ public enum Symbol {
     None,
     Number,
     Float,
-    String;
+    String,
+    Identifier,
+    FnIdentifier,
+    // The following are BASIC keywords.
+    Abs("ABS"), And("AND"), Asc("ASC"), Atn("ATN"),
+    ChrS("CHR$"), Cos("COS"),
+    Data("DATA"), Def("DEF"), Dim("DIM"),
+    End("END"),
+    Fn("FN"), For("FOR"),
+    Gosub("GOSUB"), Goto("GOTO"),
+    Int("INT"), If("IF"), Input("INPUT"),
+    LeftS("LEFT$"), Len("LEN"), Let("LET"), Log("LOG"),
+    MidS("MID$"),
+    Next("NEXT"), Not("NOT"),
+    On("ON"), Or("OR"),
+    Print("PRINT"),
+    Read("READ"), Rem("REM"), Restore("RESTORE"), Return("RETURN"), RightS("RIGHT$"), Run("RUN"),
+    Sgn("SGN"), Sin("SIN"), Sqr("SQR"), Step("STEP"), Stop("STOP"),
+    Tab("TAB"), Tan("TAN"), Then("THEN"), To("TO"),
+    Val("VAL");
 
     /**
      * The textual representation of a symbol, if it has one. If it doesn't, the string is empty.
      */
-    final String text;
+    public final String text;
 
     Symbol() {
         text = "";

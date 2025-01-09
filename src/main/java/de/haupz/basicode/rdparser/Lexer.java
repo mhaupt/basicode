@@ -3,6 +3,8 @@ package de.haupz.basicode.rdparser;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Arrays;
+import java.util.List;
 
 import static de.haupz.basicode.rdparser.Symbol.*;
 
@@ -40,6 +42,12 @@ public class Lexer {
     private StringBuilder text = new StringBuilder();
 
     /**
+     * All Symbols representing BASIC keywords.
+     */
+    private static final List<Symbol> KEYWORD_SYMBOLS =
+            Arrays.stream(Symbol.values()).filter(s -> !s.text.isEmpty()).toList();
+
+    /**
      * Construct a lexer.
      *
      * @param in the reader from which to lex input.
@@ -72,7 +80,6 @@ public class Lexer {
         } else if ('"' == currentChar()) {
             lexString();
         } else if (Character.isLetter(currentChar())) {
-            sym = None;
             lexKeyword(); // keywords take precedence
             if (None == sym) {
                 lexIdentifier();
@@ -125,14 +132,50 @@ public class Lexer {
      * Lex a keyword.
      */
     private void lexKeyword() {
-
+        sym = KEYWORD_SYMBOLS.stream()
+                .filter(ks -> matchKeyword(ks.text))
+                .findFirst()
+                .orElse(None);
+        if (None != sym) {
+            text.append(consume(sym.text.length()));
+            if (Rem == sym) {
+                // special handling: consume until the end of the current line
+                text.append(consume(currentLine.length() - currentCharPos));
+            }
+            if (Fn == sym && Character.isLetter(currentChar())) {
+                // special handling: we have a FnIndentifier, which consists of one or two more letters
+                sym = FnIdentifier;
+                text.append(consumeChar());
+                if (Character.isLetter(currentChar())) {
+                    text.append(consumeChar());
+                }
+            }
+        }
     }
 
     /**
-     * Lex an identifier.
+     * Helper to check whether a given keyword matches the input.
+     *
+     * @param kwtext the keyword text, in upper case.
+     * @return {@code true} iff the input (transformed to upper case) matches the given keyword.
+     */
+    private boolean matchKeyword(String kwtext) {
+        return kwtext.charAt(0) == Character.toUpperCase(currentChar())
+                && kwtext.substring(1).equals(peek(kwtext.length() - 1).toUpperCase());
+    }
+
+    /**
+     * Lex an identifier. This is a letter, possibly followed by a letter or digit, and possibly a '$' at the end.
      */
     private void lexIdentifier() {
-
+        sym = Identifier;
+        text.append(consumeChar());
+        if (Character.isLetterOrDigit(currentChar())) {
+            text.append(consumeChar());
+        }
+        if ('$' == currentChar()) {
+            text.append(consumeChar());
+        }
     }
 
     /**
@@ -176,11 +219,23 @@ public class Lexer {
     }
 
     /**
+     * Consume a number of characters from the input.
+     *
+     * @param n the number of characters to consume.
+     * @return the consumed characters, as a string of length {@code n}.
+     */
+    private String consume(int n) {
+        String r = currentLine.substring(currentCharPos, currentCharPos + n);
+        currentCharPos += n;
+        return r;
+    }
+
+    /**
      * @return the following {@code n} character from the input buffer; or an empty string if that is not possible. This
      * can be the case at the end of an input line, as tokens do not span multiple lines.
      */
     private String peek(int n) {
-        return !endOfBuffer() && currentCharPos <= currentLine.length() - n ?
+        return !endOfBuffer() && currentCharPos + n + 1 <= currentLine.length() ?
                 currentLine.substring(currentCharPos + 1, currentCharPos + n + 1) :
                 "";
     }
