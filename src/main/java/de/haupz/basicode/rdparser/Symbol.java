@@ -5,11 +5,14 @@ package de.haupz.basicode.rdparser;
  */
 public enum Symbol {
     None,
-    Number,
-    Float,
-    String,
+    NumberLiteral,
+    FloatLiteral,
+    StringLiteral,
     Identifier,
     FnIdentifier,
+    Colon,
+    Comma,
+    Minus,
     // The following are BASIC keywords.
     Abs("ABS"), And("AND"), Asc("ASC"), Atn("ATN"),
     ChrS("CHR$"), Cos("COS"),

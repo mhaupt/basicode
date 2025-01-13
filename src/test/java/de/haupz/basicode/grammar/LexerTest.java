@@ -32,23 +32,23 @@ public class LexerTest {
     @Test
     public void testNumber() {
         Lexer lexer = lex("2342");
-        assertEquals(Number, lexer.getSymbol());
+        assertEquals(NumberLiteral, lexer.getSymbol());
         assertEquals("2342", lexer.getText());
     }
 
     @Test
     public void testNumberWhitespace() {
         Lexer lexer = lex("  2342 ");
-        assertEquals(Number, lexer.getSymbol());
+        assertEquals(NumberLiteral, lexer.getSymbol());
         assertEquals("2342", lexer.getText());
     }
 
     @Test
     public void testNumbersSeparatedBySpace() {
         Lexer lexer = lex("2342  4223");
-        assertEquals(Number, lexer.getSymbol());
+        assertEquals(NumberLiteral, lexer.getSymbol());
         assertEquals("2342", lexer.getText());
-        assertEquals(Number, lexer.getSymbol());
+        assertEquals(NumberLiteral, lexer.getSymbol());
         assertEquals("4223", lexer.getText());
     }
 
@@ -58,21 +58,21 @@ public class LexerTest {
                 2342
                 4223
                 """);
-        assertEquals(Number, lexer.getSymbol());
+        assertEquals(NumberLiteral, lexer.getSymbol());
         assertEquals("2342", lexer.getText());
-        assertEquals(Number, lexer.getSymbol());
+        assertEquals(NumberLiteral, lexer.getSymbol());
         assertEquals("4223", lexer.getText());
     }
 
     @Test
     public void testNoneAfterSymbol() {
         Lexer lexer = lex("2342");
-        assertEquals(Number, lexer.getSymbol());
+        assertEquals(NumberLiteral, lexer.getSymbol());
         assertEquals("2342", lexer.getText());
         assertEquals(None, lexer.getSymbol());
 
         lexer = lex("2342  ");
-        assertEquals(Number, lexer.getSymbol());
+        assertEquals(NumberLiteral, lexer.getSymbol());
         assertEquals("2342", lexer.getText());
         assertEquals(None, lexer.getSymbol());
     }
@@ -80,11 +80,11 @@ public class LexerTest {
     @Test
     public void testString() {
         Lexer lexer = lex("\"Hello, world!\"");
-        assertEquals(String, lexer.getSymbol());
+        assertEquals(StringLiteral, lexer.getSymbol());
         assertEquals("\"Hello, world!\"", lexer.getText());
 
         lexer = lex("  \"  Hello, world!  \"  ");
-        assertEquals(String, lexer.getSymbol());
+        assertEquals(StringLiteral, lexer.getSymbol());
         assertEquals("\"  Hello, world!  \"", lexer.getText());
     }
 
@@ -101,10 +101,11 @@ public class LexerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"1.2", "1.2e3", "1.2E3", "1.2e-3", "1.2E-3", ".1", ".1e2", ".1E2", ".1e-2", ".1E-2"})
+    @ValueSource(strings = {"1.2", "1.2e3", "1.2E3", "1.2e-3", "1.2E-3", ".1", ".1e2", ".1E2", ".1e-2", ".1E-2",
+            "1E2", "1e2"})
     public void testFloat(String s) {
         Lexer lexer = lex(s);
-        assertEquals(Float, lexer.getSymbol());
+        assertEquals(FloatLiteral, lexer.getSymbol());
         assertEquals(s, lexer.getText());
     }
 
@@ -186,6 +187,30 @@ public class LexerTest {
         Lexer lexer = lex("  " + text + "  ");
         assertEquals(Identifier, lexer.getSymbol());
         assertEquals(text, lexer.getText());
+        assertEquals(None, lexer.getSymbol());
+    }
+
+    @Test
+    public void testColon() {
+        Lexer lexer = lex(":");
+        assertEquals(Colon, lexer.getSymbol());
+        assertEquals(":", lexer.getText());
+        assertEquals(None, lexer.getSymbol());
+    }
+
+    @Test
+    public void testComma() {
+        Lexer lexer = lex(",");
+        assertEquals(Comma, lexer.getSymbol());
+        assertEquals(",", lexer.getText());
+        assertEquals(None, lexer.getSymbol());
+    }
+
+    @Test
+    public void testMinus() {
+        Lexer lexer = lex("-");
+        assertEquals(Minus, lexer.getSymbol());
+        assertEquals("-", lexer.getText());
         assertEquals(None, lexer.getSymbol());
     }
 

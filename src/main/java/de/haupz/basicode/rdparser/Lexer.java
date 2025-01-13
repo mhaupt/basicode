@@ -8,6 +8,9 @@ import java.util.List;
 
 import static de.haupz.basicode.rdparser.Symbol.*;
 
+/**
+ * A lexer for BASICODE.
+ */
 public class Lexer {
 
     /**
@@ -70,6 +73,7 @@ public class Lexer {
         do {
             if (!hasMoreInput()) {
                 sym = None;
+                text.setLength(0);
                 return sym;
             }
             skipWhiteSpace();
@@ -79,6 +83,12 @@ public class Lexer {
             lexNumerical();
         } else if ('"' == currentChar()) {
             lexString();
+        } else if (':' == currentChar()) {
+            note(Colon, consumeChar());
+        } else if (',' == currentChar()) {
+            note(Comma, consumeChar());
+        } else if ('-' == currentChar()) {
+            note(Minus, consumeChar());
         } else if (Character.isLetter(currentChar())) {
             lexKeyword(); // keywords take precedence
             if (None == sym) {
@@ -91,24 +101,29 @@ public class Lexer {
         return sym;
     }
 
+    private void note(Symbol s, char c) {
+        sym = s;
+        text.append(c);
+    }
+
     /**
      * Handle a number or floating-point number from the input.
      */
     private void lexNumerical() {
         text = new StringBuilder();
-        sym = Number;
+        sym = NumberLiteral;
         if (Character.isDigit(currentChar())) {
             consumeNumberPart();
         }
         boolean decimalPoint = '.' == currentChar();
         boolean exponent = Character.toUpperCase(currentChar()) == 'E';
         if (decimalPoint || exponent) {
-            sym = Float;
+            sym = FloatLiteral;
             text.append(consumeChar());
             if (decimalPoint) {
                 consumeNumberPart();
+                exponent = Character.toUpperCase(currentChar()) == 'E';
             }
-            exponent = Character.toUpperCase(currentChar()) == 'E';
             if (exponent) {
                 text.append(consumeChar());
                 if ('-' == currentChar()) {
@@ -189,8 +204,8 @@ public class Lexer {
         if ('\n' == currentChar() || endOfBuffer()) {
             throw new LexerException("string does not end: " + text.toString());
         }
-        text.append(currentChar());
-        sym = String;
+        text.append(consumeChar());
+        sym = StringLiteral;
     }
 
     /**

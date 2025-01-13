@@ -17,6 +17,10 @@ public class DataNode extends StatementNode {
         this.data = List.copyOf(data);
     }
 
+    public List<Object> getData() {
+        return data;
+    }
+
     @Override
     public void run(InterpreterState state) {
         // naught
