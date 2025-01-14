@@ -73,4 +73,34 @@ public class ParserTest {
         assertEquals(-2.3, d.get(3));
     }
 
+    @Test
+    public void testTwoCompleteDataLines() {
+        Parser p = parse("""
+            10 DATA \"Hello, world!\", 23
+            20 DATA \"\", -2.3
+        """);
+
+        LineNode l1 = p.line();
+        assertEquals(10, l1.getLineNumber());
+
+        List<StatementNode> s1 = l1.getStatements();
+        assertEquals(1, s1.size());
+
+        List<Object> d1 = ((DataNode) s1.get(0)).getData();
+        assertEquals(2, d1.size());
+        assertEquals("\"Hello, world!\"", d1.get(0));
+        assertEquals(23.0, d1.get(1));
+
+        LineNode l2 = p.line();
+        assertEquals(20, l2.getLineNumber());
+
+        List<StatementNode> s2 = l2.getStatements();
+        assertEquals(1, s2.size());
+
+        List<Object> d2 = ((DataNode) s2.get(0)).getData();
+        assertEquals(2, d2.size());
+        assertEquals("\"\"", d2.get(0));
+        assertEquals(-2.3, d2.get(1));
+    }
+
 }
