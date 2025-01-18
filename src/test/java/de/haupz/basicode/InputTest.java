@@ -1,5 +1,6 @@
 package de.haupz.basicode;
 
+import de.haupz.basicode.array.BasicArray1D;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

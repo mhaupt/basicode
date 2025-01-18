@@ -705,7 +705,7 @@ lhss.add(l);
 }
 
   final public StatementNode input_statement() throws ParseException {Token p = null;
-    Token t;
+    LetNode.LHS l;
     jj_consume_token(INPUT);
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
     case STRING:{
@@ -717,8 +717,8 @@ lhss.add(l);
       jj_la1[26] = jj_gen;
       ;
     }
-    t = jj_consume_token(IDENTIFIER);
-{if ("" != null) return new InputNode(p == null ? null : p.image.substring(1, p.image.length() - 1), t.image);}
+    l = lhs();
+{if ("" != null) return new InputNode(p == null ? null : p.image.substring(1, p.image.length() - 1), l);}
     throw new Error("Missing return statement in function");
 }
 

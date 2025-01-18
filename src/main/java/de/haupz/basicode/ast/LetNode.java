@@ -22,8 +22,16 @@ public class LetNode extends StatementNode {
          * The name of the left-hand side (the name of a variable or array).
          */
         protected String id;
+
         protected LHS(String id) {
             this.id = id.toUpperCase();
+        }
+
+        /**
+         * @return {@code true} iff this left-hand side has a string type.
+         */
+        public boolean isString() {
+            return id.endsWith("$");
         }
 
         /**
@@ -57,18 +65,16 @@ public class LetNode extends StatementNode {
         }
         @Override
         protected void checkPreInit(InterpreterState state) {
-            boolean isString = id.endsWith("$");
             if (state.getVar(id).isEmpty()) {
-                state.setVar(id, isString ? "" : Double.valueOf(0.0));
+                state.setVar(id, isString() ? "" : Double.valueOf(0.0));
             }
         }
         @Override
         protected void assign(InterpreterState state, Object value) {
-            boolean isString = id.endsWith("$");
-            if (value instanceof String && !isString) {
+            if (value instanceof String && !isString()) {
                 throw new IllegalStateException("can't assign a string to a variable named " + id);
             }
-            if (!(value instanceof String) && isString) {
+            if (!(value instanceof String) && isString()) {
                 throw new IllegalStateException("can't assign a non-string to a variable named " + id);
             }
             state.setVar(id, value);
