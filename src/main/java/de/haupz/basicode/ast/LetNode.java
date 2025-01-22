@@ -8,8 +8,7 @@ import de.haupz.basicode.interpreter.InterpreterState;
  * <p>{@code LET}. This node implements assignments to variables and into arrays, for both numerical and string
  * types.</p>
  *
- * <p>The implementation performs an optional {@link LHS#checkPreInit(InterpreterState)} pre-initialisation of the
- * left-hand side, evaluates the right-hand side, and finally executes the actual assignment.</p>
+ * <p>The implementation evaluates the right-hand side, and then executes the actual assignment.</p>
  */
 public class LetNode extends StatementNode {
 
@@ -22,18 +21,17 @@ public class LetNode extends StatementNode {
          * The name of the left-hand side (the name of a variable or array).
          */
         protected String id;
+
         protected LHS(String id) {
             this.id = id.toUpperCase();
         }
 
         /**
-         * Since the right-hand side expression of an assignment can contain the left-hand side, it needs to be
-         * existent with a default value so that the right-hand side can be evaluated. This is what this method is
-         * meant to ensure.
-         *
-         * @param state the interpreter state.
+         * @return {@code true} iff this left-hand side has a string type.
          */
-        protected abstract void checkPreInit(InterpreterState state);
+        public boolean isString() {
+            return id.endsWith("$");
+        }
 
         /**
          * Execute the actual assignment of the value, depending on the nature of the left-hand side.
@@ -47,28 +45,19 @@ public class LetNode extends StatementNode {
 
     /**
      * A representation of an assignment left-hand side that is a {@code Variable}, regardless of its type (number or
-     * string). The implementation ensures the variable, if it does not yet exist, is
-     * {@linkplain LHS#checkPreInit(InterpreterState) initialised with a default value}. It also performs a type check
-     * when the {@linkplain LHS#assign(InterpreterState, Object) assignment is executed}.
+     * string). The implementation performs a type check when the {@linkplain LHS#assign(InterpreterState, Object)
+     * assignment is executed}.
      */
     public static class Variable extends LHS {
         public Variable(String id) {
             super(id);
         }
         @Override
-        protected void checkPreInit(InterpreterState state) {
-            boolean isString = id.endsWith("$");
-            if (state.getVar(id).isEmpty()) {
-                state.setVar(id, isString ? "" : Double.valueOf(0.0));
-            }
-        }
-        @Override
         protected void assign(InterpreterState state, Object value) {
-            boolean isString = id.endsWith("$");
-            if (value instanceof String && !isString) {
+            if (value instanceof String && !isString()) {
                 throw new IllegalStateException("can't assign a string to a variable named " + id);
             }
-            if (!(value instanceof String) && isString) {
+            if (!(value instanceof String) && isString()) {
                 throw new IllegalStateException("can't assign a non-string to a variable named " + id);
             }
             state.setVar(id, value);
@@ -77,9 +66,8 @@ public class LetNode extends StatementNode {
 
     /**
      * A representation of an assignment left-hand side that is an {@code Array}, regardless of the type of its elements
-     * (number or string). As arrays are pre-initialised when they are created, the implementation does not ensure
-     * {@linkplain LHS#checkPreInit(InterpreterState) pre-initialisation}. It does, however, perform a type check when
-     * the {@linkplain LHS#assign(InterpreterState, Object) assignment is executed}.
+     * (number or string). The implementation performs a type check when the
+     * {@linkplain LHS#assign(InterpreterState, Object) assignment is executed}.
      */
     public static class Array extends LHS {
         private final VarNode getArray;
@@ -90,10 +78,6 @@ public class LetNode extends StatementNode {
             this.getArray = new VarNode(id, true);
             this.dim1 = dim1;
             this.dim2 = dim2;
-        }
-        @Override
-        protected void checkPreInit(InterpreterState state) {
-            // ignore; arrays must have been pre-initialised
         }
         @Override
         protected void assign(InterpreterState state, Object value) {
@@ -152,7 +136,6 @@ public class LetNode extends StatementNode {
 
     @Override
     public void run(InterpreterState state) {
-        lhs.checkPreInit(state);
         Object value = expression.eval(state);
         lhs.assign(state, value);
     }

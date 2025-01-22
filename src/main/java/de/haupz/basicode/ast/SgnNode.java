@@ -14,7 +14,7 @@ public class SgnNode extends WrappingExpressionNode {
     @Override
     Optional<Object> evalWithTypes(Object value) {
         if (value instanceof Double d) {
-            return Optional.of((int) Math.signum(d));
+            return Optional.of(Math.signum(d));
         }
         return Optional.empty();
     }

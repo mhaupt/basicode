@@ -281,12 +281,12 @@ StatementNode read_statement():
 StatementNode input_statement():
 {
     Token p = null;
-    Token t;
+    LetNode.LHS l;
 }
 {
-    <INPUT> (p = <STRING> ";")? t = <IDENTIFIER>
+    <INPUT> (p = <STRING> ";")? l = lhs()
     {
-        return new InputNode(p == null ? null : p.image.substring(1, p.image.length() - 1), t.image);
+        return new InputNode(p == null ? null : p.image.substring(1, p.image.length() - 1), l);
     }
 }
 

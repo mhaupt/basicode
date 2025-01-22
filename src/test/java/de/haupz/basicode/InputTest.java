@@ -1,5 +1,7 @@
 package de.haupz.basicode;
 
+import de.haupz.basicode.array.BasicArray;
+import de.haupz.basicode.array.BasicArray1D;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -52,6 +54,26 @@ public class InputTest extends StatementTest {
     @Test
     public void testWrongType() {
         assertThrows(IllegalStateException.class, () -> run("INPUT A", "oops"));
+    }
+
+    @Test
+    public void testInputArrayNumber() {
+        run(List.of("DIM A(1)", "INPUT A(0)", "AA=A(0)"), "23");
+        Optional<BasicArray> a = state.getArray("A");
+        assertTrue(a.isPresent());
+        assertInstanceOf(BasicArray1D.class, a.get());
+        Optional<Object> aa = state.getVar("AA");
+        assertEquals(23.0, aa.get());
+    }
+
+    @Test
+    public void testInputArrayString() {
+        run(List.of("DIM A$(1)", "INPUT A$(0)", "AA$=A$(0)"), "moop");
+        Optional<BasicArray> a = state.getArray("A$");
+        assertTrue(a.isPresent());
+        assertInstanceOf(BasicArray1D.class, a.get());
+        Optional<Object> aa = state.getVar("AA$");
+        assertEquals("moop", aa.get());
     }
 
 }
