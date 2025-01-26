@@ -101,6 +101,12 @@ public class Lexer {
         return sym;
     }
 
+    /**
+     * Helper to note a single character as a lexed symbol.
+     *
+     * @param s the {@link Symbol} to note.
+     * @param c the character representing the symbol.
+     */
     private void note(Symbol s, char c) {
         sym = s;
         text.append(c);
