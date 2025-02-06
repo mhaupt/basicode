@@ -19,9 +19,9 @@ public class ValTest extends ExpressionTest {
     }
 
     @Test
-    public void testError() {
-        testExpressionThrows("VAL(\"2+4\")", NumberFormatException.class);
-        testExpressionThrows("VAL(\"Hello\")", NumberFormatException.class);
+    public void testStrangeInput() {
+        testExpression("VAL(\"2+4\")", 2.0, Double.class);
+        testExpression("VAL(\"Hello\")", 0.0, Double.class);
     }
 
 }

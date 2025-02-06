@@ -57,4 +57,9 @@ public class MidsTest extends ExpressionTest {
         testExpression("MID$(\"BASICODE\",8)", "E", String.class);
     }
 
+    @Test
+    public void testb64() {
+        testExpression("MID$(\"b64\",2,2)", "64", String.class);
+    }
+
 }
