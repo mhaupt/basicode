@@ -170,6 +170,28 @@ public class Parser {
         return sgn * Double.parseDouble(text);
     }
 
-    public StatementNode statement() { return null; }
+    public StatementNode statement() {
+        if (accept(Def)) {}
+        else if (accept(Dim)) {}
+        else if (accept(End) || accept(Stop)) {}
+        else if (accept(For)) {}
+        else if (accept(Gosub)) {}
+        else if (accept(Goto)) {}
+        else if (accept(If)) {}
+        else if (accept(Input)) {}
+        else if (accept(Let) || accept(Identifier)) {}
+        else if (accept(Next)) {}
+        else if (accept(On)) {}
+        else if (accept(Print)) {}
+        else if (accept(Read)) {}
+        else if (accept(Rem)) {}
+        else if (accept(Restore)) {}
+        else if (accept(Return)) {}
+        else if (accept(Run)) {}
+        else {
+            throw new ParserException("Expecting statement symbol, but got: " + sym);
+        }
+        return null;
+    }
 
 }

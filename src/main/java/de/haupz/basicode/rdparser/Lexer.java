@@ -150,7 +150,7 @@ public class Lexer {
     }
 
     /**
-     * Lex a keyword.
+     * Lex a keyword. This includes handling REM lines and FN identifiers.
      */
     private void lexKeyword() {
         sym = KEYWORD_SYMBOLS.stream()
