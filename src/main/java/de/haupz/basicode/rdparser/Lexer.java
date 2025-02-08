@@ -158,6 +158,7 @@ public class Lexer {
                 .findFirst()
                 .orElse(None);
         if (None != sym) {
+            text = new StringBuilder();
             text.append(consume(sym.text.length()));
             if (Rem == sym) {
                 // special handling: consume until the end of the current line

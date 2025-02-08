@@ -1,9 +1,6 @@
 package de.haupz.basicode.rdparser;
 
-import de.haupz.basicode.ast.DataNode;
-import de.haupz.basicode.ast.LineNode;
-import de.haupz.basicode.ast.ProgramNode;
-import de.haupz.basicode.ast.StatementNode;
+import de.haupz.basicode.ast.*;
 
 import java.io.Reader;
 import java.util.ArrayList;
@@ -184,8 +181,9 @@ public class Parser {
         else if (accept(On)) {}
         else if (accept(Print)) {}
         else if (accept(Read)) {}
-        else if (accept(Rem)) {}
-        else if (accept(Restore)) {}
+        else if (accept(Rem)) {
+            return new RemNode(text.substring(3).trim()); // text starts with "REM"
+        } else if (accept(Restore)) {}
         else if (accept(Return)) {}
         else if (accept(Run)) {}
         else {

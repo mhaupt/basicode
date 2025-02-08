@@ -2,6 +2,7 @@ package de.haupz.basicode.grammar;
 
 import de.haupz.basicode.ast.DataNode;
 import de.haupz.basicode.ast.LineNode;
+import de.haupz.basicode.ast.RemNode;
 import de.haupz.basicode.ast.StatementNode;
 import de.haupz.basicode.rdparser.Parser;
 import org.junit.jupiter.api.Test;
@@ -101,6 +102,21 @@ public class ParserTest {
         assertEquals(2, d2.size());
         assertEquals("\"\"", d2.get(0));
         assertEquals(-2.3, d2.get(1));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"wheee", "  wheee", "  wheee  ", ""})
+    public void testRem(String rem) {
+        Parser p = parse("10 REM " + rem);
+
+        LineNode l = p.line();
+        assertEquals(10, l.getLineNumber());
+
+        List<StatementNode> s = l.getStatements();
+        assertEquals(1, s.size());
+
+        RemNode r = (RemNode) s.get(0);
+        assertEquals(rem.trim(), r.getRem());
     }
 
 }
