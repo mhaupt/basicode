@@ -168,28 +168,259 @@ public class Parser {
     }
 
     public StatementNode statement() {
-        if (accept(Def)) {}
-        else if (accept(Dim)) {}
-        else if (accept(End) || accept(Stop)) {}
-        else if (accept(For)) {}
-        else if (accept(Gosub)) {}
-        else if (accept(Goto)) {}
-        else if (accept(If)) {}
-        else if (accept(Input)) {}
-        else if (accept(Let) || accept(Identifier)) {}
-        else if (accept(Next)) {}
-        else if (accept(On)) {}
-        else if (accept(Print)) {}
-        else if (accept(Read)) {}
-        else if (accept(Rem)) {
-            return new RemNode(text.substring(3).trim()); // text starts with "REM"
-        } else if (accept(Restore)) {}
-        else if (accept(Return)) {}
-        else if (accept(Run)) {}
-        else {
-            throw new ParserException("Expecting statement symbol, but got: " + sym);
+        // Here, it's OK to bypass a call to accept(): we know we're going to parse a statement, and we know which
+        // starting symbols there can be.
+        getNextSymbol();
+        Symbol statement = sym;
+
+        StatementNode s = switch (statement) {
+            case Def -> null;
+            case Dim -> null;
+            case End, Stop -> null;
+            case For -> null;
+            case Gosub -> null;
+            case Goto -> null;
+            case If -> null;
+            case Input -> null;
+            case Let, Identifier -> assignment();
+            case Next -> null;
+            case On -> null;
+            case Print -> null;
+            case Read -> null;
+            case Rem -> new RemNode(text.substring(3).trim()); // text starts with "REM"
+            case Restore -> null;
+            case Return -> null;
+            case Run -> null;
+            default -> throw new ParserException("Expecting statement symbol, but got: " + statement);
+        };
+        
+        return s;
+    }
+
+    public StatementNode assignment() {
+        LetNode.LHS l = lhs();
+        expect(Equal);
+        ExpressionNode e = expression();
+        return new LetNode(l, e);
+    }
+
+    public LetNode.LHS lhs() {
+        if (Let == sym) {
+            expect(Identifier);
         }
-        return null;
+        String id = text;
+        if (accept(LeftBracket)) {
+            ExpressionNode e = expression();
+            ExpressionNode f = null;
+            if (accept(Comma)) {
+                f = expression();
+            }
+            expect(RightBracket);
+            return new LetNode.Array(id, e, f);
+        }
+        return new LetNode.Variable(id);
+    }
+
+    public ExpressionNode expression() {
+        ExpressionNode e = andExpression();
+        while (accept(Or)) {
+            ExpressionNode f = andExpression();
+            e = new OrNode(e, f);
+        }
+        return e;
+    }
+
+    public ExpressionNode andExpression() {
+        ExpressionNode e = equalityExpression();
+        while (accept(And)) {
+            ExpressionNode f = equalityExpression();
+            e = new AndNode(e, f);
+        }
+        return e;
+    }
+
+    public ExpressionNode equalityExpression() {
+        ExpressionNode e = relationalExpression();
+        if (accept(Equal)) {
+            ExpressionNode f = relationalExpression();
+            return new EqNode(e, f);
+        } else if (accept(NotEqual)) {
+            ExpressionNode f = relationalExpression();
+            return new NeqNode(e, f);
+        }
+        return e;
+    }
+
+    public ExpressionNode relationalExpression() {
+        ExpressionNode e = additiveExpression();
+        if (accept(Less)) {
+            ExpressionNode f = additiveExpression();
+            return new LtNode(e, f);
+        } else if (accept(LessEqual)) {
+            ExpressionNode f = additiveExpression();
+            return new LeqNode(e, f);
+        } else if (accept(Greater)) {
+            ExpressionNode f = additiveExpression();
+            return new GtNode(e, f);
+        } else if (accept(GreaterEqual)) {
+            ExpressionNode f = additiveExpression();
+            return new GeqNode(e, f);
+        }
+        return e;
+    }
+
+    public ExpressionNode additiveExpression() {
+        ExpressionNode e = multiplicativeExpression();
+        while (accept(Plus) || accept(Minus)) {
+            Symbol s = sym;
+            ExpressionNode f = multiplicativeExpression();
+            e = Plus == s ? new AddNode(e, f) : new SubtractNode(e, f);
+        }
+        return e;
+    }
+
+    public ExpressionNode multiplicativeExpression() {
+        ExpressionNode e = powerExpression();
+        while (accept(Multiply) || accept(Divide)) {
+            Symbol s = sym;
+            ExpressionNode f = powerExpression();
+            e = Multiply == s ? new MultiplyNode(e, f) : new DivideNode(e, f);
+        }
+        return e;
+    }
+
+    public ExpressionNode powerExpression() {
+        ExpressionNode e = unaryExpression();
+        while (accept(Power)) {
+            ExpressionNode f = unaryExpression();
+            e = new PowerNode(e, f);
+        }
+        return e;
+    }
+
+    public ExpressionNode unaryExpression() {
+        if (accept(Minus)) {
+            ExpressionNode e = unaryExpression();
+            return new NegateNode(e);
+        } else if (accept(Plus)) {
+            ExpressionNode e = unaryExpression();
+            return e;
+        }
+        return unaryExpressionNotPlusMinus();
+    }
+
+    public ExpressionNode unaryExpressionNotPlusMinus() {
+        if (accept(Not)) {
+            ExpressionNode e = unaryExpression();
+            return new NotNode(e);
+        }
+        return primaryExpression();
+    }
+
+    public ExpressionNode primaryExpression() {
+        if (accept(NumberLiteral) || accept(FloatLiteral) || accept(StringLiteral)) {
+            return literal();
+        } else if (accept(LeftBracket)) {
+            ExpressionNode e = expression();
+            expect(RightBracket);
+            return e;
+        } else if (accept(Identifier)) {
+            return varOrDimAccess();
+        } else if (accept(FnIdentifier) || accept(Fn)) {
+            return fnCall();
+        }
+        return builtinCall();
+    }
+
+    public ExpressionNode literal() {
+        if (NumberLiteral == sym || FloatLiteral == sym) {
+            return new DoubleNode(Double.parseDouble(text));
+        } else {
+            return new StringNode(text.substring(1, text.length() - 1));
+        }
+    }
+
+    public ExpressionNode varOrDimAccess() {
+        String id = text;
+        if (accept(LeftBracket)) {
+            ExpressionNode e = expression();
+            ExpressionNode f = null;
+            if (accept(Comma)) {
+                f = expression();
+            }
+            expect(RightBracket);
+            return new DimAccessNode(id, e, f);
+        }
+        return new VarNode(id, false);
+    }
+
+    public ExpressionNode fnCall() {
+        String id = fnId();
+        expect(LeftBracket);
+        ExpressionNode e = expression();
+        expect(RightBracket);
+        return new FnCallNode(id, e);
+    }
+
+    private String fnId() {
+        String id;
+        if (Fn == sym) {
+            expect(Identifier);
+            id = text;
+        } else { // FnIdentifier
+            id = text.substring(2);
+        }
+        return id;
+    }
+
+    public ExpressionNode builtinCall() {
+        // Here, it's OK to bypass a call to accept(): at this point, we're certain we're parsing a builtin call, so
+        // we'll just get the symbol and proceed with parsing.
+        getNextSymbol();
+        Symbol builtin = sym;
+        String builtinName = text;
+        
+        expect(LeftBracket);
+        ExpressionNode e = expression();
+        ExpressionNode n = switch (builtin) {
+            case Abs -> new AbsNode(e);
+            case Asc -> new AscNode(e);
+            case Atn -> new AtnNode(e);
+            case ChrS -> new ChrsNode(e);
+            case Cos -> new CosNode(e);
+            case Exp -> new ExpNode(e);
+            case Int -> new IntNode(e);
+            case LeftS -> {
+                expect(Comma);
+                ExpressionNode f = expression();
+                yield new LeftsNode(e, f);
+            }
+            case Len -> new LenNode(e);
+            case Log -> new LogNode(e);
+            case MidS -> {
+                expect(Comma);
+                ExpressionNode f = expression();
+                ExpressionNode g = null;
+                if (accept(Comma)) {
+                    g = expression();
+                }
+                yield new MidsNode(e, f, g);
+            }
+            case RightS -> {
+                expect(Comma);
+                ExpressionNode f = expression();
+                yield new RightsNode(e, f);
+            }
+            case Sgn -> new SgnNode(e);
+            case Sin -> new SinNode(e);
+            case Sqr -> new SqrNode(e);
+            case Tan -> new TanNode(e);
+            case Val -> new ValNode(e);
+            default -> throw new ParserException("Unsupported builtin call: " + builtinName);
+        };
+        
+        expect(RightBracket);
+        return n;
     }
 
 }

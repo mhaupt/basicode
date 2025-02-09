@@ -22,6 +22,14 @@ public class VarNode extends ExpressionNode {
         this.isArray = isArray;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public boolean isArray() {
+        return isArray;
+    }
+
     @Override
     public Object eval(InterpreterState state) {
         if (isArray) {

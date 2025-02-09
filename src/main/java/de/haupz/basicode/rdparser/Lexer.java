@@ -87,8 +87,36 @@ public class Lexer {
             note(Colon, consumeChar());
         } else if (',' == currentChar()) {
             note(Comma, consumeChar());
+        } else if ('+' == currentChar()) {
+            note(Plus, consumeChar());
         } else if ('-' == currentChar()) {
             note(Minus, consumeChar());
+        } else if ('*' == currentChar()) {
+            note(Multiply, consumeChar());
+        } else if ('/' == currentChar()) {
+            note(Divide, consumeChar());
+        } else if ('^' == currentChar()) {
+            note(Power, consumeChar());
+        } else if ('(' == currentChar()) {
+            note(LeftBracket, consumeChar());
+        } else if (')' == currentChar()) {
+            note(RightBracket, consumeChar());
+        } else if ('=' == currentChar()) {
+            note(Equal, consumeChar());
+        } else if ('<' == currentChar()) {
+            if (">".equals(peek(1))) {
+                note(NotEqual, consume(2));
+            } else if ("=".equals(peek(1))) {
+                note(LessEqual, consume(2));
+            } else {
+                note(Less, consumeChar());
+            }
+        } else if ('>' == currentChar()) {
+            if ("=".equals(peek(1))) {
+                note(GreaterEqual, consume(2));
+            } else {
+                note(Greater, consumeChar());
+            }
         } else if (Character.isLetter(currentChar())) {
             lexKeyword(); // keywords take precedence
             if (None == sym) {
@@ -110,6 +138,17 @@ public class Lexer {
     private void note(Symbol s, char c) {
         sym = s;
         text.append(c);
+    }
+
+    /**
+     * Helper to note a string as a lexed symbol.
+     *
+     * @param s the {@link Symbol} to note.
+     * @param v the string representing the symbol.
+     */
+    private void note(Symbol s, String v) {
+        sym = s;
+        text.append(v);
     }
 
     /**
@@ -191,6 +230,7 @@ public class Lexer {
      */
     private void lexIdentifier() {
         sym = Identifier;
+        text = new StringBuilder();
         text.append(consumeChar());
         if (Character.isLetterOrDigit(currentChar())) {
             text.append(consumeChar());

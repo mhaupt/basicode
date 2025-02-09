@@ -1,9 +1,6 @@
 package de.haupz.basicode.grammar;
 
-import de.haupz.basicode.ast.DataNode;
-import de.haupz.basicode.ast.LineNode;
-import de.haupz.basicode.ast.RemNode;
-import de.haupz.basicode.ast.StatementNode;
+import de.haupz.basicode.ast.*;
 import de.haupz.basicode.rdparser.Parser;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -117,6 +114,52 @@ public class ParserTest {
 
         RemNode r = (RemNode) s.get(0);
         assertEquals(rem.trim(), r.getRem());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"A=23", "LET A=23"})
+    public void testAssignment(String assignment) {
+        Parser p = parse(assignment);
+        LetNode l = (LetNode) p.statement();
+        LetNode.Variable lhs = (LetNode.Variable) l.getLhs();
+        assertEquals("A", lhs.getId());
+        assertFalse(lhs.isString());
+        DoubleNode d = (DoubleNode) l.getExpression();
+        assertEquals(23.0, d.eval(null));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"A$=\"boop\"", "LET A$=\"boop\""})
+    public void testStringAssignment(String assignment) {
+        Parser p = parse(assignment);
+        LetNode l = (LetNode) p.statement();
+        LetNode.Variable lhs = (LetNode.Variable) l.getLhs();
+        assertEquals("A$", lhs.getId());
+        assertTrue(lhs.isString());
+        StringNode s = (StringNode) l.getExpression();
+        assertEquals("boop", s.eval(null));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"A(1)=23", "A(2,3)=23"})
+    public void testArrayAssignment(String assignment) {
+        Parser p = parse(assignment);
+        LetNode l = (LetNode) p.statement();
+        LetNode.Array lhs = (LetNode.Array) l.getLhs();
+        assertFalse(lhs.isString());
+        VarNode v = lhs.getGetArray();
+        assertEquals("A", v.getId());
+        assertTrue(v.isArray());
+        DoubleNode d1 = (DoubleNode) lhs.getDim1();
+        if (null == lhs.getDim2()) {
+            assertEquals(1.0, d1.eval(null));
+        } else {
+            DoubleNode d2 = (DoubleNode) lhs.getDim2();
+            assertEquals(2.0, d1.eval(null));
+            assertEquals(3.0, d2.eval(null));
+        }
+        DoubleNode r = (DoubleNode) l.getExpression();
+        assertEquals(23.0, r.eval(null));
     }
 
 }
