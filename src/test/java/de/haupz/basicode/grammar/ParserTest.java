@@ -240,4 +240,15 @@ public class ParserTest {
         assertInstanceOf(ReturnNode.class, l.getStatements().get(0));
     }
 
+    @Test
+    public void testMultipleStatements() {
+        Parser p = parse("10 PRINT 1:GOTO 20:RETURN");
+        LineNode l = p.line();
+        List<StatementNode> s = l.getStatements();
+        assertEquals(3, s.size());
+        assertInstanceOf(PrintNode.class, s.get(0));
+        assertInstanceOf(GotoNode.class, s.get(1));
+        assertInstanceOf(ReturnNode.class, s.get(2));
+    }
+
 }
