@@ -162,4 +162,59 @@ public class ParserTest {
         assertEquals(23.0, r.eval(null));
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"PRINT 1;A,TAB(7);SGN(2);", "PRINT 1;A,TAB(7);SGN(2)"})
+    public void testPrint(String ps) {
+        Parser p = parse(ps);
+        PrintNode pn = (PrintNode) p.statement();
+
+        boolean trailingSemicolon = ps.endsWith(";");
+
+        List<PrintNode.Element> es = pn.getElements();
+        assertEquals(trailingSemicolon ? 8 : 7, es.size());
+
+        PrintNode.Element e0 = es.get(0);
+        assertEquals(PrintNode.ElementType.EXPRESSION, e0.type());
+        DoubleNode d0 = (DoubleNode) e0.payload();
+        assertEquals(1.0, d0.eval(null));
+
+        PrintNode.Element e1 = es.get(1);
+        assertEquals(PrintNode.ElementType.SEPARATOR, e1.type());
+        String s1 = (String) e1.payload();
+        assertEquals(";", s1);
+
+        PrintNode.Element e2 = es.get(2);
+        assertEquals(PrintNode.ElementType.EXPRESSION, e2.type());
+        VarNode v2 = (VarNode) e2.payload();
+        assertEquals("A", v2.getId());
+
+        PrintNode.Element e3 = es.get(3);
+        assertEquals(PrintNode.ElementType.SEPARATOR, e3.type());
+        String s3 = (String) e3.payload();
+        assertEquals(",", s3);
+
+        PrintNode.Element e4 = es.get(4);
+        assertEquals(PrintNode.ElementType.TAB, e4.type());
+        DoubleNode d4 = (DoubleNode) e4.payload();
+        assertEquals(7.0, d4.eval(null));
+
+        PrintNode.Element e5 = es.get(5);
+        assertEquals(PrintNode.ElementType.SEPARATOR, e5.type());
+        String s5 = (String) e5.payload();
+        assertEquals(";", s5);
+
+        PrintNode.Element e6 = es.get(6);
+        assertEquals(PrintNode.ElementType.EXPRESSION, e6.type());
+        SgnNode sgn = (SgnNode) e6.payload();
+        DoubleNode d6 = (DoubleNode) sgn.getExpression();
+        assertEquals(2.0, d6.eval(null));
+
+        if (trailingSemicolon) {
+            PrintNode.Element e7 = es.get(7);
+            assertEquals(PrintNode.ElementType.SEPARATOR, e7.type());
+            String s7 = (String) e7.payload();
+            assertEquals(";", s7);
+        }
+    }
+
 }

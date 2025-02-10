@@ -87,6 +87,8 @@ public class Lexer {
             note(Colon, consumeChar());
         } else if (',' == currentChar()) {
             note(Comma, consumeChar());
+        } else if (';' == currentChar()) {
+            note(Semicolon, consumeChar());
         } else if ('+' == currentChar()) {
             note(Plus, consumeChar());
         } else if ('-' == currentChar()) {
@@ -137,6 +139,7 @@ public class Lexer {
      */
     private void note(Symbol s, char c) {
         sym = s;
+        text = new StringBuilder();
         text.append(c);
     }
 
@@ -148,6 +151,7 @@ public class Lexer {
      */
     private void note(Symbol s, String v) {
         sym = s;
+        text = new StringBuilder();
         text.append(v);
     }
 

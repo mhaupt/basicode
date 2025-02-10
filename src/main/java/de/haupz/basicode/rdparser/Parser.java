@@ -84,7 +84,7 @@ public class Parser {
     private void expect(Symbol s) throws ParserException {
         getNextSymbol();
         if (sym != s) {
-            throw new ParserException("Expected " + s + " but got " + sym);
+            throw new ParserException("Expected " + s + " but got " + sym + " << " + text + " >>");
         }
     }
 
@@ -99,7 +99,7 @@ public class Parser {
         getNextSymbol();
         List<Symbol> lss = List.of(ss);
         if (!lss.contains(sym)) {
-            throw new ParserException("Expected one of " + lss + " but got " + sym);
+            throw new ParserException("Expected one of " + lss + " but got " + sym + " << " + text + " >>");
         }
     }
 
@@ -185,7 +185,7 @@ public class Parser {
             case Let, Identifier -> assignment();
             case Next -> null;
             case On -> null;
-            case Print -> null;
+            case Print -> print();
             case Read -> null;
             case Rem -> new RemNode(text.substring(3).trim()); // text starts with "REM"
             case Restore -> null;
@@ -421,6 +421,48 @@ public class Parser {
         
         expect(RightBracket);
         return n;
+    }
+
+    public StatementNode print() {
+        List<PrintNode.Element> elements = new ArrayList<>();
+        PrintNode.Element e = printElement();
+        elements.add(e);
+        while (accept(Comma) || accept(Semicolon)) {
+            elements.add(new PrintNode.Element(PrintNode.ElementType.SEPARATOR, text));
+            if (printElementIsNext()) {
+                e = printElement();
+                elements.add(e);
+            }
+        }
+        return new PrintNode(elements);
+    }
+
+    private static final List<Symbol> EXPRESSION_START_SYMBOLS =
+            List.of(
+                // grammatical start symbols
+                    NumberLiteral, FloatLiteral, StringLiteral, LeftBracket, Identifier, FnIdentifier, Fn, Minus, Plus,
+                    Not,
+                // builtin calls are also start symbols
+                    Abs, Asc, Atn, ChrS, Cos, Exp, Int, LeftS, Len, Log, MidS, RightS, Sgn, Sin, Sqr, Tan, Val);
+
+    private boolean printElementIsNext() {
+        // We're implementing a lookahead here, and will check if the next symbol is a start symbol of a PRINT statement
+        // element. We can't use accept(), as we must not consume the symbol when peeking.
+        getNextSymbol();
+        pendingSymbol = Optional.of(sym);
+        pendingText = Optional.of(text);
+        return EXPRESSION_START_SYMBOLS.contains(sym) || Tab == sym;
+    }
+
+    public PrintNode.Element printElement() {
+        if (accept(Tab)) {
+            expect(LeftBracket);
+            ExpressionNode e = expression();
+            expect(RightBracket);
+            return new PrintNode.Element(PrintNode.ElementType.TAB, e);
+        }
+        ExpressionNode e = expression();
+        return new PrintNode.Element(PrintNode.ElementType.EXPRESSION, e);
     }
 
 }

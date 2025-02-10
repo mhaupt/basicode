@@ -12,6 +12,7 @@ public enum Symbol {
     FnIdentifier,
     Colon,
     Comma,
+    Semicolon,
     Plus,
     Minus,
     Multiply,

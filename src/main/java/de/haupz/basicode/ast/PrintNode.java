@@ -37,6 +37,10 @@ public class PrintNode extends StatementNode {
         this.elements = List.copyOf(elements);
     }
 
+    public List<Element> getElements() {
+        return elements;
+    }
+
     @Override
     public void run(InterpreterState state) {
         if (elements.isEmpty()) {
