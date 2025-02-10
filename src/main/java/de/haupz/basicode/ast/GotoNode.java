@@ -18,6 +18,10 @@ public class GotoNode extends StatementNode {
         this.target = target;
     }
 
+    public int getTarget() {
+        return target;
+    }
+
     @Override
     public void run(InterpreterState state) {
         if (target < 1000) {

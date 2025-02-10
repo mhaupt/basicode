@@ -217,4 +217,27 @@ public class ParserTest {
         }
     }
 
+    @Test
+    public void testGoto() {
+        Parser p = parse("10 GOTO 20");
+        LineNode l = p.line();
+        GotoNode g = (GotoNode) l.getStatements().get(0);
+        assertEquals(20, g.getTarget());
+    }
+
+    @Test
+    public void testGosub() {
+        Parser p = parse("10 GOSUB 20");
+        LineNode l = p.line();
+        GosubNode g = (GosubNode) l.getStatements().get(0);
+        assertEquals(20, g.getTarget());
+    }
+
+    @Test
+    public void testReturn() {
+        Parser p = parse("10 RETURN");
+        LineNode l = p.line();
+        assertInstanceOf(ReturnNode.class, l.getStatements().get(0));
+    }
+
 }

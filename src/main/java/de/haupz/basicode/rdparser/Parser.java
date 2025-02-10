@@ -134,8 +134,7 @@ public class Parser {
 
     public LineNode line() {
         List<StatementNode> statements = new ArrayList<>();
-        expect(NumberLiteral);
-        int num = Integer.parseInt(text);
+        int num = lineNumber();
         if (accept(Data)) {
             statements.add(dataLine());
         } else {
@@ -144,6 +143,11 @@ public class Parser {
             } while (accept(Colon));
         }
         return new LineNode(num, statements);
+    }
+
+    private int lineNumber() {
+        expect(NumberLiteral);
+        return Integer.parseInt(text);
     }
 
     //
@@ -178,8 +182,14 @@ public class Parser {
             case Dim -> null;
             case End, Stop -> null;
             case For -> null;
-            case Gosub -> null;
-            case Goto -> null;
+            case Gosub -> {
+                int num = lineNumber();
+                yield new GosubNode(num);
+            }
+            case Goto -> {
+                int num = lineNumber();
+                yield new GotoNode(num);
+            }
             case If -> null;
             case Input -> null;
             case Let, Identifier -> assignment();
@@ -189,7 +199,7 @@ public class Parser {
             case Read -> null;
             case Rem -> new RemNode(text.substring(3).trim()); // text starts with "REM"
             case Restore -> null;
-            case Return -> null;
+            case Return -> new ReturnNode();
             case Run -> null;
             default -> throw new ParserException("Expecting statement symbol, but got: " + statement);
         };
