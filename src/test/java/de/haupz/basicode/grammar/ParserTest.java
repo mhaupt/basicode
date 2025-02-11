@@ -342,4 +342,38 @@ public class ParserTest {
         assertEquals("I", n.getId());
     }
 
+    @Test
+    public void testIfThenGoto() {
+        Parser p = parse("10 IF A THEN 2");
+        LineNode l = p.line();
+        IfThenNode i = (IfThenNode) l.getStatements().get(0);
+        VarNode v = (VarNode) i.getCondition();
+        assertEquals("A", v.getId());
+        GotoNode t = (GotoNode) i.getThen();
+        assertEquals(2, t.getTarget());
+    }
+
+    @Test
+    public void testIfGoto() {
+        Parser p = parse("10 IF A GOTO 2");
+        LineNode l = p.line();
+        IfThenNode i = (IfThenNode) l.getStatements().get(0);
+        VarNode v = (VarNode) i.getCondition();
+        assertEquals("A", v.getId());
+        GotoNode t = (GotoNode) i.getThen();
+        assertEquals(2, t.getTarget());
+    }
+
+    @Test
+    public void testIfThen() {
+        Parser p = parse("10 IF A THEN PRINT X");
+        LineNode l = p.line();
+        IfThenNode i = (IfThenNode) l.getStatements().get(0);
+        VarNode v = (VarNode) i.getCondition();
+        assertEquals("A", v.getId());
+        PrintNode pn = (PrintNode) i.getThen();
+        VarNode pv = (VarNode) pn.getElements().get(0).payload();
+        assertEquals("X", pv.getId());
+    }
+
 }

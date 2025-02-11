@@ -190,7 +190,7 @@ public class Parser {
                 int num = lineNumber();
                 yield new GotoNode(num);
             }
-            case If -> null;
+            case If -> ifStatement();
             case Input -> null;
             case Let, Identifier -> assignment();
             case Next -> next();
@@ -539,6 +539,25 @@ public class Parser {
         expect(Identifier);
         String id = text;
         return new NextNode(id);
+    }
+
+    public StatementNode ifStatement() {
+        ExpressionNode e = expression();
+        StatementNode s;
+        if (accept(Then)) {
+            if (accept(NumberLiteral)) {
+                int l = Integer.parseInt(text);
+                s = new GotoNode(l);
+            } else {
+                s = statement();
+            }
+        } else if (accept(Goto)) {
+            int l = lineNumber();
+            s = new GotoNode(l);
+        } else {
+            throw new ParserException("Expecting THEN or GOTO, but got " + sym + " << " + text + " >>");
+        }
+        return new IfThenNode(e, s);
     }
 
 }
