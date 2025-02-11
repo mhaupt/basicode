@@ -334,4 +334,12 @@ public class ParserTest {
         assertEquals(1.0, step.eval(null));
     }
 
+    @Test
+    public void testNext() {
+        Parser p = parse("10 NEXT I");
+        LineNode l = p.line();
+        NextNode n = (NextNode) l.getStatements().get(0);
+        assertEquals("I", n.getId());
+    }
+
 }

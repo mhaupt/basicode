@@ -193,7 +193,7 @@ public class Parser {
             case If -> null;
             case Input -> null;
             case Let, Identifier -> assignment();
-            case Next -> null;
+            case Next -> next();
             case On -> dependentJump();
             case Print -> print();
             case Read -> null;
@@ -533,6 +533,12 @@ public class Parser {
             g = expression();
         }
         return new ForNode(id, e, f, g);
+    }
+
+    public StatementNode next() {
+        expect(Identifier);
+        String id = text;
+        return new NextNode(id);
     }
 
 }
