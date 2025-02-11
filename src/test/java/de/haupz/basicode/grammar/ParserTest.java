@@ -251,4 +251,36 @@ public class ParserTest {
         assertInstanceOf(ReturnNode.class, s.get(2));
     }
 
+    @Test
+    public void testOnGosub() {
+        Parser p = parse("10 ON X GOSUB 3,4,5");
+        LineNode l = p.line();
+        OnGosubNode g = (OnGosubNode) l.getStatements().get(0);
+
+        VarNode v = (VarNode) g.getExpression();
+        assertEquals("X", v.getId());
+
+        List<Integer> targets = g.getTargets();
+        assertEquals(3, targets.size());
+        assertEquals(3, (int) targets.get(0));
+        assertEquals(4, (int) targets.get(1));
+        assertEquals(5, (int) targets.get(2));
+    }
+
+    @Test
+    public void testOnGoto() {
+        Parser p = parse("10 ON X GOTO 3,4,5");
+        LineNode l = p.line();
+        OnGotoNode g = (OnGotoNode) l.getStatements().get(0);
+
+        VarNode v = (VarNode) g.getExpression();
+        assertEquals("X", v.getId());
+
+        List<Integer> targets = g.getTargets();
+        assertEquals(3, targets.size());
+        assertEquals(3, (int) targets.get(0));
+        assertEquals(4, (int) targets.get(1));
+        assertEquals(5, (int) targets.get(2));
+    }
+
 }

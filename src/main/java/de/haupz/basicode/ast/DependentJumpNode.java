@@ -26,6 +26,14 @@ public abstract class DependentJumpNode extends StatementNode {
         this.targets = targets;
     }
 
+    public ExpressionNode getExpression() {
+        return expression;
+    }
+
+    public List<Integer> getTargets() {
+        return targets;
+    }
+
     /**
      * Compute a jump target from a value derived from evaluating {@link #expression}.
      *

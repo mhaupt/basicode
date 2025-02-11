@@ -194,7 +194,7 @@ public class Parser {
             case Input -> null;
             case Let, Identifier -> assignment();
             case Next -> null;
-            case On -> null;
+            case On -> dependentJump();
             case Print -> print();
             case Read -> null;
             case Rem -> new RemNode(text.substring(3).trim()); // text starts with "REM"
@@ -473,6 +473,28 @@ public class Parser {
         }
         ExpressionNode e = expression();
         return new PrintNode.Element(PrintNode.ElementType.EXPRESSION, e);
+    }
+
+    public StatementNode dependentJump() {
+        ExpressionNode e = expression();
+        boolean isGosub;
+        if (accept(Goto)) {
+            isGosub = false;
+        } else if (accept(Gosub)) {
+            isGosub = true;
+        } else {
+            throw new ParserException("Expecting GOTO or GOSUB, but got: " + sym + " << " + text + " >>");
+        }
+
+        List<Integer> targets = new ArrayList<>();
+        int n = lineNumber();
+        targets.add(n);
+        while (accept(Comma)) {
+            n = lineNumber();
+            targets.add(n);
+        }
+
+        return isGosub ? new OnGosubNode(e, targets) : new OnGotoNode(e, targets);
     }
 
 }
