@@ -180,7 +180,7 @@ public class Parser {
         StatementNode s = switch (statement) {
             case Def -> null;
             case Dim -> dimStatement();
-            case End, Stop -> null;
+            case End, Stop -> new EndNode();
             case For -> null;
             case Gosub -> {
                 int num = lineNumber();
