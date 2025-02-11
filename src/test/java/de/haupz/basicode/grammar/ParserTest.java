@@ -306,4 +306,32 @@ public class ParserTest {
         assertEquals(4.0, d22.eval(null));
     }
 
+    @Test
+    public void testFor() {
+        Parser p = parse("10 FOR X = 1 TO 2 STEP 0");
+        LineNode l = p.line();
+        ForNode f = (ForNode) l.getStatements().get(0);
+        assertEquals("X", f.getId());
+        DoubleNode init = (DoubleNode) f.getInit();
+        assertEquals(1.0, init.eval(null));
+        DoubleNode end = (DoubleNode) f.getEnd();
+        assertEquals(2.0, end.eval(null));
+        DoubleNode step = (DoubleNode) f.getStep();
+        assertEquals(0.0, step.eval(null));
+    }
+
+    @Test
+    public void testForNoStep() {
+        Parser p = parse("10 FOR X = 1 TO 2");
+        LineNode l = p.line();
+        ForNode f = (ForNode) l.getStatements().get(0);
+        assertEquals("X", f.getId());
+        DoubleNode init = (DoubleNode) f.getInit();
+        assertEquals(1.0, init.eval(null));
+        DoubleNode end = (DoubleNode) f.getEnd();
+        assertEquals(2.0, end.eval(null));
+        DoubleNode step = (DoubleNode) f.getStep();
+        assertEquals(1.0, step.eval(null));
+    }
+
 }

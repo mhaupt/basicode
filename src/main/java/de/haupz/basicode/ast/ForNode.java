@@ -39,6 +39,22 @@ public class ForNode extends StatementNode {
         this.step = step == null ? new DoubleNode(1.0) : step;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public ExpressionNode getInit() {
+        return init;
+    }
+
+    public ExpressionNode getEnd() {
+        return end;
+    }
+
+    public ExpressionNode getStep() {
+        return step;
+    }
+
     @Override
     public void run(InterpreterState state) {
         if (!state.isRunningLoop(id)) {

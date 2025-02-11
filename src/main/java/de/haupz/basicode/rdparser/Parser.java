@@ -181,7 +181,7 @@ public class Parser {
             case Def -> null;
             case Dim -> dimStatement();
             case End, Stop -> new EndNode();
-            case For -> null;
+            case For -> forStatement();
             case Gosub -> {
                 int num = lineNumber();
                 yield new GosubNode(num);
@@ -508,7 +508,7 @@ public class Parser {
         return new DimNode(dims);
     }
 
-    DimCreateNode oneDim() {
+    private DimCreateNode oneDim() {
         expect(Identifier);
         String id = text;
         expect(LeftBracket);
@@ -519,6 +519,20 @@ public class Parser {
         }
         expect(RightBracket);
         return new DimCreateNode(id, d1, d2);
+    }
+
+    public StatementNode forStatement() {
+        expect(Identifier);
+        String id = text;
+        expect(Equal);
+        ExpressionNode e = expression();
+        expect(To);
+        ExpressionNode f = expression();
+        ExpressionNode g = null;
+        if (accept(Step)) {
+            g = expression();
+        }
+        return new ForNode(id, e, f, g);
     }
 
 }
