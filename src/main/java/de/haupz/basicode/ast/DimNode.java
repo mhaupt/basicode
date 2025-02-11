@@ -17,6 +17,10 @@ public class DimNode extends StatementNode {
         this.dims = List.copyOf(dims);
     }
 
+    public List<DimCreateNode> getDims() {
+        return dims;
+    }
+
     @Override
     public void run(InterpreterState state) {
         dims.forEach(d -> d.run(state));

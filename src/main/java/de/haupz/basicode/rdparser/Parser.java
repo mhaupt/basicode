@@ -179,7 +179,7 @@ public class Parser {
 
         StatementNode s = switch (statement) {
             case Def -> null;
-            case Dim -> null;
+            case Dim -> dimStatement();
             case End, Stop -> null;
             case For -> null;
             case Gosub -> {
@@ -495,6 +495,30 @@ public class Parser {
         }
 
         return isGosub ? new OnGosubNode(e, targets) : new OnGotoNode(e, targets);
+    }
+
+    public StatementNode dimStatement() {
+        List<DimCreateNode> dims = new ArrayList<>();
+        DimCreateNode d = oneDim();
+        dims.add(d);
+        while (accept(Comma)) {
+            d = oneDim();
+            dims.add(d);
+        }
+        return new DimNode(dims);
+    }
+
+    DimCreateNode oneDim() {
+        expect(Identifier);
+        String id = text;
+        expect(LeftBracket);
+        ExpressionNode d1 = expression();
+        ExpressionNode d2 = null;
+        if (accept(Comma)) {
+            d2 = expression();
+        }
+        expect(RightBracket);
+        return new DimCreateNode(id, d1, d2);
     }
 
 }

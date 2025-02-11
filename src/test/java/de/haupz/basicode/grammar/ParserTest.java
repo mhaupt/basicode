@@ -283,4 +283,27 @@ public class ParserTest {
         assertEquals(5, (int) targets.get(2));
     }
 
+    @Test
+    public void testDim() {
+        Parser p = parse("10 DIM A(2),B$(3,4)");
+        LineNode l = p.line();
+
+        DimNode d = (DimNode) l.getStatements().get(0);
+        List<DimCreateNode> dims = d.getDims();
+        assertEquals(2, dims.size());
+
+        DimCreateNode d1 = (DimCreateNode) dims.get(0);
+        assertEquals("A", d1.getId());
+        DoubleNode d11 = (DoubleNode) d1.getDim1();
+        assertEquals(2.0, d11.eval(null));
+        assertNull(d1.getDim2());
+
+        DimCreateNode d2 = (DimCreateNode) dims.get(1);
+        assertEquals("B$", d2.getId());
+        DoubleNode d21 = (DoubleNode) d2.getDim1();
+        assertEquals(3.0, d21.eval(null));
+        DoubleNode d22 = (DoubleNode) d2.getDim2();
+        assertEquals(4.0, d22.eval(null));
+    }
+
 }

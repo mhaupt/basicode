@@ -35,6 +35,18 @@ public class DimCreateNode extends StatementNode {
         this.dim2 = dim2;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public ExpressionNode getDim1() {
+        return dim1;
+    }
+
+    public ExpressionNode getDim2() {
+        return dim2;
+    }
+
     @Override
     public void run(InterpreterState state) {
         ArrayType type = id.endsWith("$") ? ArrayType.STRING : ArrayType.NUMBER;
