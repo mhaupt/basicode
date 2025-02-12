@@ -42,6 +42,10 @@ public class ReadNode extends StatementNode {
         lets = lhss.stream().map(lhs -> new LetNode(lhs, READ_OP)).toList();
     }
 
+    public List<LetNode> getLets() {
+        return lets;
+    }
+
     @Override
     public void run(InterpreterState state) {
         lets.forEach(let -> let.run(state));

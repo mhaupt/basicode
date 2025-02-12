@@ -376,4 +376,23 @@ public class ParserTest {
         assertEquals("X", pv.getId());
     }
 
+    @Test
+    public void testRead() {
+        Parser p = parse("10 READ X,Y,Z");
+        LineNode l = p.line();
+        ReadNode r = (ReadNode) l.getStatements().get(0);
+
+        List<LetNode> lets = r.getLets();
+        assertEquals(3, lets.size());
+
+        LetNode.LHS x = (LetNode.LHS) lets.get(0).getLhs();
+        assertEquals("X", x.getId());
+
+        LetNode.LHS y = (LetNode.LHS) lets.get(1).getLhs();
+        assertEquals("Y", y.getId());
+
+        LetNode.LHS z = (LetNode.LHS) lets.get(2).getLhs();
+        assertEquals("Z", z.getId());
+    }
+
 }

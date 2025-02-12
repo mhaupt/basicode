@@ -193,10 +193,10 @@ public class Parser {
             case If -> ifStatement();
             case Input -> null;
             case Let, Identifier -> assignment();
-            case Next -> next();
+            case Next -> nextStatement();
             case On -> dependentJump();
             case Print -> printStatement();
-            case Read -> null;
+            case Read -> readStatement();
             case Rem -> new RemNode(text.substring(3).trim()); // text starts with "REM"
             case Restore -> null;
             case Return -> new ReturnNode();
@@ -535,7 +535,7 @@ public class Parser {
         return new ForNode(id, e, f, g);
     }
 
-    public StatementNode next() {
+    public StatementNode nextStatement() {
         expect(Identifier);
         String id = text;
         return new NextNode(id);
@@ -558,6 +558,19 @@ public class Parser {
             throw new ParserException("Expecting THEN or GOTO, but got " + sym + " << " + text + " >>");
         }
         return new IfThenNode(e, s);
+    }
+
+    public StatementNode readStatement() {
+        List<LetNode.LHS> lhss = new ArrayList<>();
+        expect(Identifier);
+        LetNode.LHS lhs = lhs();
+        lhss.add(lhs);
+        while (accept(Comma)) {
+            expect(Identifier);
+            lhs = lhs();
+            lhss.add(lhs);
+        }
+        return new ReadNode(lhss);
     }
 
 }
