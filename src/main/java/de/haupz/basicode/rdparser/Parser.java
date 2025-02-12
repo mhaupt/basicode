@@ -195,7 +195,7 @@ public class Parser {
             case Let, Identifier -> assignment();
             case Next -> next();
             case On -> dependentJump();
-            case Print -> print();
+            case Print -> printStatement();
             case Read -> null;
             case Rem -> new RemNode(text.substring(3).trim()); // text starts with "REM"
             case Restore -> null;
@@ -433,7 +433,7 @@ public class Parser {
         return n;
     }
 
-    public StatementNode print() {
+    public StatementNode printStatement() {
         List<PrintNode.Element> elements = new ArrayList<>();
         PrintNode.Element e = printElement();
         elements.add(e);
