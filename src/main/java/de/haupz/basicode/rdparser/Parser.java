@@ -178,7 +178,7 @@ public class Parser {
         Symbol statement = sym;
 
         StatementNode s = switch (statement) {
-            case Def -> null;
+            case Def -> defFnStatement();
             case Dim -> dimStatement();
             case End, Stop -> new EndNode();
             case For -> forStatement();
@@ -582,6 +582,18 @@ public class Parser {
         expect(Identifier);
         LetNode.LHS lhs = lhs();
         return new InputNode(prompt, lhs);
+    }
+
+    public StatementNode defFnStatement() {
+        getNextSymbol();
+        String id = fnId();
+        expect(LeftBracket);
+        expect(Identifier);
+        String u = text;
+        expect(RightBracket);
+        expect(Equal);
+        ExpressionNode e = expression();
+        return new DefFnNode(id, u, e);
     }
 
 }

@@ -422,4 +422,18 @@ public class ParserTest {
         assertEquals("X", ln.getLhs().getId());
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"10 DEF FN F(A) = A+2", "10 DEF FNF(A) = A+2"})
+    public void testDefFn(String line) {
+        Parser p = parse(line);
+        LineNode l = p.line();
+
+        DefFnNode d = (DefFnNode) l.getStatements().get(0);
+        assertEquals("F", d.getId());
+        assertEquals("A", d.getArg());
+
+        ExpressionNode e = d.getExpression();
+        assertInstanceOf(AddNode.class, e);
+    }
+
 }
