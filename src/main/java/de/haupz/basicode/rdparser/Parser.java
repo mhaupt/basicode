@@ -198,7 +198,7 @@ public class Parser {
             case Print -> printStatement();
             case Read -> readStatement();
             case Rem -> new RemNode(text.substring(3).trim()); // text starts with "REM"
-            case Restore -> null;
+            case Restore -> new RestoreNode();
             case Return -> new ReturnNode();
             case Run -> null;
             default -> throw new ParserException("Expecting statement symbol, but got: " + statement);
