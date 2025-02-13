@@ -128,10 +128,12 @@ public class Parser {
         List<StatementNode> statements = new ArrayList<>();
         int num = lineNumber();
         if (accept(Data)) {
-            statements.add(dataLine());
+            StatementNode dataLine = dataLine();
+            statements.add(dataLine);
         } else {
             do {
-                statements.add(statement());
+                StatementNode statement = statement();
+                statements.add(statement);
             } while (accept(Colon));
         }
         return new LineNode(num, statements);
@@ -423,13 +425,15 @@ public class Parser {
 
     public StatementNode printStatement() {
         List<PrintNode.Element> elements = new ArrayList<>();
-        PrintNode.Element e = printElement();
-        elements.add(e);
-        while (accept(Comma) || accept(Semicolon)) {
-            elements.add(new PrintNode.Element(PrintNode.ElementType.SEPARATOR, text));
-            if (printElementIsNext()) {
-                e = printElement();
-                elements.add(e);
+        if (printElementIsNext()) {
+            PrintNode.Element e = printElement();
+            elements.add(e);
+            while (accept(Comma) || accept(Semicolon)) {
+                elements.add(new PrintNode.Element(PrintNode.ElementType.SEPARATOR, text));
+                if (printElementIsNext()) {
+                    e = printElement();
+                    elements.add(e);
+                }
             }
         }
         return new PrintNode(elements);

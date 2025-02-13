@@ -218,6 +218,13 @@ public class ParserTest {
     }
 
     @Test
+    public void testEmptyPrint() {
+        Parser p = parse("PRINT");
+        PrintNode pn = (PrintNode) p.printStatement();
+        assertTrue(pn.getElements().isEmpty());
+    }
+
+    @Test
     public void testGoto() {
         Parser p = parse("10 GOTO 20");
         LineNode l = p.line();
