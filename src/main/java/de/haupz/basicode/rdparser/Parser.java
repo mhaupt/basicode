@@ -54,10 +54,6 @@ public class Parser {
         lexer = new Lexer(input);
     }
 
-    //
-    // symbol handling
-    //
-
     /**
      * Retrieve the next symbol from the lexer. This populates the {@link #sym} and {@link #text} fields with the
      * corresponding values.
@@ -120,10 +116,6 @@ public class Parser {
         return false;
     }
 
-    //
-    // basic structures
-    //
-
     public ProgramNode program() {
         List<LineNode> lines = new ArrayList<>();
         do {
@@ -149,10 +141,6 @@ public class Parser {
         expect(NumberLiteral);
         return Integer.parseInt(text);
     }
-
-    //
-    // statements
-    //
 
     public StatementNode dataLine() {
         List<Object> data = new ArrayList<>();
