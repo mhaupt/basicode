@@ -23,7 +23,7 @@ public class ParserTest {
         Parser p = parse(s);
         Object d = p.dataLiteral();
         assertInstanceOf(String.class, d);
-        assertEquals(s, d.toString());
+        assertEquals(s.substring(1, s.length() - 1), d.toString());
     }
 
     @ParameterizedTest
@@ -47,9 +47,9 @@ public class ParserTest {
         DataNode d = (DataNode) p.dataLine();
         List<Object> l = d.getData();
         assertEquals(4, l.size());
-        assertEquals("\"Hello, world!\"", l.get(0));
+        assertEquals("Hello, world!", l.get(0));
         assertEquals(23.0, l.get(1));
-        assertEquals("\"\"", l.get(2));
+        assertEquals("", l.get(2));
         assertEquals(-2.3, l.get(3));
     }
 
@@ -65,9 +65,9 @@ public class ParserTest {
 
         List<Object> d = ((DataNode) s.get(0)).getData();
         assertEquals(4, d.size());
-        assertEquals("\"Hello, world!\"", d.get(0));
+        assertEquals("Hello, world!", d.get(0));
         assertEquals(23.0, d.get(1));
-        assertEquals("\"\"", d.get(2));
+        assertEquals("", d.get(2));
         assertEquals(-2.3, d.get(3));
     }
 
@@ -86,7 +86,7 @@ public class ParserTest {
 
         List<Object> d1 = ((DataNode) s1.get(0)).getData();
         assertEquals(2, d1.size());
-        assertEquals("\"Hello, world!\"", d1.get(0));
+        assertEquals("Hello, world!", d1.get(0));
         assertEquals(23.0, d1.get(1));
 
         LineNode l2 = p.line();
@@ -97,7 +97,7 @@ public class ParserTest {
 
         List<Object> d2 = ((DataNode) s2.get(0)).getData();
         assertEquals(2, d2.size());
-        assertEquals("\"\"", d2.get(0));
+        assertEquals("", d2.get(0));
         assertEquals(-2.3, d2.get(1));
     }
 

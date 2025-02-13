@@ -147,14 +147,16 @@ public class Parser {
     public StatementNode dataLine() {
         List<Object> data = new ArrayList<>();
         do {
-            data.add(dataLiteral());
+            Object d = dataLiteral();
+            dataList.add(d);
+            data.add(d);
         } while (accept(Comma));
         return new DataNode(data);
     }
 
     public Object dataLiteral() {
         if (accept(StringLiteral)) {
-            return text;
+            return text.substring(1, text.length() - 1);
         }
         int sgn = accept(Minus) ? -1 : 1;
         expectOneOf(NumberLiteral, FloatLiteral);
