@@ -395,4 +395,31 @@ public class ParserTest {
         assertEquals("Z", z.getId());
     }
 
+    @Test
+    public void testInputNoPrompt() {
+        Parser p = parse("10 INPUT X");
+        LineNode l = p.line();
+        InputNode i = (InputNode) l.getStatements().get(0);
+
+        PrintNode pn = i.getPrompt();
+        assertNull(pn);
+
+        LetNode ln = i.getLet();
+        assertEquals("X", ln.getLhs().getId());
+    }
+
+    @Test
+    public void testInputPrompt() {
+        Parser p = parse("10 INPUT \"boop\";X");
+        LineNode l = p.line();
+        InputNode i = (InputNode) l.getStatements().get(0);
+
+        PrintNode pn = i.getPrompt();
+        StringNode pr = (StringNode) pn.getElements().get(0).payload();
+        assertEquals("boop", pr.eval(null));
+
+        LetNode ln = i.getLet();
+        assertEquals("X", ln.getLhs().getId());
+    }
+
 }

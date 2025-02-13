@@ -191,7 +191,7 @@ public class Parser {
                 yield new GotoNode(num);
             }
             case If -> ifStatement();
-            case Input -> null;
+            case Input -> inputStatement();
             case Let, Identifier -> assignment();
             case Next -> nextStatement();
             case On -> dependentJump();
@@ -200,7 +200,7 @@ public class Parser {
             case Rem -> new RemNode(text.substring(3).trim()); // text starts with "REM"
             case Restore -> new RestoreNode();
             case Return -> new ReturnNode();
-            case Run -> null;
+            case Run -> new RunNode();
             default -> throw new ParserException("Expecting statement symbol, but got: " + statement);
         };
         
@@ -571,6 +571,17 @@ public class Parser {
             lhss.add(lhs);
         }
         return new ReadNode(lhss);
+    }
+
+    public StatementNode inputStatement() {
+        String prompt = null;
+        if (accept(StringLiteral)) {
+            prompt = text.substring(1, text.length() - 1);
+            expect(Semicolon);
+        }
+        expect(Identifier);
+        LetNode.LHS lhs = lhs();
+        return new InputNode(prompt, lhs);
     }
 
 }
