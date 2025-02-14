@@ -1,10 +1,10 @@
 package de.haupz.basicode.rdparser;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.Reader;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static de.haupz.basicode.rdparser.Symbol.*;
 
@@ -25,12 +25,12 @@ public class Lexer {
     private int fileLineNumber = 0;
 
     /**
-     * The current line from the input being lexed.
+     * The source code being lexed.
      */
-    private String currentLine = "";
+    private String source;
 
     /**
-     * The position of the next character to be read from the current line, starting at 0.
+     * The position of the next character to be read from the source code input, starting at 0.
      */
     private int currentCharPos;
 
@@ -57,6 +57,16 @@ public class Lexer {
      */
     public Lexer(Reader in) {
         this.in = new BufferedReader(in);
+        source = readSource();
+    }
+
+    /**
+     * Read the source code from the {@link #in input}.
+     *
+     * @return the source code.
+     */
+    private String readSource() {
+        return in.lines().collect(Collectors.joining("\n"));
     }
 
     /**
@@ -77,9 +87,12 @@ public class Lexer {
                 return sym;
             }
             skipWhiteSpace();
-        } while (endOfBuffer() || Character.isWhitespace(currentChar()));
+        } while (endOfBuffer() || Character.isSpaceChar(currentChar()));
 
-        if (Character.isDigit(currentChar()) || ('.' == currentChar() && peekIsDigit())) {
+        if ('\n' == currentChar()) {
+            note(Eol, consumeChar());
+            ++fileLineNumber;
+        } else if (Character.isDigit(currentChar()) || ('.' == currentChar() && peekIsDigit())) {
             lexNumerical();
         } else if ('"' == currentChar()) {
             lexString();
@@ -205,7 +218,8 @@ public class Lexer {
             text.append(consume(sym.text.length()));
             if (Rem == sym) {
                 // special handling: consume until the end of the current line
-                text.append(consume(currentLine.length() - currentCharPos));
+                int eolPos = source.indexOf('\n', currentCharPos);
+                text.append(consume((eolPos > 0 ? eolPos : source.length()) - currentCharPos));
             }
             if (Fn == sym && Character.isLetter(currentChar())) {
                 // special handling: we have a FnIndentifier, which consists of one or two more letters
@@ -270,7 +284,7 @@ public class Lexer {
      * @return the current character from the input.
      */
     private char currentChar() {
-        return !endOfBuffer() ? currentLine.charAt(currentCharPos) : '\0';
+        return !endOfBuffer() ? source.charAt(currentCharPos) : '\0';
     }
 
     /**
@@ -291,7 +305,7 @@ public class Lexer {
      * @return the consumed characters, as a string of length {@code n}.
      */
     private String consume(int n) {
-        String r = currentLine.substring(currentCharPos, currentCharPos + n);
+        String r = source.substring(currentCharPos, currentCharPos + n);
         currentCharPos += n;
         return r;
     }
@@ -301,8 +315,8 @@ public class Lexer {
      * can be the case at the end of an input line, as tokens do not span multiple lines.
      */
     private String peek(int n) {
-        return !endOfBuffer() && currentCharPos + n + 1 <= currentLine.length() ?
-                currentLine.substring(currentCharPos + 1, currentCharPos + n + 1) :
+        return !endOfBuffer() && currentCharPos + n + 1 <= source.length() ?
+                source.substring(currentCharPos + 1, currentCharPos + n + 1) :
                 "";
     }
 
@@ -317,54 +331,21 @@ public class Lexer {
     }
 
     /**
-     * Fill the read buffer, i.e., read the next line from the input, unless no more lines can be read.
-     *
-     * @return the length of the next read line, or -1 if no more input can be read.
-     */
-    private int fillBuffer() {
-        try {
-            if (!in.ready()) {
-                return -1;
-            }
-
-            currentLine = in.readLine();
-            if (currentLine == null) {
-                return -1;
-            }
-            ++fileLineNumber;
-            currentCharPos = 0;
-            return currentLine.length();
-        } catch (IOException ioe) {
-            throw new IllegalStateException("Error reading from input: " + ioe.getMessage());
-        }
-    }
-
-    /**
-     * Check if there is more input available to process. The method fills the {@link #currentLine read buffer} if the
-     * current line has been fully processed, and determines whether additional input can be read.
+     * Check if there is more input available to process.
      *
      * @return {@code true} if more input is available; {@code false} otherwise.
      */
     private boolean hasMoreInput() {
-        while (endOfBuffer()) {
-            if (fillBuffer() == -1) {
-                return false;
-            }
-        }
-        return true;
+        return !endOfBuffer();
     }
 
     /**
-     * Skip over any whitespace characters in the current input.
+     * Skip over any whitespace characters in the current input. This does not include {@code '\n'}, which is lexed as
+     * {@link Symbol#Eol}.
      */
     private void skipWhiteSpace() {
-        while (Character.isWhitespace(currentChar())) {
+        while (Character.isSpaceChar(currentChar())) {
             consumeChar();
-            while (endOfBuffer()) {
-                if (fillBuffer() == -1) {
-                    return;
-                }
-            }
         }
     }
 
@@ -373,7 +354,7 @@ public class Lexer {
      * otherwise.
      */
     private boolean endOfBuffer() {
-        return currentLine == null || currentCharPos >= currentLine.length();
+        return currentCharPos >= source.length();
     }
 
 }

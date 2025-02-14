@@ -60,6 +60,7 @@ public class LexerTest {
                 """);
         assertEquals(NumberLiteral, lexer.getSymbol());
         assertEquals("2342", lexer.getText());
+        assertEquals(Eol, lexer.getSymbol());
         assertEquals(NumberLiteral, lexer.getSymbol());
         assertEquals("4223", lexer.getText());
     }

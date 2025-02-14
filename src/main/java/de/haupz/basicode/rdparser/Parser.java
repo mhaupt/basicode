@@ -119,7 +119,8 @@ public class Parser {
     public ProgramNode program() {
         List<LineNode> lines = new ArrayList<>();
         do {
-            lines.add(line());
+            LineNode line = line();
+            lines.add(line);
         } while (lexer.hasNextSymbol());
         return new ProgramNode(lines, dataList);
     }
@@ -132,9 +133,20 @@ public class Parser {
             statements.add(dataLine);
         } else {
             do {
-                StatementNode statement = statement();
-                statements.add(statement);
+                while (accept(Colon)) {
+                    // consume sequences of colons
+                }
+                if (!accept(Eol)) { // handle trailing colon
+                    StatementNode statement = statement();
+                    statements.add(statement);
+                } else {
+                    pendingSymbol = Optional.of(Eol);
+                    pendingText = Optional.of("\n");
+                }
             } while (accept(Colon));
+        }
+        if (lexer.hasNextSymbol()) {
+            expect(Eol);
         }
         return new LineNode(num, statements);
     }

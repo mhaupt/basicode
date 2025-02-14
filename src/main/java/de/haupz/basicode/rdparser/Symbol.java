@@ -5,6 +5,7 @@ package de.haupz.basicode.rdparser;
  */
 public enum Symbol {
     None,
+    Eol,
     NumberLiteral,
     FloatLiteral,
     StringLiteral,
