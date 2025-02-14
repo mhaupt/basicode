@@ -3,8 +3,8 @@ package de.haupz.basicode;
 import de.haupz.basicode.ast.ExpressionNode;
 import de.haupz.basicode.interpreter.Configuration;
 import de.haupz.basicode.interpreter.InterpreterState;
-import de.haupz.basicode.parser.BasicParser;
-import de.haupz.basicode.parser.ParseException;
+import de.haupz.basicode.rdparser.Parser;
+import de.haupz.basicode.rdparser.ParserException;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.io.StringReader;
@@ -21,11 +21,11 @@ public abstract class ExpressionTest {
     }
 
     ExpressionNode parseExpression(String expression) {
-        BasicParser parser = new BasicParser(new StringReader(expression));
+        Parser parser = new Parser(new StringReader(expression));
         ExpressionNode expr;
         try {
             expr = parser.expression();
-        } catch (ParseException pe) {
+        } catch (ParserException pe) {
             throw new RuntimeException(pe);
         }
         return expr;

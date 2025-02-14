@@ -7,8 +7,8 @@ import de.haupz.basicode.io.BasicInput;
 import de.haupz.basicode.io.BasicOutput;
 import de.haupz.basicode.io.BufferedReaderInput;
 import de.haupz.basicode.io.PrintStreamOutput;
-import de.haupz.basicode.parser.BasicParser;
-import de.haupz.basicode.parser.ParseException;
+import de.haupz.basicode.rdparser.Parser;
+import de.haupz.basicode.rdparser.ParserException;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -33,10 +33,10 @@ public abstract class InterpreterTest {
     }
 
     private ProgramNode buildProgram(String source) {
-        BasicParser parser = new BasicParser(new StringReader(source));
+        Parser parser = new Parser(new StringReader(source));
         try {
             return parser.program();
-        } catch (ParseException pe) {
+        } catch (ParserException pe) {
             throw new RuntimeException(pe);
         }
     }
