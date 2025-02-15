@@ -1,7 +1,8 @@
 ## upcoming
 
-*   bug fixes: EXP/LOG, unary +, case sensitivity of variables, comma 
-    separator in PRINT
+*   Switched from generated to handwritten recursive descent parser.
+*   Bug fixes: EXP/LOG, unary +, case sensitivity of variables, comma 
+    separator in PRINT.
 
 ## 0.11
 
