@@ -1,3 +1,9 @@
+/**
+* This file is kept around for historical reasons; it is the grammar that the BASICODE parser used to be generated from
+* before the implementation switched to a handwritten recursive descent parser. The latter still more or less accurately
+* accepts the grammar defined here.
+*/
+
 options {
   IGNORE_CASE = true;
   STATIC = false;
