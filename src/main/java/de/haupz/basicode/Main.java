@@ -106,7 +106,7 @@ public class Main {
      * @throws Exception in case anything goes wrong.
      */
     public static void run(String code, Configuration configuration) throws Exception {
-        final Parser parser = new Parser(new StringReader(getSource(code)));
+        final Parser parser = new Parser(new StringReader(code));
         ProgramNode prog = parser.program();
         InterpreterState state = new InterpreterState(prog, bc, bc, configuration);
         bc.registerStopKeyHandler(() -> state.terminate());
