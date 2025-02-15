@@ -60,14 +60,37 @@ public class Parser {
      */
     private void getNextSymbol() {
         if (pendingSymbol.isPresent()) {
-            sym = pendingSymbol.get();
-            text = pendingText.get();
-            pendingSymbol = Optional.empty();
-            pendingText = Optional.empty();
+            popPendingSymbol();
         } else {
             sym = lexer.getSymbol();
             text = lexer.getText();
         }
+    }
+
+    /**
+     * Push the current symbol and text into the buffer, to be consumed next. This is a shallow peek implementation.
+     */
+    private void pushPendingSymbol() {
+        pendingSymbol = Optional.of(sym);
+        pendingText = Optional.of(text);
+    }
+
+    /**
+     * Push a dedicated symbol and text into the buffer.
+     */
+    private void pushPendingSymbol(Symbol s, String t) {
+        pendingSymbol = Optional.of(s);
+        pendingText = Optional.of(t);
+    }
+
+    /**
+     * Restore a symbol and text from the buffer.
+     */
+    private void popPendingSymbol() {
+        sym = pendingSymbol.get();
+        text = pendingText.get();
+        pendingSymbol = Optional.empty();
+        pendingText = Optional.empty();
     }
 
     /**
@@ -111,8 +134,7 @@ public class Parser {
             return true;
         }
         // accept, when failing, keeps the symbol around
-        pendingSymbol = Optional.of(sym);
-        pendingText = Optional.of(text);
+        pushPendingSymbol();
         return false;
     }
 
@@ -140,8 +162,7 @@ public class Parser {
                     StatementNode statement = statement();
                     statements.add(statement);
                 } else {
-                    pendingSymbol = Optional.of(Eol);
-                    pendingText = Optional.of("\n");
+                    pushPendingSymbol(Eol, "\n");
                 }
             } while (accept(Colon));
         }
@@ -465,8 +486,7 @@ public class Parser {
         // We're implementing a lookahead here, and will check if the next symbol is a start symbol of a PRINT statement
         // element. We can't use accept(), as we must not consume the symbol when peeking.
         getNextSymbol();
-        pendingSymbol = Optional.of(sym);
-        pendingText = Optional.of(text);
+        pushPendingSymbol();
         return EXPRESSION_START_SYMBOLS.contains(sym) || Tab == sym;
     }
 
