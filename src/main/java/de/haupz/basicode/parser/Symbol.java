@@ -1,4 +1,4 @@
-package de.haupz.basicode.rdparser;
+package de.haupz.basicode.parser;
 
 /**
  * A lexical symbol for the BASIC grammar.

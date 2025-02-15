@@ -1,8 +1,8 @@
 package de.haupz.basicode.grammar;
 
-import de.haupz.basicode.rdparser.Lexer;
-import de.haupz.basicode.rdparser.LexerException;
-import de.haupz.basicode.rdparser.Symbol;
+import de.haupz.basicode.parser.Lexer;
+import de.haupz.basicode.parser.LexerException;
+import de.haupz.basicode.parser.Symbol;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -12,7 +12,7 @@ import java.io.StringReader;
 import java.util.Arrays;
 import java.util.List;
 
-import static de.haupz.basicode.rdparser.Symbol.*;
+import static de.haupz.basicode.parser.Symbol.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class LexerTest {

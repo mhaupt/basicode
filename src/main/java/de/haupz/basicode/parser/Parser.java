@@ -1,4 +1,4 @@
-package de.haupz.basicode.rdparser;
+package de.haupz.basicode.parser;
 
 import de.haupz.basicode.ast.*;
 
@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static de.haupz.basicode.rdparser.Symbol.*;
+import static de.haupz.basicode.parser.Symbol.*;
 
 /**
  * A parser for BASICODE.

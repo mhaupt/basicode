@@ -7,8 +7,8 @@ import de.haupz.basicode.io.BasicInput;
 import de.haupz.basicode.io.BasicOutput;
 import de.haupz.basicode.io.BufferedReaderInput;
 import de.haupz.basicode.io.PrintStreamOutput;
-import de.haupz.basicode.rdparser.Parser;
-import de.haupz.basicode.rdparser.ParserException;
+import de.haupz.basicode.parser.Parser;
+import de.haupz.basicode.parser.ParserException;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;

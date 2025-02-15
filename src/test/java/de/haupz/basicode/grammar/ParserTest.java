@@ -1,7 +1,7 @@
 package de.haupz.basicode.grammar;
 
 import de.haupz.basicode.ast.*;
-import de.haupz.basicode.rdparser.Parser;
+import de.haupz.basicode.parser.Parser;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;

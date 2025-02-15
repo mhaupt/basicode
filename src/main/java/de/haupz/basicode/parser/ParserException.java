@@ -1,4 +1,4 @@
-package de.haupz.basicode.rdparser;
+package de.haupz.basicode.parser;
 
 public class ParserException extends RuntimeException {
 

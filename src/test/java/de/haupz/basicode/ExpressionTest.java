@@ -3,8 +3,8 @@ package de.haupz.basicode;
 import de.haupz.basicode.ast.ExpressionNode;
 import de.haupz.basicode.interpreter.Configuration;
 import de.haupz.basicode.interpreter.InterpreterState;
-import de.haupz.basicode.rdparser.Parser;
-import de.haupz.basicode.rdparser.ParserException;
+import de.haupz.basicode.parser.Parser;
+import de.haupz.basicode.parser.ParserException;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.io.StringReader;

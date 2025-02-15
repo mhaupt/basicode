@@ -1,4 +1,4 @@
-package de.haupz.basicode.rdparser;
+package de.haupz.basicode.parser;
 
 import java.io.BufferedReader;
 import java.io.Reader;
@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.haupz.basicode.rdparser.Symbol.*;
+import static de.haupz.basicode.parser.Symbol.*;
 
 /**
  * A lexer for BASICODE.
