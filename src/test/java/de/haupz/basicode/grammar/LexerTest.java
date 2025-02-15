@@ -24,7 +24,7 @@ public class LexerTest {
     @Test
     public void testEmpty() {
         Lexer lexer = lex("");
-        assertFalse(lexer.hasNextSymbol());
+        assertFalse(lexer.hasMoreInput());
         assertEquals(None, lexer.getSymbol());
         assertEquals("", lexer.getText());
     }

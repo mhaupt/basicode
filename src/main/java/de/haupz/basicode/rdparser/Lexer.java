@@ -70,13 +70,6 @@ public class Lexer {
     }
 
     /**
-     * @return {@code true} if the lexer can produce the next symbol; {@code false} otherwise.
-     */
-    public boolean hasNextSymbol() {
-        return hasMoreInput() && !endOfBuffer();
-    }
-
-    /**
      * @return the next symbol from the input.
      */
     public Symbol getSymbol() {
@@ -87,7 +80,7 @@ public class Lexer {
                 return sym;
             }
             skipWhiteSpace();
-        } while (endOfBuffer() || Character.isSpaceChar(currentChar()));
+        } while (Character.isSpaceChar(currentChar()));
 
         if ('\n' == currentChar()) {
             note(Eol, consumeChar());
@@ -265,8 +258,8 @@ public class Lexer {
         text = new StringBuilder();
         do {
             text.append(consumeChar());
-        } while ('"' != currentChar() && '\n' != currentChar() && !endOfBuffer());
-        if ('\n' == currentChar() || endOfBuffer()) {
+        } while ('"' != currentChar() && '\n' != currentChar() && hasMoreInput());
+        if ('\n' == currentChar() || !hasMoreInput()) {
             throw new LexerException("string does not end: " + text.toString());
         }
         text.append(consumeChar());
@@ -284,7 +277,7 @@ public class Lexer {
      * @return the current character from the input.
      */
     private char currentChar() {
-        return !endOfBuffer() ? source.charAt(currentCharPos) : '\0';
+        return hasMoreInput() ? source.charAt(currentCharPos) : '\0';
     }
 
     /**
@@ -315,7 +308,7 @@ public class Lexer {
      * can be the case at the end of an input line, as tokens do not span multiple lines.
      */
     private String peek(int n) {
-        return !endOfBuffer() && currentCharPos + n + 1 <= source.length() ?
+        return currentCharPos + n + 1 <= source.length() ?
                 source.substring(currentCharPos + 1, currentCharPos + n + 1) :
                 "";
     }
@@ -335,8 +328,8 @@ public class Lexer {
      *
      * @return {@code true} if more input is available; {@code false} otherwise.
      */
-    private boolean hasMoreInput() {
-        return !endOfBuffer();
+    public boolean hasMoreInput() {
+        return currentCharPos < source.length();
     }
 
     /**
@@ -347,14 +340,6 @@ public class Lexer {
         while (Character.isSpaceChar(currentChar())) {
             consumeChar();
         }
-    }
-
-    /**
-     * @return {@code true} if the current line has been consumed (or there is no current line); {@code false}
-     * otherwise.
-     */
-    private boolean endOfBuffer() {
-        return currentCharPos >= source.length();
     }
 
 }

@@ -143,7 +143,7 @@ public class Parser {
         do {
             LineNode line = line();
             lines.add(line);
-        } while (lexer.hasNextSymbol());
+        } while (lexer.hasMoreInput());
         return new ProgramNode(lines, dataList);
     }
 
@@ -166,7 +166,7 @@ public class Parser {
                 }
             } while (accept(Colon));
         }
-        if (lexer.hasNextSymbol()) {
+        if (lexer.hasMoreInput()) {
             expect(Eol);
         }
         return new LineNode(num, statements);
