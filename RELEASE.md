@@ -1,7 +1,7 @@
 ## upcoming
 
-*   bug fixes: EXP/LOG, unary +, case sensitivity of variables, comma 
-    separator in PRINT
+*   Bug fixes: EXP/LOG, unary +, case sensitivity of variables, comma 
+    separator in PRINT, VAL tolerates erroneous input and returns 0.
 
 ## 0.11
 
