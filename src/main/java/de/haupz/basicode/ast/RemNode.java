@@ -14,6 +14,10 @@ public class RemNode extends StatementNode {
         this.rem = rem;
     }
 
+    public String getRem() {
+        return rem;
+    }
+
     @Override
     public void run(InterpreterState state) {
         // naught

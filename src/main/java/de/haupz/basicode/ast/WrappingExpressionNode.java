@@ -20,6 +20,10 @@ public abstract class WrappingExpressionNode extends ExpressionNode {
         this.expression = expression;
     }
 
+    public ExpressionNode getExpression() {
+        return expression;
+    }
+
     @Override
     public Object eval(InterpreterState state) {
         Object value = expression.eval(state);

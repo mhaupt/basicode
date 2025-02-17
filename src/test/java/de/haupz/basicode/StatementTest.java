@@ -7,8 +7,8 @@ import de.haupz.basicode.io.BasicInput;
 import de.haupz.basicode.io.BasicOutput;
 import de.haupz.basicode.io.BufferedReaderInput;
 import de.haupz.basicode.io.PrintStreamOutput;
-import de.haupz.basicode.parser.BasicParser;
-import de.haupz.basicode.parser.ParseException;
+import de.haupz.basicode.parser.Parser;
+import de.haupz.basicode.parser.ParserException;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -44,11 +44,11 @@ public abstract class StatementTest {
     void run(List<String> sources, String providedInput) {
         setUpState(providedInput);
         for (String source : sources) {
-            BasicParser parser = new BasicParser(new StringReader(source));
+            Parser parser = new Parser(new StringReader(source));
             StatementNode stmt;
             try {
                 stmt = parser.statement();
-            } catch (ParseException pe) {
+            } catch (ParserException pe) {
                 throw new RuntimeException(pe);
             }
             stmt.run(state);

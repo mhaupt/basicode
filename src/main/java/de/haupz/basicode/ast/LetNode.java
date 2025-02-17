@@ -34,6 +34,13 @@ public class LetNode extends StatementNode {
         }
 
         /**
+         * @return the identifier of this left-hand side.
+         */
+        public String getId() {
+            return id;
+        }
+
+        /**
          * Execute the actual assignment of the value, depending on the nature of the left-hand side.
          *
          * @param state the interpreter state.
@@ -78,6 +85,15 @@ public class LetNode extends StatementNode {
             this.getArray = new VarNode(id, true);
             this.dim1 = dim1;
             this.dim2 = dim2;
+        }
+        public VarNode getGetArray() {
+            return getArray;
+        }
+        public ExpressionNode getDim1() {
+            return dim1;
+        }
+        public ExpressionNode getDim2() {
+            return dim2;
         }
         @Override
         protected void assign(InterpreterState state, Object value) {
@@ -132,6 +148,14 @@ public class LetNode extends StatementNode {
     public LetNode(LHS lhs, ExpressionNode expression) {
         this.lhs = lhs;
         this.expression = expression;
+    }
+
+    public LHS getLhs() {
+        return lhs;
+    }
+
+    public ExpressionNode getExpression() {
+        return expression;
     }
 
     @Override

@@ -62,6 +62,14 @@ public class InputNode extends StatementNode {
         this.let = new LetNode(lhs, readLine);
     }
 
+    public PrintNode getPrompt() {
+        return prompt;
+    }
+
+    public LetNode getLet() {
+        return let;
+    }
+
     @Override
     public void run(InterpreterState state) {
         if (null != prompt) {

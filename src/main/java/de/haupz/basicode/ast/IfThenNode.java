@@ -31,6 +31,14 @@ public class IfThenNode extends StatementNode {
         this.then = then;
     }
 
+    public ExpressionNode getCondition() {
+        return condition;
+    }
+
+    public StatementNode getThen() {
+        return then;
+    }
+
     @Override
     public void run(InterpreterState state) {
         Object cond = condition.eval(state);

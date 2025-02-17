@@ -1,9 +1,6 @@
 package de.haupz.basicode.ast;
 
 import de.haupz.basicode.interpreter.InterpreterState;
-import de.haupz.basicode.parser.Token;
-
-import java.util.List;
 
 /**
  * The super class of all AST nodes representing BASICODE expressions. It overrides

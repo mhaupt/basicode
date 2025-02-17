@@ -3,8 +3,8 @@ package de.haupz.basicode;
 import de.haupz.basicode.ast.ProgramNode;
 import de.haupz.basicode.interpreter.Configuration;
 import de.haupz.basicode.interpreter.InterpreterState;
+import de.haupz.basicode.parser.Parser;
 import de.haupz.basicode.ui.BasicFrame;
-import de.haupz.basicode.parser.BasicParser;
 import de.haupz.basicode.ui.BasicContainer;
 
 import javax.swing.*;
@@ -106,7 +106,7 @@ public class Main {
      * @throws Exception in case anything goes wrong.
      */
     public static void run(String code, Configuration configuration) throws Exception {
-        final BasicParser parser = new BasicParser(new StringReader(code));
+        final Parser parser = new Parser(new StringReader(code));
         ProgramNode prog = parser.program();
         InterpreterState state = new InterpreterState(prog, bc, bc, configuration);
         bc.registerStopKeyHandler(() -> state.terminate());

@@ -1,5 +1,6 @@
 ## upcoming
 
+*   Switched from generated to handwritten recursive descent parser.
 *   Bug fixes: EXP/LOG, unary +, case sensitivity of variables, comma 
     separator in PRINT, VAL tolerates erroneous input and returns 0.
 

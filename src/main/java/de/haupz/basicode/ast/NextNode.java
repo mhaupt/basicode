@@ -16,6 +16,10 @@ public class NextNode extends StatementNode {
         this.id = id;
     }
 
+    public String getId() {
+        return id;
+    }
+
     @Override
     public void run(InterpreterState state) {
         if (!state.isRunningLoop(id)) {

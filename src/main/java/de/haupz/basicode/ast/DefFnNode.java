@@ -29,6 +29,18 @@ public class DefFnNode extends StatementNode {
         this.expression = expression;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public String getArg() {
+        return arg;
+    }
+
+    public ExpressionNode getExpression() {
+        return expression;
+    }
+
     @Override
     public void run(InterpreterState state) {
         Function fn = new Function(arg, expression);
