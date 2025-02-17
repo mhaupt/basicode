@@ -1,4 +1,4 @@
-## upcoming
+## 0.12
 
 *   Switched from generated to handwritten recursive descent parser.
 *   Bug fixes: EXP/LOG, unary +, case sensitivity of variables, comma 
