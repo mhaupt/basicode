@@ -233,6 +233,8 @@ public class Subroutines {
 
     /**
      * {@code GOSUB 110}: in text mode, position the cursor at the coordinates passed in {@code HO} and {@code VE}.
+     * Also, set the foreground and background colours as determined by the values in {@code CC(0)} and {@code CC(1)},
+     * respectively.
      *
      * @param state the interpreter state.
      */
@@ -248,6 +250,10 @@ public class Subroutines {
             state.setVar("VE", Double.valueOf(ve));
         }
         state.getOutput().setTextCursor(ho, ve);
+        BasicArray1D cc = (BasicArray1D) state.getArray("CC").get();
+        int fg = ((Double) cc.at(0, -1)).intValue();
+        int bg = ((Double) cc.at(1, -1)).intValue();
+        state.getOutput().setPrintColours(fg, bg);
     }
 
     /**

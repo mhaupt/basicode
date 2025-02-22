@@ -78,7 +78,10 @@ public interface BasicOutput {
     default Font getFont() { throw new IllegalStateException("font not supported"); }
 
     /**
-     * <p>Set the foregraound and background colours. Not supported in all implementations.</p>
+     * <p>Set the foreground and background colours. This has a global effect, i.e., the entire background will be
+     * reset, and subsequent print and draw operations will use the foreground colour.</p>
+     * 
+     * <p>Not supported in all implementations.</p>
      *
      * <p>The colours are defined as follows:<ul>
      *     <li>0: black</li>
@@ -95,6 +98,27 @@ public interface BasicOutput {
      * @param bg the background colour.
      */
     default void setColours(int fg, int bg) { throw new IllegalStateException("colours not supported"); }
+
+    /**
+     * <p>In text mode, set the foreground and background colours for subsequent print operations.</p>
+     * 
+     * <p>Not supported in all implementations.</p>
+     * 
+     * <p>The colours are defined as follows:<ul>
+     *     <li>0: black</li>
+     *     <li>1: blue</li>
+     *     <li>2: red</li>
+     *     <li>3: magenta</li>
+     *     <li>4: green</li>
+     *     <li>5: cyan</li>
+     *     <li>6: yellow</li>
+     *     <li>7: white</li>
+     * </ul></p>
+     *
+     * @param fg the foreground colour.
+     * @param bg the background colour.
+     */
+    default void setPrintColours(int fg, int bg) { throw new IllegalStateException("colours not supported"); }
 
     /**
      * @return the current background colout (not supported in all implementations).

@@ -62,6 +62,16 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
     private Color foregroundColour = COLOR_MAP[6]; // initially, yellow
 
     /**
+     * The background colour for printing in text mode (if set explicitly).
+     */
+    private Color printBackgroundColour = COLOR_MAP[1]; // initially, blue
+
+    /**
+     * The foreground colour for printing in text mode (if set explicitly).
+     */
+    private Color printForegroundColour = COLOR_MAP[6]; // initially, yellow
+
+    /**
      * This is {@code true} while the interpreter is running and ready to process key events. During shutdown, this is
      * set to {@code false}, to allow an orderly termination of the key events processing thread.
      */
@@ -507,8 +517,22 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
     public void setColours(int fg, int bg) {
         ensureColourRange("foreground", fg);
         ensureColourRange("background", bg);
-        foregroundColour = COLOR_MAP[fg];
-        backgroundColour = COLOR_MAP[bg];
+        foregroundColour = printForegroundColour = COLOR_MAP[fg];
+        backgroundColour = printBackgroundColour = COLOR_MAP[bg];
+    }
+
+    /**
+     * Set the foreground and background colours for printing in text mode.
+     *
+     * @param fg the foreground colour.
+     * @param bg the background colour.
+     */
+    @Override
+    public void setPrintColours(int fg, int bg) {
+        ensureColourRange("foreground", fg);
+        ensureColourRange("background", bg);
+        printForegroundColour = COLOR_MAP[fg];
+        printBackgroundColour = COLOR_MAP[bg];
     }
 
     /**
