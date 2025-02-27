@@ -5,6 +5,7 @@ import de.haupz.basicode.io.TextBuffer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.awt.*;
 import java.util.Arrays;
 import java.util.List;
 
@@ -14,9 +15,13 @@ public class TextBufferTest {
 
     private TextBuffer textBuffer;
 
+    private static final Color BACKGROUND = ConsoleConfiguration.COLOR_MAP[1];
+
+    private static final Color FOREGROUND = ConsoleConfiguration.COLOR_MAP[6];
+
     @BeforeEach
     public void setUp() {
-        textBuffer = new TextBuffer(ConsoleConfiguration.LINES, ConsoleConfiguration.COLUMNS);
+        textBuffer = new TextBuffer(ConsoleConfiguration.LINES, ConsoleConfiguration.COLUMNS, BACKGROUND, FOREGROUND);
     }
 
     /**
@@ -44,21 +49,28 @@ public class TextBufferTest {
     }
 
     /**
-     * Helper method to create reverse-printing buffers to be used as expected values. The multi-line content argument
-     * will be padded with {@code false} values to the right and bottom to fill the buffer. Any content that exceeds the
-     * height and width boundaries of the target buffer will be truncated and ignored.
+     * <p>Helper method to create reverse-printing buffers to be used as expected values. The multi-line content
+     * argument will be padded with default values to the right and bottom to fill the buffer. Any content that exceeds
+     * the height and width boundaries of the target buffer will be truncated and ignored.</p>
+     *
+     * <p>This method can be used for foreground and background colour buffers alike. This is indicated by the second
+     * argument.</p>
      *
      * @param multiLineReverse reverse printing information to be pasted into the buffer. This is a string containing an
      *                         'R' character in every position the buffer should be reversed. Spaces will be interpreted
      *                         as non-reverse printing. Passing an empty string will lead to a buffer that is printed in
      *                         non-reverse mode entirely. Any content that is not 'R' or a space will be ignored.
+     * @param isForeground if {@code true}, the buffer will represent foreground colours; it will represent background
+     *                     colours otherwise.
      * @return the buffer constructed from the input strings.
      */
-    private boolean[][] makeReverse(String multiLineReverse) {
-        boolean[][] rev = new boolean[textBuffer.getLines()][textBuffer.getColumns()];
-        // pre-fill with falsehood
-        for (boolean[] line : rev) {
-            Arrays.fill(line, false);
+    private Color[][] makeReverse(String multiLineReverse, boolean isForeground) {
+        Color[][] rev = new Color[textBuffer.getLines()][textBuffer.getColumns()];
+        Color defaultColour = isForeground ? FOREGROUND : BACKGROUND;
+        Color reverseColour = isForeground ? BACKGROUND : FOREGROUND;
+        // pre-fill with standard background
+        for (Color[] line : rev) {
+            Arrays.fill(line, defaultColour);
         }
         // fill the buffer
         List<String> reverseLines = multiLineReverse.lines().toList();
@@ -66,7 +78,9 @@ public class TextBufferTest {
             String reverseText = l >= reverseLines.size() ? "" : reverseLines.get(l);
             int max = Math.min(reverseText.length(), textBuffer.getColumns());
             for (int c = 0; c < max; c++) {
-                rev[l][c] = reverseText.charAt(c) == 'R';
+                if (reverseText.charAt(c) == 'R') {
+                    rev[l][c] = reverseColour;
+                }
             }
         }
         return rev;
@@ -88,15 +102,20 @@ public class TextBufferTest {
     }
 
     /**
-     * Helper method to assert equality of the textual contents between the {@link #textBuffer} and an expected buffer.
+     * Helper method to assert equality of colour arrays.
      *
-     * @param expected the expected contents.
+     * @param isForeground if {@code true}, foreground colours are checked; otherwise, background colours.
+     * @param reverseContent the content string indicating the reversed colour positions.
      */
-    private void assertReverseEquals(boolean[][] expected) {
+    private void assertColoursEqual(boolean isForeground, String reverseContent) {
+        Color[][] expected = makeReverse(reverseContent, isForeground);
         for (int l = 0; l < textBuffer.getLines(); ++l) {
-            for (int c = 0; c < textBuffer.getColumns(); c++) {
-                assertEquals(expected[l][c], textBuffer.isReverseAt(l, c),
-                        String.format("mismatch on line %d at column %d", l, c));
+            for (int c = 0; c < textBuffer.getColumns(); ++c) {
+                Color actual =
+                        isForeground ? textBuffer.getForegroundColourAt(l, c) : textBuffer.getBackgroundColourAt(l, c);
+                assertEquals(expected[l][c], actual,
+                        String.format("checking %s colours: mismatch at (line %d, column %d)\nexpected: %s, found %s",
+                                isForeground ? "foreground" : "background", l, c, expected[l][c], actual));
             }
         }
     }
@@ -112,7 +131,8 @@ public class TextBufferTest {
         }
         String emptyBuffer = sb.toString();
         assertContentEquals(makeBuffer(emptyBuffer));
-        assertReverseEquals(makeReverse(emptyBuffer));
+        assertColoursEqual(false, emptyBuffer);
+        assertColoursEqual(true, emptyBuffer);
     }
 
     @Test
@@ -130,14 +150,16 @@ public class TextBufferTest {
     @Test
     public void testInitialContents() {
         assertContentEquals(makeBuffer(""));
-        assertReverseEquals(makeReverse(""));
+        assertColoursEqual(false, "");
+        assertColoursEqual(true, "");
     }
 
     @Test
     public void testWrite() {
         textBuffer.writeString("Hello", false);
         assertContentEquals(makeBuffer("Hello"));
-        assertReverseEquals(makeReverse(""));
+        assertColoursEqual(false, "");
+        assertColoursEqual(true, "");
         assertEquals(0, textBuffer.getLine());
         assertEquals(5, textBuffer.getColumn());
         textBuffer.lineFeed();
@@ -149,7 +171,8 @@ public class TextBufferTest {
     public void testWriteReverse() {
         textBuffer.writeString("Hello", true);
         assertContentEquals(makeBuffer("Hello"));
-        assertReverseEquals(makeReverse("RRRRR"));
+        assertColoursEqual(false, "RRRRR");
+        assertColoursEqual(true, "RRRRR");
         assertEquals(0, textBuffer.getLine());
         assertEquals(5, textBuffer.getColumn());
         textBuffer.lineFeed();
@@ -167,10 +190,12 @@ public class TextBufferTest {
                 Hello
                 
                 world"""));
-        assertReverseEquals(makeReverse("""
+        String rev = """
                 
                 
-                RRRRR"""));
+                RRRRR""";
+        assertColoursEqual(false, rev);
+        assertColoursEqual(true, rev);
         assertEquals(5, textBuffer.getColumn());
         assertEquals(2, textBuffer.getLine());
     }
@@ -181,7 +206,9 @@ public class TextBufferTest {
         textBuffer.writeString("world", true);
         textBuffer.writeString("!", false);
         assertContentEquals(makeBuffer("Hello, world!"));
-        assertReverseEquals(makeReverse("       RRRRR"));
+        String rev = "       RRRRR";
+        assertColoursEqual(false, rev);
+        assertColoursEqual(true, rev);
         assertEquals(0, textBuffer.getLine());
         assertEquals(13, textBuffer.getColumn());
     }
@@ -252,7 +279,7 @@ public class TextBufferTest {
                 24"""));
         // For readability here, we're just replacing the bits that should be reversed with R, as all other content is
         // ignored.
-        assertReverseEquals(makeReverse("""
+        String rev = """
                 1
                 2
                 3
@@ -276,7 +303,9 @@ public class TextBufferTest {
                 RR
                 22
                 23
-                24"""));
+                24""";
+        assertColoursEqual(false, rev);
+        assertColoursEqual(true, rev);
     }
 
     @Test
@@ -295,9 +324,11 @@ public class TextBufferTest {
         assertContentEquals(makeBuffer("""
                 0123456789ABCDE0123456789ABCDE0123456789
                 ABCDE"""));
-        assertReverseEquals(makeReverse("""
+        String rev = """
                 RRRRRRRRRRRRRRR               RRRRRRRRRR
-                RRRRR"""));
+                RRRRR""";
+        assertColoursEqual(false, rev);
+        assertColoursEqual(true, rev);
     }
 
 }

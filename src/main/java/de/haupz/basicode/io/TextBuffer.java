@@ -2,6 +2,7 @@ package de.haupz.basicode.io;
 
 import de.haupz.basicode.ui.BasicContainer;
 
+import java.awt.*;
 import java.util.Arrays;
 
 /**
@@ -28,15 +29,22 @@ public class TextBuffer {
     private final char[][] textBuffer;
 
     /**
-     * <p>A special array to store information about characters that should be displayed in reverse mode in text
-     * mode.</p>
+     * <p>A dedicated array to store the colours characters are printed in in text mode.</p>
      *
-     * <p>It's a two-dimensional {@code boolean} array, organised in the same fashion as the {@link #textBuffer} array
-     * (lines first). Column arrays are created on demand. This array is essentially an overlay of the
-     * {@link #textBuffer}; where it contains a {@code true} value, the corresponding character is to be displayed in
-     * reverse mode.</p>
+     * <p>It's a two-dimensional array of {@link Color colours}, organised in the same fashion as the
+     * {@link #textBuffer} array (lines first). This array is essentially an overlay of the {@link #textBuffer}; it
+     * stores the character colour for each single position at which a character can be shown.</p>
      */
-    private final boolean[][] reverse;
+    private final Color[][] foregroundColours;
+
+    /**
+     * <p>A dedicated array to store the colours of the backgrounds characters are printed on in text mode.</p>
+     *
+     * <p>It's a two-dimensional array of {@link Color colours}, organised in the same fashion as the
+     * {@link #textBuffer} array (lines first). This array is essentially an overlay of the {@link #textBuffer}; it
+     * stores the background colour for each single position at which a character can be shown.</p>
+     */
+    private final Color[][] backgroundColours;
 
     /**
      * The current line of the cursor in text mode.
@@ -48,11 +56,24 @@ public class TextBuffer {
      */
     private int curColumn;
 
-    public TextBuffer(int lines, int columns) {
+    /**
+     * The current background colour.
+     */
+    private Color curBackgroundColour;
+
+    /**
+     * The current foreground colour.
+     */
+    private Color curForegroundColour;
+
+    public TextBuffer(int lines, int columns, Color backgroundColour, Color foregroundColour) {
         this.lines = lines;
         this.columns = columns;
         this.textBuffer = new char[lines][columns];
-        this.reverse = new boolean[lines][columns];
+        this.foregroundColours = new Color[lines][columns];
+        this.backgroundColours = new Color[lines][columns];
+        this.curBackgroundColour = backgroundColour;
+        this.curForegroundColour = foregroundColour;
         clear();
     }
 
@@ -63,21 +84,11 @@ public class TextBuffer {
     public void clear() {
         for (int i = 0; i < lines; ++i) {
             Arrays.fill(textBuffer[i], ' ');
-            Arrays.fill(reverse[i], false);
+            Arrays.fill(backgroundColours[i], curBackgroundColour);
+            Arrays.fill(foregroundColours[i], curForegroundColour);
         }
         curLine = 0;
         curColumn = 0;
-    }
-
-    /**
-     * Return whether the character at the given position is printed in reverse mode.
-     *
-     * @param line the line at which to check.
-     * @param column the column at which to check.
-     * @return the reverse-print status of the character at the given position.
-     */
-    public boolean isReverseAt(int line, int column) {
-        return reverse[line][column];
     }
 
     /**
@@ -117,10 +128,10 @@ public class TextBuffer {
                     curColumn--;
                 }
                 textBuffer[curLine][curColumn] = ' ';
-                reverse[curLine][curColumn] = r;
+                setColoursAt(curLine, curColumn, r);
             } else {
                 textBuffer[curLine][curColumn] = c;
-                reverse[curLine][curColumn] = r;
+                setColoursAt(curLine, curColumn, r);
                 curColumn++;
                 if (curColumn == columns) {
                     // wrap around if need be
@@ -128,6 +139,19 @@ public class TextBuffer {
                 }
             }
         }
+    }
+
+    /**
+     * Internal helper to set the background and foreground colours at a given position, depending on whether the
+     * position should be reversed or not.
+     *
+     * @param line the line at which to set the colours.
+     * @param column the column at which to set the colours.
+     * @param r indicate whether the colours should be reversed.
+     */
+    private void setColoursAt(int line, int column, boolean r) {
+        foregroundColours[line][column] = r ? curBackgroundColour : curForegroundColour;
+        backgroundColours[line][column] = r ? curForegroundColour : curBackgroundColour;
     }
 
     /**
@@ -146,7 +170,10 @@ public class TextBuffer {
             int space = columns - curColumn; // this many characters still fit in the current line
             int chunkLength = Math.min(remainingChars, space); // this many characters can be printed on this line
             System.arraycopy(chars, chunkStart, textBuffer[curLine], curColumn, chunkLength);
-            Arrays.fill(reverse[curLine], curColumn, curColumn + chunkLength, r);
+            Arrays.fill(foregroundColours[curLine], curColumn, curColumn + chunkLength,
+                    r ? curBackgroundColour : curForegroundColour);
+            Arrays.fill(backgroundColours[curLine], curColumn, curColumn + chunkLength,
+                    r ? curForegroundColour : curBackgroundColour);
             curColumn += chunkLength;
             if (curColumn == columns) {
                 // wrap around if need be
@@ -154,6 +181,39 @@ public class TextBuffer {
             }
             chunkStart += chunkLength;
         }
+    }
+
+    /**
+     * Retrieves the foreground colour at the specified line and column.
+     *
+     * @param line the line from which to retrieve the foreground colour.
+     * @param column the column from which to retrieve the foreground colour.
+     * @return the foreground colour at the specified position.
+     */
+    public Color getForegroundColourAt(int line, int column) {
+        return foregroundColours[line][column];
+    }
+
+    /**
+     * Retrieves the background colour at the specified line and column.
+     *
+     * @param line the line from which to retrieve the background colour.
+     * @param column the column from which to retrieve the background colour.
+     * @return the background colour at the specified position.
+     */
+    public Color getBackgroundColourAt(int line, int column) {
+        return backgroundColours[line][column];
+    }
+
+    /**
+     * Set the colours.
+     *
+     * @param foregroundColour the new foreground colour.
+     * @param backgroundColour the new background colour.
+     */
+    public void setColours(Color foregroundColour, Color backgroundColour) {
+        curForegroundColour = foregroundColour;
+        curBackgroundColour = backgroundColour;
     }
 
     /**
@@ -165,10 +225,12 @@ public class TextBuffer {
         if (curLine >= lines) {
             for (int l = 0; l < lines - 1; ++l) {
                 System.arraycopy(textBuffer[l+1], 0, textBuffer[l], 0, columns);
-                System.arraycopy(reverse[l+1], 0, reverse[l], 0, columns);
+                System.arraycopy(backgroundColours[l+1], 0, backgroundColours[l], 0, columns);
+                System.arraycopy(foregroundColours[l+1], 0, foregroundColours[l], 0, columns);
             }
             Arrays.fill(textBuffer[lines-1], ' ');
-            Arrays.fill(reverse[lines-1], false);
+            Arrays.fill(foregroundColours[lines-1], curForegroundColour);
+            Arrays.fill(backgroundColours[lines-1], curBackgroundColour);
             curLine--;
         }
     }

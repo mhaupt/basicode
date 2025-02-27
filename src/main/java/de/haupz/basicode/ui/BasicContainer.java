@@ -29,7 +29,7 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
     /**
      * In text mode, the text buffer contains all content that is visible on screen.
      */
-    private final TextBuffer textBuffer = new TextBuffer(LINES, COLUMNS);
+    private final TextBuffer textBuffer;
 
     /**
      * If {@code true}, the GUI is in graphics mode. If {@code false}, it's in text mode.
@@ -60,16 +60,6 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
      * The foreground colour for both text and graphics mode.
      */
     private Color foregroundColour = COLOR_MAP[6]; // initially, yellow
-
-    /**
-     * The background colour for printing in text mode (if set explicitly).
-     */
-    private Color printBackgroundColour = COLOR_MAP[1]; // initially, blue
-
-    /**
-     * The foreground colour for printing in text mode (if set explicitly).
-     */
-    private Color printForegroundColour = COLOR_MAP[6]; // initially, yellow
 
     /**
      * This is {@code true} while the interpreter is running and ready to process key events. During shutdown, this is
@@ -144,6 +134,7 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
     public BasicContainer(Configuration config) {
         super();
         setSize(ConsoleConfiguration.WIDTH, ConsoleConfiguration.HEIGHT);
+        textBuffer = new TextBuffer(LINES, COLUMNS, backgroundColour, foregroundColour);
         textBuffer.clear();
         image = new BufferedImage(ConsoleConfiguration.WIDTH, ConsoleConfiguration.HEIGHT, BufferedImage.TYPE_INT_RGB);
         keyThread = new KeyThread();
@@ -191,27 +182,11 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
         } else {
             g2.setFont(FONT);
             for (int l = 0; l < textBuffer.getLines(); ++l) {
-                boolean reverseMode = false;
-                int c = 0;
-                while (c < textBuffer.getColumns()) {
-                    int start = c;
-                    int end = start;
-                    while (end < textBuffer.getColumns() && textBuffer.isReverseAt(l, end) == reverseMode) {
-                        ++end;
-                    }
-                    if (end > start) {
-                        if (reverseMode) {
-                            g2.setColor(foregroundColour);
-                            g2.fillRect(start * C_WIDTH, l * C_HEIGHT, (end - start) * C_WIDTH, C_HEIGHT);
-                            g2.setColor(backgroundColour);
-                            g2.drawChars(textBuffer.getLine(l), start, end - start, start * C_WIDTH, (l + 1) * C_HEIGHT);
-                        } else {
-                            g2.setColor(foregroundColour);
-                            g2.drawChars(textBuffer.getLine(l), start, end - start, start * C_WIDTH, (l + 1) * C_HEIGHT);
-                        }
-                    }
-                    c = end;
-                    reverseMode = !reverseMode;
+                for (int c = 0; c < textBuffer.getColumns(); ++c) {
+                    g2.setColor(textBuffer.getBackgroundColourAt(l, c));
+                    g2.fillRect(c * C_WIDTH, l * C_HEIGHT, C_WIDTH, C_HEIGHT);
+                    g2.setColor(textBuffer.getForegroundColourAt(l, c));
+                    g2.drawChars(textBuffer.getLine(l), c, 1, c * C_WIDTH, (l + 1) * C_HEIGHT);
                 }
             }
         }
@@ -517,8 +492,8 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
     public void setColours(int fg, int bg) {
         ensureColourRange("foreground", fg);
         ensureColourRange("background", bg);
-        foregroundColour = printForegroundColour = COLOR_MAP[fg];
-        backgroundColour = printBackgroundColour = COLOR_MAP[bg];
+        foregroundColour = COLOR_MAP[fg];
+        backgroundColour = COLOR_MAP[bg];
     }
 
     /**
@@ -531,8 +506,7 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
     public void setPrintColours(int fg, int bg) {
         ensureColourRange("foreground", fg);
         ensureColourRange("background", bg);
-        printForegroundColour = COLOR_MAP[fg];
-        printBackgroundColour = COLOR_MAP[bg];
+        textBuffer.setColours(COLOR_MAP[fg], COLOR_MAP[bg]);
     }
 
     /**
