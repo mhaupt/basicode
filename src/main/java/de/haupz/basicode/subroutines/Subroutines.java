@@ -574,14 +574,14 @@ public class Subroutines {
             // ignore
         }
         state.getInput().setReadyToInterrupt(false);
-        state.setVar("SD", sd);
+        state.setVar("SD", Double.valueOf(sd));
         char c;
         if ((c = (char) state.getInput().lastChar()) != 0) {
             state.getInput().clearInput();
-            state.setVar("IN", (double) c);
+            state.setVar("IN", Double.valueOf(basicodeToUpperCase(c)));
             state.setVar("IN$", "" + c);
         } else {
-            state.setVar("IN", 0.0);
+            state.setVar("IN", Double.valueOf(0));
             state.setVar("IN$", "");
         }
     }
