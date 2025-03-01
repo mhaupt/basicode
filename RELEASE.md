@@ -1,3 +1,9 @@
+## upcoming
+
+*   Support colours in text mode (GOSUB 110).
+*   Bug fixes:
+    *   GOSUB 450 should modify interpreter state (`SD`, `IN`, `IN$`).
+
 ## 0.12
 
 *   Switched from generated to handwritten recursive descent parser.
