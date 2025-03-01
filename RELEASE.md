@@ -1,6 +1,7 @@
 ## upcoming
 
 *   Support colours in text mode (GOSUB 110).
+*   Add a splash screen (playable with the `-intro` command line parameter).
 *   Bug fixes:
     *   GOSUB 450 should modify interpreter state (`SD`, `IN`, `IN$`).
 

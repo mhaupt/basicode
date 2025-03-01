@@ -35,6 +35,10 @@ This works for other BASICODE programs, as long as you point to the right
 `basicode.jar` and BASIC source file. If no BASIC source file is given, a 
 dialogue will open that lets you choose one.
 
+In case the interpreter should display a splash screen before running the 
+actual program, use the `-intro` argument. The splash screen will show until 
+a key is pressed.
+
 ## Implementation Notes
 
 The BASICODE implementation is meant to be simple, and to be as "standalone" 
