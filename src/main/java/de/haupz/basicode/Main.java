@@ -36,6 +36,11 @@ public class Main {
     static BasicFrame bf;
 
     /**
+     * Whether to play the intro or not.
+     */
+    static boolean playIntro = false;
+
+    /**
      * A record type to serve as a tuple for processed command line arguments.
      *
      * @param filename a file name.
@@ -64,6 +69,7 @@ public class Main {
                 case "-hold" -> hold = true;
                 case "-enforceBoundaries" -> enforceBoundaries = true;
                 case "-showMapKeys" -> showMapKeys = true;
+                case "-intro" -> playIntro = true;
                 default -> filename = arg;
             }
         }
@@ -106,12 +112,28 @@ public class Main {
      * @throws Exception in case anything goes wrong.
      */
     public static void run(String code, Configuration configuration) throws Exception {
+        bc = new BasicContainer(configuration);
+        SwingUtilities.invokeAndWait(() -> {
+            bf = new BasicFrame(bc);
+            bf.setVisible(true);
+        });
         final Parser parser = new Parser(new StringReader(code));
         ProgramNode prog = parser.program();
         InterpreterState state = new InterpreterState(prog, bc, bc, configuration);
         bc.registerStopKeyHandler(() -> state.terminate());
         prog.run(state);
         state.closeFiles();
+        bc.shutdown();
+        bf.dispose();
+    }
+
+    /**
+     * Play the intro. This is the file {@code intro.bas} stored in the builtin resources.
+     */
+    private static void playIntro() throws Exception {
+        String source = new String(Main.class.getResourceAsStream("/intro.bas").readAllBytes());
+        Configuration introConfig = new Configuration(true, true, false, true, false);
+        run(source, introConfig);
     }
 
     public static void main(String[] args) throws Exception {
@@ -121,15 +143,11 @@ public class Main {
             filename = chooseFile();
         }
         if (!filename.isEmpty()) {
+            if (playIntro) {
+                playIntro();
+            }
             String source = getSource(filename);
-            bc = new BasicContainer(fnc.config);
-            SwingUtilities.invokeAndWait(() -> {
-                bf = new BasicFrame(bc);
-                bf.setVisible(true);
-            });
             run(source, fnc.config);
-            bc.shutdown();
-            bf.dispose();
         }
     }
 
