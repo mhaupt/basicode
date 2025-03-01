@@ -449,7 +449,7 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
      */
     @Override
     public int readChar() throws IOException {
-        keyEvents.clear();
+        clearInput();
         try {
             return keyEvents.take().character();
         } catch (InterruptedException ie) {
@@ -467,6 +467,13 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
                 return keyEvents.poll().character();
             }
             return 0;
+        }
+    }
+
+    @Override
+    public void clearInput() {
+        synchronized (keyEvents) {
+            keyEvents.clear();
         }
     }
 

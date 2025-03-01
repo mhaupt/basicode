@@ -33,6 +33,11 @@ public interface BasicInput {
     default int lastChar() { return 0; }
 
     /**
+     * Clear the input character queue.
+     */
+    default void clearInput() {}
+
+    /**
      * Instruct the input to note that a waiting operation is under way, and that the input can interrupt this if a key
      * is pressed.
      *

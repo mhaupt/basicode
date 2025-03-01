@@ -549,6 +549,10 @@ public class Subroutines {
     /**
      * <p>{@code GOSUB 450}: wait for {@code SD} times 0.1 seconds, or until a key is pressed.</p>
      *
+     * <p>Afterwards, in case a key was pressed to interrupt the wait, {@code SD} will contain the remaining number of
+     * 0.1 seconds intervals, and {@code IN} and {@code IN$} will contain information about the key pressed to
+     * interrupt. Otherwise, {@code SD} and {@code IN} will be {@code 0}, and {@code IN$} will be empty.</p>
+     *
      * <p><b>Implementation note:</b> waiting can be entirely suppressed by passing the {@code -nowait} command line
      * flag, or by using the {@link de.haupz.basicode.interpreter.Configuration#nowait nowait} interpreter
      * configuration.</p>
@@ -562,11 +566,24 @@ public class Subroutines {
         int sd = getStdVar(state, "SD").intValue();
         state.getInput().setReadyToInterrupt(true);
         try {
-            Thread.sleep(sd * 100);
+            while (sd > 0) {
+                Thread.sleep(100L);
+                sd--;
+            }
         } catch (InterruptedException e) {
             // ignore
         }
         state.getInput().setReadyToInterrupt(false);
+        state.setVar("SD", sd);
+        char c;
+        if ((c = (char) state.getInput().lastChar()) != 0) {
+            state.getInput().clearInput();
+            state.setVar("IN", (double) c);
+            state.setVar("IN$", "" + c);
+        } else {
+            state.setVar("IN", 0.0);
+            state.setVar("IN$", "");
+        }
     }
 
     /**
