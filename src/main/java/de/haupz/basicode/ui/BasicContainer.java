@@ -494,6 +494,7 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
         ensureColourRange("background", bg);
         foregroundColour = COLOR_MAP[fg];
         backgroundColour = COLOR_MAP[bg];
+        textBuffer.setColours(foregroundColour, backgroundColour);
     }
 
     /**
