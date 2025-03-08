@@ -43,22 +43,20 @@ a key is pressed.
 
 The BASICODE implementation is meant to be simple, and to be as "standalone" 
 as possible. Therefore, the implementation relies on out-of-the box 
-components of the JDK as much as possible. The only exception is the parser 
-generator: for the grammar to be more easily writeable and maintainable, the 
-implementation uses [JavaCC](https://javacc.github.io/javacc/). For the GUI, 
-the standard AWT and Swing packages are used.
+components of the JDK as much as possible. For the GUI, the standard AWT and
+Swing packages are used.
 
 ### Grammar
 
-The BASIC grammar is located in the file `basic.jj` in the `de.haupz.
-basicode.parser` package. _All other files in that package are generated_ 
-and should not be modified. The best way to modify the grammar is to modify 
-`basic.jj` and rebuild the project using `mvn compile`.
+The BASIC grammar is located in the file `basic.jj` in the
+`de.haupz.basicode.grammar` package. This file is there only for illustration 
+and for historical reasons: the parser used to be generated. It is now a 
+handwritten recursive-descent parser in the `de.haupz.basicode.parser` package.
 
-The grammar is straightforward. While there are numerous BASIC dialects that 
-do not use line numbers (or make them optional), the BASICODE implementation 
-here is meant to be compatible with the BASICODE sources "out there". 
-Therefore, the grammar here enforces the use of line numbers.
+While there are numerous BASIC dialects that do not use line numbers (or 
+make them optional), the BASICODE implementation here is meant to be 
+compatible with the BASICODE sources "out there". Therefore, the grammar 
+here enforces the use of line numbers.
 
 Several other restrictions the BASICODE conventions impose - e.g., the 
 maximum length of a source code line being 60 characters - are not enforced.
@@ -130,5 +128,6 @@ Clarke. It's included here thanks to being licenced with [CC BY-SA 3.0](https://
 ## Credits
 
 I'm immensely grateful to Thomas Rademacher of [basicode.de](https://basicode.de/)
-for introducing me to BASICODE. Many thanks to Bernd Bock and other members of
-[Joyce-User-AG](https://joyce.de/) for encouragement and bug reports.
+for introducing me to BASICODE, and for contributing the splash screen. Many 
+thanks to Bernd Bock and other members of [Joyce-User-AG](https://joyce.de/) 
+for encouragement and bug reports.
