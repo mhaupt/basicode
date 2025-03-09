@@ -208,4 +208,18 @@ public class ForTest extends InterpreterTest {
                 """);
     }
 
+    @Test
+    public void testForFromUndefinedVariable() {
+        testInterpreter("""
+                1000 FOR I=A TO 3
+                1010 PRINT I
+                1020 NEXT I
+                """, """
+                 0\s
+                 1\s
+                 2\s
+                 3\s
+                """);
+    }
+
 }
