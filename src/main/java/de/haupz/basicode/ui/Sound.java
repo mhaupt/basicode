@@ -16,7 +16,7 @@ public class Sound {
 
     private static final SourceDataLine SDL;
 
-    private static final byte[] BUF = new byte[1];
+    private static double currentPhase = 0.0;
 
     static {
         try {
@@ -41,12 +41,14 @@ public class Sound {
         }
         SDL.start();
         int nSamples = (int) (duration * SAMPLE_FREQUENCY / 1000);
-        float p = SAMPLE_FREQUENCY / frequency;
+        byte[] buf = new byte[nSamples];
+        double phaseIncrement = 2.0 * Math.PI * frequency / SAMPLE_FREQUENCY;
         for (int i = 0; i < nSamples; ++i) {
-            double a = i / p * 2 * Math.PI;
-            BUF[0] = (byte) (Math.sin(a) * volume);
-            SDL.write(BUF, 0, 1);
+            buf[i] = (byte) (Math.sin(currentPhase) * volume);
+            currentPhase += phaseIncrement;
+            currentPhase %= 2.0 * Math.PI;
         }
+        SDL.write(buf, 0, nSamples);
         SDL.drain();
         SDL.stop();
         SDL.close();

@@ -2,6 +2,7 @@
 
 *   Support colours in text mode (GOSUB 110).
 *   Add a splash screen (playable with the `-intro` command line parameter).
+*   Apply phase continuity when playing sounds to reduce "cracking" noises.
 *   Bug fixes:
     *   GOSUB 450 should modify interpreter state (`SD`, `IN`, `IN$`).
 
