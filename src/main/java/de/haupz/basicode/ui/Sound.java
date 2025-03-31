@@ -31,7 +31,7 @@ public class Sound {
      *
      * @param note as a MIDI note (0..127).
      * @param duration in milliseconds.
-     * @param volume from 0 to 100.
+     * @param volume from 0 to 127.
      */
     public static void play(int note, int duration, int volume) {
         try {
