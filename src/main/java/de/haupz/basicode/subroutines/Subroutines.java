@@ -326,7 +326,7 @@ public class Subroutines {
     }
 
     /**
-     * <p>{@code GOSUB 250}: beep. Play a 440 Hz tone for 250 ms at full volume.</p>
+     * <p>{@code GOSUB 250}: beep. Play an A (440 Hz) for 250 ms at full volume.</p>
      *
      * <p><b>Implementation note:</b> This can be disabled by passing the {@code -nosound} command line argument, or by
      * using the {@link de.haupz.basicode.interpreter.Configuration#nosound nosound} interpreter configuration.</p>
@@ -337,7 +337,8 @@ public class Subroutines {
         if (state.getConfiguration().nosound()) {
             return;
         }
-        Sound.play(440, 250, 100);
+        // 69 corresponds to A in MIDI.
+        Sound.play(69, 250, 127);
     }
 
     /**
