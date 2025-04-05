@@ -61,8 +61,12 @@ public class Main {
         boolean hold = false;
         boolean enforceBoundaries = false;
         boolean showMapKeys = false;
+        int slowness = 0;
         String filename = "";
         for (String arg : args) {
+            if (arg.matches("^-slo+w$")) {
+                slowness = arg.length() - 4; // subtract -, s, l, w; keep the o's
+            }
             switch (arg) {
                 case "-nowait" -> nowait = true;
                 case "-nosound" -> nosound = true;
@@ -73,7 +77,8 @@ public class Main {
                 default -> filename = arg;
             }
         }
-        return new FilenameAndConfig(filename, new Configuration(nowait, nosound, hold, enforceBoundaries, showMapKeys));
+        return new FilenameAndConfig(filename,
+                new Configuration(nowait, nosound, hold, enforceBoundaries, showMapKeys, slowness));
     }
 
     /**
@@ -132,7 +137,7 @@ public class Main {
      */
     private static void playIntro() throws Exception {
         String source = new String(Main.class.getResourceAsStream("/intro.bas").readAllBytes());
-        Configuration introConfig = new Configuration(true, true, false, true, false);
+        Configuration introConfig = new Configuration(true, true, false, true, false, 0);
         run(source, introConfig);
     }
 

@@ -39,6 +39,23 @@ In case the interpreter should display a splash screen before running the
 actual program, use the `-intro` argument. The splash screen will show until 
 a key is pressed.
 
+### Slowing Down Execution
+
+Some programs of yore kind of relay on the hardware being inherently slower 
+than today's machines. This is particularly true for games with a high 
+amount of interaction. These will typically run so fast on this BASICODE 
+interpreter that they become unplayable.
+
+If you want programs like these to be usable, or if you just want to 
+experience the feeling of 8-bit hardware execution speeds again, you can use 
+the `-slow` command line argument. If this argument is given, the 
+interpreter will pause execution after each statement for a multiple of 5 ms.
+
+The actual slowdown depends on the number of `o` characters given in the 
+`-slow` argument. For example, just passing `-slow` will pause execution for 
+1 ms after each statement; passing `-slooow` will pause execution for 3 ms after
+each statement.
+
 ## Implementation Notes
 
 The BASICODE implementation is meant to be simple, and to be as "standalone" 

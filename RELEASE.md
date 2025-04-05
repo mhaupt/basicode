@@ -4,6 +4,7 @@
 *   Add a splash screen (playable with the `-intro` command line parameter).
 *   Adopt MIDI for better sound.
 *   Default prompt for INPUT.
+*   Support for slowing down execution.
 *   Bug fixes:
     *   GOSUB 450 should modify interpreter state (`SD`, `IN`, `IN$`).
 

@@ -15,6 +15,12 @@ import java.util.stream.Collectors;
 public class ProgramNode extends BasicNode {
 
     /**
+     * The base slowdown delay. After executing a line-level statement, execution will be paused by this amount of
+     * milliseconds multiplied with the {@link de.haupz.basicode.interpreter.Configuration#slowness() slowdown factor}.
+     */
+    public static long BASE_SLOWDOWN = 1L;
+
+    /**
      * All lines of the BASICODE program.
      */
     private final List<LineNode> lines;
@@ -115,6 +121,13 @@ public class ProgramNode extends BasicNode {
             statement = statements.get(state.getStatementIndex());
             try {
                 statement.run(state);
+                if (state.getConfiguration().slowness() > 0) {
+                    try {
+                        Thread.sleep(BASE_SLOWDOWN * state.getConfiguration().slowness());
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException("slowdown interrupted", e);
+                    }
+                }
             } catch (Exception e) {
                 Stack<Integer> stack = state.getCallStack();
                 String stackDump = "";
