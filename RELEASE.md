@@ -3,6 +3,7 @@
 *   Support colours in text mode (GOSUB 110).
 *   Add a splash screen (playable with the `-intro` command line parameter).
 *   Adopt MIDI for better sound.
+*   Default prompt for INPUT.
 *   Bug fixes:
     *   GOSUB 450 should modify interpreter state (`SD`, `IN`, `IN$`).
 
