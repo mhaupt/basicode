@@ -14,7 +14,7 @@ public class MultipleInputTest extends InterpreterTest {
                 23
                 42
                 """, """
-                 65\s
+                ? ?  65\s
                 """);
     }
 

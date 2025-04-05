@@ -7,7 +7,7 @@ public class InputPromptTest extends InterpreterTest {
     @Test
     public void testPrompt() {
         testInterpreter("""
-                1000 INPUT "Your name: ";N$
+                1000 INPUT "Your name";N$
                 1010 PRINT "Hello, ";N$;"!"
                 """, """
                 world
@@ -15,7 +15,7 @@ public class InputPromptTest extends InterpreterTest {
                 // Note that the BasicInput subclass used for testing does not mirror input to output, so that the
                 // output jumps right to the result.
                 """
-                Your name: Hello, world!
+                Your name? Hello, world!
                 """);
     }
 

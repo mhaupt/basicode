@@ -600,9 +600,9 @@ public class Parser {
     }
 
     public StatementNode inputStatement() {
-        String prompt = null;
+        String prompt = "? ";
         if (accept(StringLiteral)) {
-            prompt = text.substring(1, text.length() - 1);
+            prompt = text.substring(1, text.length() - 1) + prompt;
             expect(Semicolon);
         }
         expect(Identifier);

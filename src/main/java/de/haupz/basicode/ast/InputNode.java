@@ -53,9 +53,7 @@ public class InputNode extends StatementNode {
     }
 
     public InputNode(String prompt, LetNode.LHS lhs) {
-        this.prompt = (null == prompt || prompt.isEmpty()) ?
-                null :
-                new PrintNode(List.of(
+        this.prompt = new PrintNode(List.of(
                     new PrintNode.Element(PrintNode.ElementType.EXPRESSION, new StringNode(prompt)),
                     new PrintNode.Element(PrintNode.ElementType.SEPARATOR, ";")));
         this.readLine = new ReadLineNode(lhs.isString());

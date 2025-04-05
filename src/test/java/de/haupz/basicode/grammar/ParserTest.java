@@ -409,7 +409,8 @@ public class ParserTest {
         InputNode i = (InputNode) l.getStatements().get(0);
 
         PrintNode pn = i.getPrompt();
-        assertNull(pn);
+        StringNode pr = (StringNode) pn.getElements().get(0).payload();
+        assertEquals("? ", pr.eval(null));
 
         LetNode ln = i.getLet();
         assertEquals("X", ln.getLhs().getId());
@@ -423,7 +424,7 @@ public class ParserTest {
 
         PrintNode pn = i.getPrompt();
         StringNode pr = (StringNode) pn.getElements().get(0).payload();
-        assertEquals("boop", pr.eval(null));
+        assertEquals("boop? ", pr.eval(null));
 
         LetNode ln = i.getLet();
         assertEquals("X", ln.getLhs().getId());
