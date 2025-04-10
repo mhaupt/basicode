@@ -5,7 +5,10 @@ package de.haupz.basicode.parser;
  */
 public enum Symbol {
     None,
+    Stx,
+    Etx,
     Eol,
+    Fs,
     NumberLiteral,
     FloatLiteral,
     StringLiteral,

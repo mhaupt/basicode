@@ -140,10 +140,14 @@ public class Parser {
 
     public ProgramNode program() {
         List<LineNode> lines = new ArrayList<>();
+        while (accept(Stx) || accept(Eol)) {
+            // consume content preceding the program
+        }
+        // parse the program
         do {
             LineNode line = line();
             lines.add(line);
-        } while (lexer.hasMoreInput());
+        } while (lexer.hasMoreInput() && !accept(Etx));
         return new ProgramNode(lines, dataList);
     }
 

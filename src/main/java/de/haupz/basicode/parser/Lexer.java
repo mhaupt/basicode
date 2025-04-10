@@ -73,18 +73,21 @@ public class Lexer {
      * @return the next symbol from the input.
      */
     public Symbol getSymbol() {
-        do {
-            if (!hasMoreInput()) {
-                sym = None;
-                text.setLength(0);
-                return sym;
-            }
-            skipWhiteSpace();
-        } while (Character.isSpaceChar(currentChar()));
+        if (!hasMoreInput()) {
+            sym = None;
+            text.setLength(0);
+            return sym;
+        }
+        skipWhiteSpace();
 
-        if ('\n' == currentChar()) {
-            note(Eol, consumeChar());
-            ++fileLineNumber;
+        if (0x02 == currentChar()) {
+            note(Stx, consumeChar());
+        } else if (0x03 == currentChar()) {
+            note(Etx, consumeChar());
+        } else if (0x1C == currentChar()) {
+            note(Fs, consumeChar());
+        } else if ('\n' == currentChar() || '\r' == currentChar()) {
+            lexEol();
         } else if (Character.isDigit(currentChar()) || ('.' == currentChar() && peekIsDigit())) {
             lexNumerical();
         } else if ('"' == currentChar()) {
@@ -159,6 +162,20 @@ public class Lexer {
         sym = s;
         text = new StringBuilder();
         text.append(v);
+    }
+
+    /**
+     * Handle an end-of-line sequence.
+     */
+    private void lexEol() {
+        text = new StringBuilder();
+        char c = consumeChar();
+        text.append(c);
+        if (hasMoreInput() && ((c == '\n' && currentChar() == '\r') || (c == '\r' && currentChar() == '\n'))) {
+            text.append(consumeChar());
+        }
+        note(Eol, text.toString());
+        ++fileLineNumber;
     }
 
     /**
@@ -333,8 +350,8 @@ public class Lexer {
     }
 
     /**
-     * Skip over any whitespace characters in the current input. This does not include {@code '\n'}, which is lexed as
-     * {@link Symbol#Eol}.
+     * Skip over any whitespace characters in the current input. This does not include {@code '\n'} and {@code '\r},
+     * which are lexed as {@link Symbol#Eol}.
      */
     private void skipWhiteSpace() {
         while (Character.isSpaceChar(currentChar())) {

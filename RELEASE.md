@@ -7,6 +7,7 @@
 *   Support for slowing down execution.
 *   Bug fixes:
     *   GOSUB 450 should modify interpreter state (`SD`, `IN`, `IN$`).
+    *   Support special characters (`STX`, `ETX`, `FS`) in 8-bit era files.
 
 ## 0.12
 
