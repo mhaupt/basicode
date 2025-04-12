@@ -5,6 +5,7 @@
 *   Adopt MIDI for better sound.
 *   Default prompt for INPUT.
 *   Support for slowing down execution.
+*   Show a cursor on INPUT.
 *   Bug fixes:
     *   GOSUB 450 should modify interpreter state (`SD`, `IN`, `IN$`).
     *   Support special characters (`STX`, `ETX`, `FS`) in 8-bit era files.

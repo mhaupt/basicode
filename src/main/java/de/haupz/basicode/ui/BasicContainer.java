@@ -37,6 +37,11 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
     private boolean isGraphicsMode = false;
 
     /**
+     * A flag to indicate whether, in text mode, a cursor should be shown at the current cursor position.
+     */
+    private boolean isCursorVisible = false;
+
+    /**
      * The representation of the display in graphics mode.
      */
     private final BufferedImage image;
@@ -181,15 +186,37 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
             g2.drawImage(image, 0, 0, ConsoleConfiguration.WIDTH, ConsoleConfiguration.HEIGHT, null);
         } else {
             g2.setFont(FONT);
+            TextCursor cursorPos = getTextCursor();
             for (int l = 0; l < textBuffer.getLines(); ++l) {
                 for (int c = 0; c < textBuffer.getColumns(); ++c) {
                     g2.setColor(textBuffer.getBackgroundColourAt(l, c));
                     g2.fillRect(c * C_WIDTH, l * C_HEIGHT, C_WIDTH, C_HEIGHT);
                     g2.setColor(textBuffer.getForegroundColourAt(l, c));
                     g2.drawChars(textBuffer.getLine(l), c, 1, c * C_WIDTH, (l + 1) * C_HEIGHT);
+                    if (isCursorVisible && c == cursorPos.col() && l == cursorPos.row()) {
+                        g2.setXORMode(textBuffer.getBackgroundColourAt(l, c));
+                        g2.setColor(textBuffer.getForegroundColourAt(l, c));
+                        g2.fillRect(c * C_WIDTH, l * C_HEIGHT, C_WIDTH, C_HEIGHT);
+                    }
                 }
             }
         }
+    }
+
+    /**
+     * Show the text mode cursor.
+     */
+    private void showCursor() {
+        isCursorVisible = true;
+        repaint();
+    }
+
+    /**
+     * Hide the text mode cursor.
+     */
+    private void hideCursor() {
+        isCursorVisible = false;
+        repaint();
     }
 
     /**
@@ -448,10 +475,13 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
     @Override
     public int readChar() throws IOException {
         clearInput();
+        showCursor();
         try {
             return keyEvents.take().character();
         } catch (InterruptedException ie) {
             throw new IllegalStateException("could not consume key event", ie);
+        } finally {
+            hideCursor();
         }
     }
 
