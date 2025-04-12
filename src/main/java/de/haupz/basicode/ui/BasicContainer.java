@@ -312,19 +312,17 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
         char c;
         do {
             c = (char) readChar();
-            if (c != BASICODE_NEWLINE) {
-                print("" + c);
-                if (c == BASICODE_DELETE) {
-                    if (!s.isEmpty()) {
-                        s = s.substring(0, s.length() - 1);
-                    }
-                } else {
-                    s += c;
+            if (c == BASICODE_DELETE) {
+                if (!s.isEmpty()) {
+                    print("" + c);
+                    s = s.substring(0, s.length() - 1);
                 }
             } else {
-                println();
+                print("" + c);
+                s += c;
             }
         } while (c != BASICODE_NEWLINE);
+        println();
         return s;
     }
 
