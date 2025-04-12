@@ -1,0 +1,5 @@
+1000 GOTO 20
+1010 PRINT "This is about to crash."
+1020 X=10/0
+1030 PRINT X
+1040 GOTO 950

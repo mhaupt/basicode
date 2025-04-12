@@ -6,6 +6,7 @@ import de.haupz.basicode.interpreter.InterpreterState;
 import de.haupz.basicode.parser.Parser;
 import de.haupz.basicode.ui.BasicFrame;
 import de.haupz.basicode.ui.BasicContainer;
+import de.haupz.basicode.ui.ErrorDialog;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -116,20 +117,26 @@ public class Main {
      * @param configuration the configuration for the interpreter.
      * @throws Exception in case anything goes wrong.
      */
-    public static void run(String code, Configuration configuration) throws Exception {
-        bc = new BasicContainer(configuration);
-        SwingUtilities.invokeAndWait(() -> {
-            bf = new BasicFrame(bc);
-            bf.setVisible(true);
-        });
-        final Parser parser = new Parser(new StringReader(code));
-        ProgramNode prog = parser.program();
-        InterpreterState state = new InterpreterState(prog, bc, bc, configuration);
-        bc.registerStopKeyHandler(() -> state.terminate());
-        prog.run(state);
-        state.closeFiles();
-        bc.shutdown();
-        bf.dispose();
+    public static void run(String code, Configuration configuration) {
+        try {
+            bc = new BasicContainer(configuration);
+            SwingUtilities.invokeAndWait(() -> {
+                bf = new BasicFrame(bc);
+                bf.setVisible(true);
+            });
+            final Parser parser = new Parser(new StringReader(code));
+            ProgramNode prog = parser.program();
+            InterpreterState state = new InterpreterState(prog, bc, bc, configuration);
+            bc.registerStopKeyHandler(state::terminate);
+            prog.run(state);
+            state.closeFiles();
+            bc.shutdown();
+            bf.dispose();
+        } catch (Exception e) {
+            e.printStackTrace();
+            ErrorDialog ed = new ErrorDialog(bf, e);
+            ed.setVisible(true);
+        }
     }
 
     /**
