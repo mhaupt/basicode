@@ -47,7 +47,7 @@ public abstract class StatementTest {
             Parser parser = new Parser(new StringReader(source));
             StatementNode stmt;
             try {
-                stmt = parser.statement();
+                stmt = parser.statement(0);
             } catch (ParserException pe) {
                 throw new RuntimeException(pe);
             }

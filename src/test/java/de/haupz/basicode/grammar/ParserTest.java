@@ -44,7 +44,7 @@ public class ParserTest {
     @Test
     public void testDataLine() {
         Parser p = parse("\"Hello, world!\", 23, \"\", -2.3");
-        DataNode d = (DataNode) p.dataLine();
+        DataNode d = (DataNode) p.dataLine(0);
         List<Object> l = d.getData();
         assertEquals(4, l.size());
         assertEquals("Hello, world!", l.get(0));
@@ -120,7 +120,7 @@ public class ParserTest {
     @ValueSource(strings = {"A=23", "LET A=23"})
     public void testAssignment(String assignment) {
         Parser p = parse(assignment);
-        LetNode l = (LetNode) p.statement();
+        LetNode l = (LetNode) p.statement(0);
         LetNode.Variable lhs = (LetNode.Variable) l.getLhs();
         assertEquals("A", lhs.getId());
         assertFalse(lhs.isString());
@@ -132,7 +132,7 @@ public class ParserTest {
     @ValueSource(strings = {"A$=\"boop\"", "LET A$=\"boop\""})
     public void testStringAssignment(String assignment) {
         Parser p = parse(assignment);
-        LetNode l = (LetNode) p.statement();
+        LetNode l = (LetNode) p.statement(0);
         LetNode.Variable lhs = (LetNode.Variable) l.getLhs();
         assertEquals("A$", lhs.getId());
         assertTrue(lhs.isString());
@@ -144,7 +144,7 @@ public class ParserTest {
     @ValueSource(strings = {"A(1)=23", "A(2,3)=23"})
     public void testArrayAssignment(String assignment) {
         Parser p = parse(assignment);
-        LetNode l = (LetNode) p.statement();
+        LetNode l = (LetNode) p.statement(0);
         LetNode.Array lhs = (LetNode.Array) l.getLhs();
         assertFalse(lhs.isString());
         VarNode v = lhs.getGetArray();
@@ -166,7 +166,7 @@ public class ParserTest {
     @ValueSource(strings = {"PRINT 1;A,TAB(7);SGN(2);", "PRINT 1;A,TAB(7);SGN(2)"})
     public void testPrint(String ps) {
         Parser p = parse(ps);
-        PrintNode pn = (PrintNode) p.statement();
+        PrintNode pn = (PrintNode) p.statement(0);
 
         boolean trailingSemicolon = ps.endsWith(";");
 
@@ -220,7 +220,7 @@ public class ParserTest {
     @Test
     public void testEmptyPrint() {
         Parser p = parse("PRINT");
-        PrintNode pn = (PrintNode) p.printStatement();
+        PrintNode pn = (PrintNode) p.printStatement(0);
         assertTrue(pn.getElements().isEmpty());
     }
 
