@@ -20,14 +20,20 @@ public class LineNode extends BasicNode {
     private final List<StatementNode> statements;
 
     /**
+     * The complete text of the line, from the source.
+     */
+    private final String lineText;
+
+    /**
      * Construct a {@code LineNode} from a line number and list of statements.
      *
      * @param lineNumber the line number.
      * @param statements the statements.
      */
-    public LineNode(int lineNumber, List<StatementNode> statements) {
+    public LineNode(int lineNumber, List<StatementNode> statements, String lineText) {
         this.lineNumber = lineNumber;
         this.statements = List.copyOf(statements);
+        this.lineText = lineText;
     }
 
     /**
@@ -65,6 +71,13 @@ public class LineNode extends BasicNode {
      */
     public List<StatementNode> getStatements() {
         return statements;
+    }
+
+    /**
+     * @return this line's source.
+     */
+    public String getLineText() {
+        return lineText;
     }
 
 }

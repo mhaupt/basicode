@@ -21,7 +21,8 @@ public abstract class DependentJumpNode extends StatementNode {
      */
     private final List<Integer> targets;
 
-    public DependentJumpNode(ExpressionNode expression, List<Integer> targets) {
+    public DependentJumpNode(int startPosition, ExpressionNode expression, List<Integer> targets) {
+        super(startPosition);
         this.expression = expression;
         this.targets = targets;
     }

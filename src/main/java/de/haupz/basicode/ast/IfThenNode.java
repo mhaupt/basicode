@@ -26,7 +26,8 @@ public class IfThenNode extends StatementNode {
      */
     private final StatementNode then;
 
-    public IfThenNode(ExpressionNode condition, StatementNode then) {
+    public IfThenNode(int startPosition, ExpressionNode condition, StatementNode then) {
+        super(startPosition);
         this.condition = condition;
         this.then = then;
     }

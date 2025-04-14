@@ -23,7 +23,8 @@ public class DefFnNode extends StatementNode {
      */
     private final ExpressionNode expression;
 
-    public DefFnNode(String id, String arg, ExpressionNode expression) {
+    public DefFnNode(int startPosition, String id, String arg, ExpressionNode expression) {
+        super(startPosition);
         this.id = id.toUpperCase();
         this.arg = arg;
         this.expression = expression;

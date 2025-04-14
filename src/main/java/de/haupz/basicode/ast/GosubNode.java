@@ -18,7 +18,8 @@ public class GosubNode extends StatementNode {
      */
     private int target;
 
-    public GosubNode(int target) {
+    public GosubNode(int startPosition, int target) {
+        super(startPosition);
         this.target = target;
     }
 

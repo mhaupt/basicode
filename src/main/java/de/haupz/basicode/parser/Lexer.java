@@ -45,6 +45,26 @@ public class Lexer {
     private StringBuilder text = new StringBuilder();
 
     /**
+     * The lexer's position on the current line.
+     */
+    private int currentLinePos = 0;
+
+    /**
+     * The start position, on the current line, of the current symbol.
+     */
+    private int currentSymbolStartPos = 0;
+
+    /**
+     * The text of the current line, as it is being lexed.
+     */
+    private StringBuilder currentLineText = new StringBuilder();
+
+    /**
+     * The complete text of the last completely parsed line.
+     */
+    private String lastLineText = "";
+
+    /**
      * All Symbols representing BASIC keywords.
      */
     private static final List<Symbol> KEYWORD_SYMBOLS =
@@ -70,15 +90,31 @@ public class Lexer {
     }
 
     /**
+     * @return the last completely parsed line.
+     */
+    public String getLastLineText() {
+        return lastLineText;
+    }
+
+    /**
+     * @return the start position of the current symbol.
+     */
+    public int getCurrentSymbolStartPos() {
+        return currentSymbolStartPos;
+    }
+
+    /**
      * @return the next symbol from the input.
      */
     public Symbol getSymbol() {
         if (!hasMoreInput()) {
             sym = None;
             text.setLength(0);
+            lastLineText = currentLineText.toString();
             return sym;
         }
         skipWhiteSpace();
+        currentSymbolStartPos = currentLinePos;
 
         if (0x02 == currentChar()) {
             note(Stx, consumeChar());
@@ -175,6 +211,9 @@ public class Lexer {
             text.append(consumeChar());
         }
         note(Eol, text.toString());
+        lastLineText = currentLineText.toString();
+        currentLineText = new StringBuilder();
+        currentLinePos = 0;
         ++fileLineNumber;
     }
 
@@ -304,6 +343,10 @@ public class Lexer {
      */
     private char consumeChar() {
         char c = currentChar();
+        if ('\n' != c && '\r' != c) {
+            currentLineText.append(c);
+        }
+        ++currentLinePos;
         ++currentCharPos;
         return c;
     }
@@ -316,6 +359,8 @@ public class Lexer {
      */
     private String consume(int n) {
         String r = source.substring(currentCharPos, currentCharPos + n);
+        currentLineText.append(r);
+        currentLinePos += n;
         currentCharPos += n;
         return r;
     }

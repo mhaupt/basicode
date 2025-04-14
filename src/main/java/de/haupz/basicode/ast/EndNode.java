@@ -7,7 +7,9 @@ import de.haupz.basicode.interpreter.InterpreterState;
  */
 public class EndNode extends StatementNode {
 
-    public EndNode() {}
+    public EndNode(int startPosition) {
+        super(startPosition);
+    }
 
     @Override
     public void run(InterpreterState state) {

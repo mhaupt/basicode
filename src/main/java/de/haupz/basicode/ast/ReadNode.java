@@ -38,8 +38,9 @@ public class ReadNode extends StatementNode {
      */
     private final List<LetNode> lets;
 
-    public ReadNode(List<LetNode.LHS> lhss) {
-        lets = lhss.stream().map(lhs -> new LetNode(lhs, READ_OP)).toList();
+    public ReadNode(int startPosition, List<LetNode.LHS> lhss) {
+        super(startPosition);
+        lets = lhss.stream().map(lhs -> new LetNode(startPosition, lhs, READ_OP)).toList();
     }
 
     public List<LetNode> getLets() {

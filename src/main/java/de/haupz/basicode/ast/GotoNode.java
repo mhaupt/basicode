@@ -14,7 +14,8 @@ public class GotoNode extends StatementNode {
 
     private final int target;
 
-    public GotoNode(int target) {
+    public GotoNode(int startPosition, int target) {
+        super(startPosition);
         this.target = target;
     }
 

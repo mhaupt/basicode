@@ -7,6 +7,10 @@ import de.haupz.basicode.interpreter.InterpreterState;
  */
 public class RunNode extends StatementNode {
 
+    public RunNode(int startPosition) {
+        super(startPosition);
+    }
+
     @Override
     public void run(InterpreterState state) {
         state.clearVars();

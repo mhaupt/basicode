@@ -7,7 +7,8 @@ import de.haupz.basicode.interpreter.InterpreterState;
  */
 public class RestoreNode extends StatementNode {
 
-    public RestoreNode() {
+    public RestoreNode(int startPosition) {
+        super(startPosition);
     }
 
     @Override

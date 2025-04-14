@@ -13,7 +13,8 @@ public class DataNode extends StatementNode {
 
     private final List<Object> data;
 
-    public DataNode(List<Object> data) {
+    public DataNode(int startPosition, List<Object> data) {
+        super(startPosition);
         this.data = List.copyOf(data);
     }
 

@@ -145,7 +145,8 @@ public class LetNode extends StatementNode {
      */
     private ExpressionNode expression;
 
-    public LetNode(LHS lhs, ExpressionNode expression) {
+    public LetNode(int startPosition, LHS lhs, ExpressionNode expression) {
+        super(startPosition);
         this.lhs = lhs;
         this.expression = expression;
     }

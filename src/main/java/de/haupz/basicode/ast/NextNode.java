@@ -12,7 +12,8 @@ public class NextNode extends StatementNode {
 
     private final String id;
 
-    public NextNode(String id) {
+    public NextNode(int startPosition, String id) {
+        super(startPosition);
         this.id = id;
     }
 

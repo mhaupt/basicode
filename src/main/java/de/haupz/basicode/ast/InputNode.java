@@ -52,12 +52,13 @@ public class InputNode extends StatementNode {
         }
     }
 
-    public InputNode(String prompt, LetNode.LHS lhs) {
-        this.prompt = new PrintNode(List.of(
+    public InputNode(int startPosition, String prompt, LetNode.LHS lhs) {
+        super(startPosition);
+        this.prompt = new PrintNode(startPosition, List.of(
                     new PrintNode.Element(PrintNode.ElementType.EXPRESSION, new StringNode(prompt)),
                     new PrintNode.Element(PrintNode.ElementType.SEPARATOR, ";")));
         this.readLine = new ReadLineNode(lhs.isString());
-        this.let = new LetNode(lhs, readLine);
+        this.let = new LetNode(startPosition, lhs, readLine);
     }
 
     public PrintNode getPrompt() {

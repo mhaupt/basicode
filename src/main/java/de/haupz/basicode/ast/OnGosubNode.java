@@ -10,8 +10,8 @@ import java.util.List;
  */
 public class OnGosubNode extends DependentJumpNode {
 
-    public OnGosubNode(ExpressionNode expression, List<Integer> targets) {
-        super(expression, targets);
+    public OnGosubNode(int startPosition, ExpressionNode expression, List<Integer> targets) {
+        super(startPosition, expression, targets);
     }
 
     @Override

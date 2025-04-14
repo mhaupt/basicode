@@ -13,7 +13,8 @@ public class DimNode extends StatementNode {
 
     private final List<DimCreateNode> dims;
 
-    public DimNode(List<DimCreateNode> dims) {
+    public DimNode(int startPosition, List<DimCreateNode> dims) {
+        super(startPosition);
         this.dims = List.copyOf(dims);
     }
 

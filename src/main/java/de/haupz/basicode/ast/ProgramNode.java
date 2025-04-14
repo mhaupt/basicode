@@ -132,11 +132,11 @@ public class ProgramNode extends BasicNode {
                 Stack<Integer> stack = state.getCallStack();
                 String stackDump = "";
                 LineAndStatement las = statementIndexToLineNumberAndStatement.get(state.getStatementIndex());
-                stackDump = String.format("\nat line %d, statement %d", las.line, las.statement);
+                stackDump = "\n" + stackTraceEntry(las, state.getStatementIndex());
                 if (!stack.isEmpty()) {
                     stackDump += '\n' + stack.reversed().stream().map(stmt -> {
                         LineAndStatement sdlas = statementIndexToLineNumberAndStatement.get(stmt - 1);
-                        return String.format("at line %d, statement %d", sdlas.line, sdlas.statement);
+                        return stackTraceEntry(sdlas, stmt);
                     }).collect(Collectors.joining("\n"));
                 }
                 throw new IllegalStateException(stackDump, e);
@@ -164,6 +164,12 @@ public class ProgramNode extends BasicNode {
                 }
             }
         }
+    }
+
+    private String stackTraceEntry(LineAndStatement las, int statementIndex) {
+        LineNode line = lines.stream().filter(l -> l.getLineNumber() == las.line).findFirst().orElse(null);
+        String pointer = "-".repeat(statements.get(statementIndex).getStartPosition()) +"^";
+        return String.format("at line %d, statement %d\n%s\n%s", las.line, las.statement, line.getLineText(), pointer);
     }
 
     /**

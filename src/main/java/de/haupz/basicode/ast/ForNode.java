@@ -32,7 +32,8 @@ public class ForNode extends StatementNode {
      */
     private final ExpressionNode step;
 
-    public ForNode(String id, ExpressionNode init, ExpressionNode end, ExpressionNode step) {
+    public ForNode(int startPosition, String id, ExpressionNode init, ExpressionNode end, ExpressionNode step) {
+        super(startPosition);
         this.id = id;
         this.init = init;
         this.end = end;

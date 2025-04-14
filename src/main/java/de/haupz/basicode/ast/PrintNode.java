@@ -33,7 +33,8 @@ public class PrintNode extends StatementNode {
 
     private final List<Element> elements;
 
-    public PrintNode(List<Element> elements) {
+    public PrintNode(int startPosition, List<Element> elements) {
+        super(startPosition);
         this.elements = List.copyOf(elements);
     }
 

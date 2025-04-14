@@ -10,7 +10,8 @@ public class RemNode extends StatementNode {
 
     private final String rem;
 
-    public RemNode(String rem) {
+    public RemNode(int startPosition, String rem) {
+        super(startPosition);
         this.rem = rem;
     }
 

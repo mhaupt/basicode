@@ -36,6 +36,11 @@ public class Parser {
     private String text = "";
 
     /**
+     * The current symbol's start position on the source code line.
+     */
+    private int symStartPos = 0;
+
+    /**
      * A stored symbol to return first, if any.
      */
     private Optional<Symbol> pendingSymbol = Optional.empty();
@@ -44,6 +49,11 @@ public class Parser {
      * The text corresponding to {@link #pendingSymbol}.
      */
     private Optional<String> pendingText = Optional.empty();
+
+    /**
+     * The start position corresponding to {@link #pendingSymbol}.
+     */
+    private Optional<Integer> pendingStartPos = Optional.empty();
 
     /**
      * Construct a parser for a given input.
@@ -64,6 +74,7 @@ public class Parser {
         } else {
             sym = lexer.getSymbol();
             text = lexer.getText();
+            symStartPos = lexer.getCurrentSymbolStartPos();
         }
     }
 
@@ -73,14 +84,16 @@ public class Parser {
     private void pushPendingSymbol() {
         pendingSymbol = Optional.of(sym);
         pendingText = Optional.of(text);
+        pendingStartPos = Optional.of(symStartPos);
     }
 
     /**
      * Push a dedicated symbol and text into the buffer.
      */
-    private void pushPendingSymbol(Symbol s, String t) {
+    private void pushPendingSymbol(Symbol s, String t, int start) {
         pendingSymbol = Optional.of(s);
         pendingText = Optional.of(t);
+        pendingStartPos = Optional.of(start);
     }
 
     /**
@@ -89,8 +102,10 @@ public class Parser {
     private void popPendingSymbol() {
         sym = pendingSymbol.get();
         text = pendingText.get();
+        symStartPos = pendingStartPos.get();
         pendingSymbol = Optional.empty();
         pendingText = Optional.empty();
+        pendingStartPos = Optional.empty();
     }
 
     /**
@@ -155,7 +170,7 @@ public class Parser {
         List<StatementNode> statements = new ArrayList<>();
         int num = lineNumber();
         if (accept(Data)) {
-            StatementNode dataLine = dataLine();
+            StatementNode dataLine = dataLine(symStartPos);
             statements.add(dataLine);
         } else {
             do {
@@ -163,17 +178,17 @@ public class Parser {
                     // consume sequences of colons
                 }
                 if (!accept(Eol)) { // handle trailing colon
-                    StatementNode statement = statement();
+                    StatementNode statement = statement(symStartPos);
                     statements.add(statement);
                 } else {
-                    pushPendingSymbol(Eol, "\n");
+                    pushPendingSymbol(Eol, "\n", symStartPos);
                 }
             } while (accept(Colon));
         }
         if (lexer.hasMoreInput()) {
             expect(Eol);
         }
-        return new LineNode(num, statements);
+        return new LineNode(num, statements, lexer.getLastLineText());
     }
 
     private int lineNumber() {
@@ -181,14 +196,14 @@ public class Parser {
         return Integer.parseInt(text);
     }
 
-    public StatementNode dataLine() {
+    public StatementNode dataLine(int start) {
         List<Object> data = new ArrayList<>();
         do {
             Object d = dataLiteral();
             dataList.add(d);
             data.add(d);
         } while (accept(Comma));
-        return new DataNode(data);
+        return new DataNode(start, data);
     }
 
     public Object dataLiteral() {
@@ -200,47 +215,47 @@ public class Parser {
         return sgn * Double.parseDouble(text);
     }
 
-    public StatementNode statement() {
+    public StatementNode statement(int start) {
         // Here, it's OK to bypass a call to accept(): we know we're going to parse a statement, and we know which
         // starting symbols there can be.
         getNextSymbol();
         Symbol statement = sym;
 
         StatementNode s = switch (statement) {
-            case Def -> defFnStatement();
-            case Dim -> dimStatement();
-            case End, Stop -> new EndNode();
-            case For -> forStatement();
+            case Def -> defFnStatement(start);
+            case Dim -> dimStatement(start);
+            case End, Stop -> new EndNode(start);
+            case For -> forStatement(start);
             case Gosub -> {
                 int num = lineNumber();
-                yield new GosubNode(num);
+                yield new GosubNode(start, num);
             }
             case Goto -> {
                 int num = lineNumber();
-                yield new GotoNode(num);
+                yield new GotoNode(start, num);
             }
-            case If -> ifStatement();
-            case Input -> inputStatement();
-            case Let, Identifier -> assignment();
-            case Next -> nextStatement();
-            case On -> dependentJump();
-            case Print -> printStatement();
-            case Read -> readStatement();
-            case Rem -> new RemNode(text.substring(3).trim()); // text starts with "REM"
-            case Restore -> new RestoreNode();
-            case Return -> new ReturnNode();
-            case Run -> new RunNode();
+            case If -> ifStatement(start);
+            case Input -> inputStatement(start);
+            case Let, Identifier -> assignment(start);
+            case Next -> nextStatement(start);
+            case On -> dependentJump(start);
+            case Print -> printStatement(start);
+            case Read -> readStatement(start);
+            case Rem -> new RemNode(start, text.substring(3).trim()); // text starts with "REM"
+            case Restore -> new RestoreNode(start);
+            case Return -> new ReturnNode(start);
+            case Run -> new RunNode(start);
             default -> throw new ParserException("Expecting statement symbol, but got: " + statement);
         };
         
         return s;
     }
 
-    public StatementNode assignment() {
+    public StatementNode assignment(int start) {
         LetNode.LHS l = lhs();
         expect(Equal);
         ExpressionNode e = expression();
-        return new LetNode(l, e);
+        return new LetNode(start, l, e);
     }
 
     public LetNode.LHS lhs() {
@@ -462,7 +477,7 @@ public class Parser {
         return n;
     }
 
-    public StatementNode printStatement() {
+    public StatementNode printStatement(int start) {
         List<PrintNode.Element> elements = new ArrayList<>();
         if (printElementIsNext()) {
             PrintNode.Element e = printElement();
@@ -475,7 +490,7 @@ public class Parser {
                 }
             }
         }
-        return new PrintNode(elements);
+        return new PrintNode(start, elements);
     }
 
     private static final List<Symbol> EXPRESSION_START_SYMBOLS =
@@ -505,7 +520,7 @@ public class Parser {
         return new PrintNode.Element(PrintNode.ElementType.EXPRESSION, e);
     }
 
-    public StatementNode dependentJump() {
+    public StatementNode dependentJump(int start) {
         ExpressionNode e = expression();
         boolean isGosub;
         if (accept(Goto)) {
@@ -524,21 +539,21 @@ public class Parser {
             targets.add(n);
         }
 
-        return isGosub ? new OnGosubNode(e, targets) : new OnGotoNode(e, targets);
+        return isGosub ? new OnGosubNode(start, e, targets) : new OnGotoNode(start, e, targets);
     }
 
-    public StatementNode dimStatement() {
+    public StatementNode dimStatement(int start) {
         List<DimCreateNode> dims = new ArrayList<>();
-        DimCreateNode d = oneDim();
+        DimCreateNode d = oneDim(start);
         dims.add(d);
         while (accept(Comma)) {
-            d = oneDim();
+            d = oneDim(symStartPos);
             dims.add(d);
         }
-        return new DimNode(dims);
+        return new DimNode(start, dims);
     }
 
-    private DimCreateNode oneDim() {
+    private DimCreateNode oneDim(int start) {
         expect(Identifier);
         String id = text;
         expect(LeftBracket);
@@ -548,10 +563,10 @@ public class Parser {
             d2 = expression();
         }
         expect(RightBracket);
-        return new DimCreateNode(id, d1, d2);
+        return new DimCreateNode(start, id, d1, d2);
     }
 
-    public StatementNode forStatement() {
+    public StatementNode forStatement(int start) {
         expect(Identifier);
         String id = text;
         expect(Equal);
@@ -562,35 +577,35 @@ public class Parser {
         if (accept(Step)) {
             g = expression();
         }
-        return new ForNode(id, e, f, g);
+        return new ForNode(start, id, e, f, g);
     }
 
-    public StatementNode nextStatement() {
+    public StatementNode nextStatement(int start) {
         expect(Identifier);
         String id = text;
-        return new NextNode(id);
+        return new NextNode(start, id);
     }
 
-    public StatementNode ifStatement() {
+    public StatementNode ifStatement(int start) {
         ExpressionNode e = expression();
         StatementNode s;
         if (accept(Then)) {
             if (accept(NumberLiteral)) {
                 int l = Integer.parseInt(text);
-                s = new GotoNode(l);
+                s = new GotoNode(start, l);
             } else {
-                s = statement();
+                s = statement(symStartPos);
             }
         } else if (accept(Goto)) {
             int l = lineNumber();
-            s = new GotoNode(l);
+            s = new GotoNode(start, l);
         } else {
             throw new ParserException("Expecting THEN or GOTO, but got " + sym + " << " + text + " >>");
         }
-        return new IfThenNode(e, s);
+        return new IfThenNode(start, e, s);
     }
 
-    public StatementNode readStatement() {
+    public StatementNode readStatement(int start) {
         List<LetNode.LHS> lhss = new ArrayList<>();
         expect(Identifier);
         LetNode.LHS lhs = lhs();
@@ -600,10 +615,10 @@ public class Parser {
             lhs = lhs();
             lhss.add(lhs);
         }
-        return new ReadNode(lhss);
+        return new ReadNode(start, lhss);
     }
 
-    public StatementNode inputStatement() {
+    public StatementNode inputStatement(int start) {
         String prompt = "? ";
         if (accept(StringLiteral)) {
             prompt = text.substring(1, text.length() - 1) + prompt;
@@ -611,10 +626,10 @@ public class Parser {
         }
         expect(Identifier);
         LetNode.LHS lhs = lhs();
-        return new InputNode(prompt, lhs);
+        return new InputNode(start, prompt, lhs);
     }
 
-    public StatementNode defFnStatement() {
+    public StatementNode defFnStatement(int start) {
         getNextSymbol();
         String id = fnId();
         expect(LeftBracket);
@@ -623,7 +638,7 @@ public class Parser {
         expect(RightBracket);
         expect(Equal);
         ExpressionNode e = expression();
-        return new DefFnNode(id, u, e);
+        return new DefFnNode(start, id, u, e);
     }
 
 }
