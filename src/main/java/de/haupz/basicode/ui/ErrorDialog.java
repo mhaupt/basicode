@@ -23,6 +23,7 @@ public class ErrorDialog extends JDialog {
         StringWriter sw = new StringWriter();
         ex.printStackTrace(new PrintWriter(sw));
         text = new JTextArea(sw.toString());
+        text.setFont(new Font("Monospaced", Font.PLAIN, 12));
         JScrollPane sp = new JScrollPane(text);
         sp.setPreferredSize(new Dimension(600, 300));
 

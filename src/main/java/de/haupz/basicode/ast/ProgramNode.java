@@ -132,7 +132,7 @@ public class ProgramNode extends BasicNode {
                 Stack<Integer> stack = state.getCallStack();
                 String stackDump = "";
                 LineAndStatement las = statementIndexToLineNumberAndStatement.get(state.getStatementIndex());
-                stackDump = String.format("at line %d, statement %d", las.line, las.statement);
+                stackDump = String.format("\nat line %d, statement %d", las.line, las.statement);
                 if (!stack.isEmpty()) {
                     stackDump += '\n' + stack.reversed().stream().map(stmt -> {
                         LineAndStatement sdlas = statementIndexToLineNumberAndStatement.get(stmt - 1);
