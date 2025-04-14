@@ -166,6 +166,18 @@ public class ProgramNode extends BasicNode {
         }
     }
 
+    /**
+     * <p>Helper method to generate a textual representation of a stack trace entry for debugging purposes. This
+     * consists of the following:<ul>
+     *     <li>the BASICODE line number and statement index;</li>
+     *     <li>the complete BASICODE source code line on which the statement from the stack trace is found;</li>
+     *     <li>a pointer to the statement on the source code line.</li>
+     * </ul></p>
+     *
+     * @param las the {@link LineAndStatement BASICODE line number and statement index} of the statement from the trace.
+     * @param statementIndex the index of the traced statement in the global statement list.
+     * @return a textual representation of the stack trace entry.
+     */
     private String stackTraceEntry(LineAndStatement las, int statementIndex) {
         LineNode line = lines.stream().filter(l -> l.getLineNumber() == las.line).findFirst().orElse(null);
         String pointer = "-".repeat(statements.get(statementIndex).getStartPosition()) +"^";
