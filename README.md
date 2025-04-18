@@ -56,6 +56,20 @@ The actual slowdown depends on the number of `o` characters given in the
 1 ms after each statement; passing `-slooow` will pause execution for 3 ms after
 each statement.
 
+### Overview of Available Command Line Arguments
+
+In addition to `-hold`, `-intro`, and `-slow` (see above), you can use the 
+following command line arguments:
+
+*   `-nowait`: suppress waiting. If this argument is given, the `GOSUB 450` 
+    subroutine will have no effect; execution will simply continue without 
+    delays.
+*   `-nosound`: play no sounds at all.
+*   `-enforceBoundaries`: do run-time checks that ensure the `HO` and `VE` 
+    coordinates in graphics mode are always within the allowed `0..1` range.
+*   `-showMapKeys`: display debugging information when keys are pressed and 
+    mapped.
+
 ## Implementation Notes
 
 The BASICODE implementation is meant to be simple, and to be as "standalone" 
