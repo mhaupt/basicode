@@ -87,8 +87,8 @@ public class Main {
      *
      * @return the absolute path to the chosen file, or the empty string in case no file was chosen.
      */
-    private static String chooseFile() {
-        File dir = new File(System.getProperty("user.dir"));
+    private static String chooseFile(String dirName) {
+        File dir = new File(dirName);
         FileNameExtensionFilter filter = new FileNameExtensionFilter("BASIC files", "bas");
         JFileChooser fc = new JFileChooser(dir);
         fc.setFileFilter(filter);
@@ -152,7 +152,9 @@ public class Main {
         FilenameAndConfig fnc = parseArguments(args);
         String filename = fnc.filename;
         if (filename.isEmpty()) {
-            filename = chooseFile();
+            filename = chooseFile(System.getProperty("user.dir"));
+        } else if (Files.isDirectory(Paths.get(filename))) {
+            filename = chooseFile(filename);
         }
         if (!filename.isEmpty()) {
             if (playIntro) {
