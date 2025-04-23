@@ -118,7 +118,8 @@ public class Parser {
     private void expect(Symbol s) throws ParserException {
         getNextSymbol();
         if (sym != s) {
-            throw new ParserException("Expected " + s + " but got " + sym + " << " + text + " >>");
+            throw new ParserException("Expected " + s + " but got " + sym + " << " + text + " >>",
+                    lexer.getLineSoFar());
         }
     }
 
@@ -133,7 +134,8 @@ public class Parser {
         getNextSymbol();
         List<Symbol> lss = List.of(ss);
         if (!lss.contains(sym)) {
-            throw new ParserException("Expected one of " + lss + " but got " + sym + " << " + text + " >>");
+            throw new ParserException("Expected one of " + lss + " but got " + sym + " << " + text + " >>",
+                    lexer.getLineSoFar());
         }
     }
 
@@ -245,7 +247,8 @@ public class Parser {
             case Restore -> new RestoreNode(start);
             case Return -> new ReturnNode(start);
             case Run -> new RunNode(start);
-            default -> throw new ParserException("Expecting statement symbol, but got: " + statement);
+            default -> throw new ParserException("Expecting statement symbol, but got: " + statement,
+                    lexer.getLineSoFar());
         };
         
         return s;
@@ -470,7 +473,7 @@ public class Parser {
             case Sqr -> new SqrNode(e);
             case Tan -> new TanNode(e);
             case Val -> new ValNode(e);
-            default -> throw new ParserException("Unsupported builtin call: " + builtinName);
+            default -> throw new ParserException("Unsupported builtin call: " + builtinName, lexer.getLineSoFar());
         };
         
         expect(RightBracket);
@@ -528,7 +531,8 @@ public class Parser {
         } else if (accept(Gosub)) {
             isGosub = true;
         } else {
-            throw new ParserException("Expecting GOTO or GOSUB, but got: " + sym + " << " + text + " >>");
+            throw new ParserException("Expecting GOTO or GOSUB, but got: " + sym + " << " + text + " >>",
+                    lexer.getLineSoFar());
         }
 
         List<Integer> targets = new ArrayList<>();
@@ -600,7 +604,8 @@ public class Parser {
             int l = lineNumber();
             s = new GotoNode(start, l);
         } else {
-            throw new ParserException("Expecting THEN or GOTO, but got " + sym + " << " + text + " >>");
+            throw new ParserException("Expecting THEN or GOTO, but got " + sym + " << " + text + " >>",
+                    lexer.getLineSoFar());
         }
         return new IfThenNode(start, e, s);
     }

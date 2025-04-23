@@ -97,6 +97,13 @@ public class Lexer {
     }
 
     /**
+     * @return the text of the line currently being parsed, so far.
+     */
+    public String getLineSoFar() {
+        return currentLineText.toString();
+    }
+
+    /**
      * @return the start position of the current symbol.
      */
     public int getCurrentSymbolStartPos() {
