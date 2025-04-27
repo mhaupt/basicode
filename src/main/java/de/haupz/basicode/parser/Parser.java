@@ -109,6 +109,13 @@ public class Parser {
     }
 
     /**
+     * @return the syntactic context for an error.
+     */
+    private String getContext() {
+        return lexer.getLastLineText() + "\n" + lexer.getLineSoFar();
+    }
+
+    /**
      * Expect the input to next contain the given symbol. Throw an exception if it's not the right one. This advances
      * the input.
      *
@@ -118,8 +125,7 @@ public class Parser {
     private void expect(Symbol s) throws ParserException {
         getNextSymbol();
         if (sym != s) {
-            throw new ParserException("Expected " + s + " but got " + sym + " << " + text + " >>",
-                    lexer.getLineSoFar());
+            throw new ParserException("Expected " + s + " but got " + sym + " << " + text + " >>", getContext());
         }
     }
 
@@ -134,8 +140,7 @@ public class Parser {
         getNextSymbol();
         List<Symbol> lss = List.of(ss);
         if (!lss.contains(sym)) {
-            throw new ParserException("Expected one of " + lss + " but got " + sym + " << " + text + " >>",
-                    lexer.getLineSoFar());
+            throw new ParserException("Expected one of " + lss + " but got " + sym + " << " + text + " >>", getContext());
         }
     }
 
@@ -247,8 +252,7 @@ public class Parser {
             case Restore -> new RestoreNode(start);
             case Return -> new ReturnNode(start);
             case Run -> new RunNode(start);
-            default -> throw new ParserException("Expecting statement symbol, but got: " + statement,
-                    lexer.getLineSoFar());
+            default -> throw new ParserException("Expecting statement symbol, but got: " + statement, getContext());
         };
         
         return s;
@@ -473,7 +477,7 @@ public class Parser {
             case Sqr -> new SqrNode(e);
             case Tan -> new TanNode(e);
             case Val -> new ValNode(e);
-            default -> throw new ParserException("Unsupported builtin call: " + builtinName, lexer.getLineSoFar());
+            default -> throw new ParserException("Unsupported builtin call: " + builtinName, getContext());
         };
         
         expect(RightBracket);
@@ -531,8 +535,7 @@ public class Parser {
         } else if (accept(Gosub)) {
             isGosub = true;
         } else {
-            throw new ParserException("Expecting GOTO or GOSUB, but got: " + sym + " << " + text + " >>",
-                    lexer.getLineSoFar());
+            throw new ParserException("Expecting GOTO or GOSUB, but got: " + sym + " << " + text + " >>", getContext());
         }
 
         List<Integer> targets = new ArrayList<>();
@@ -604,8 +607,7 @@ public class Parser {
             int l = lineNumber();
             s = new GotoNode(start, l);
         } else {
-            throw new ParserException("Expecting THEN or GOTO, but got " + sym + " << " + text + " >>",
-                    lexer.getLineSoFar());
+            throw new ParserException("Expecting THEN or GOTO, but got " + sym + " << " + text + " >>", getContext());
         }
         return new IfThenNode(start, e, s);
     }
