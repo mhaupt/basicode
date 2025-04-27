@@ -346,7 +346,9 @@ public class BasicContainer extends JComponent implements BasicInput, BasicOutpu
                 }
             } else {
                 print("" + c);
-                s += c;
+                if (c != BASICODE_NEWLINE) {
+                    s += c;
+                }
             }
         } while (c != BASICODE_NEWLINE);
         println();
