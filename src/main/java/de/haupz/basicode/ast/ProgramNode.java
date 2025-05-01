@@ -172,7 +172,7 @@ public class ProgramNode extends BasicNode {
         if (!stack.isEmpty()) {
             stackDump += '\n' + stack.reversed().stream().map(stmt -> {
                 LineAndStatement sdlas = statementIndexToLineNumberAndStatement.get(stmt - 1);
-                return stackTraceEntry(sdlas, stmt);
+                return stackTraceEntry(sdlas, stmt - 1);
             }).collect(Collectors.joining("\n"));
         }
         return stackDump;
