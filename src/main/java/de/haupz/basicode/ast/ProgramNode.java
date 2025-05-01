@@ -139,7 +139,7 @@ public class ProgramNode extends BasicNode {
                         return stackTraceEntry(sdlas, stmt);
                     }).collect(Collectors.joining("\n"));
                 }
-                throw new IllegalStateException(stackDump, e);
+                throw new IllegalStateException(e.getMessage() + stackDump, e);
             }
             if (state.isLineJumpNext()) {
                 resolveJump(state);
