@@ -6,7 +6,7 @@
 *   Default prompt for INPUT.
 *   Support for slowing down execution.
 *   Show a cursor on INPUT.
-*   Show more detailed stack traces when errors occur.
+*   Show more detailed stack traces and variable/array values when errors occur.
 *   Display error information in a window instead of on the console only.
 *   Open a file picker if a directory is given on the command line.
 *   Bug fixes:
