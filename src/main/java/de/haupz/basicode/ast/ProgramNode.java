@@ -129,16 +129,7 @@ public class ProgramNode extends BasicNode {
                     }
                 }
             } catch (Exception e) {
-                Stack<Integer> stack = state.getCallStack();
-                String stackDump = "";
-                LineAndStatement las = statementIndexToLineNumberAndStatement.get(state.getStatementIndex());
-                stackDump = "\n" + stackTraceEntry(las, state.getStatementIndex());
-                if (!stack.isEmpty()) {
-                    stackDump += '\n' + stack.reversed().stream().map(stmt -> {
-                        LineAndStatement sdlas = statementIndexToLineNumberAndStatement.get(stmt - 1);
-                        return stackTraceEntry(sdlas, stmt);
-                    }).collect(Collectors.joining("\n"));
-                }
+                String stackDump = getStackDump(state);
                 throw new IllegalStateException(e.getMessage() + stackDump, e);
             }
             if (state.isLineJumpNext()) {
@@ -164,6 +155,26 @@ public class ProgramNode extends BasicNode {
                 }
             }
         }
+    }
+
+    /**
+     * Helper method to generate a textual representation of the BASICODE call stack for debugging purposes.
+     *
+     * @param state the interpreter state.
+     * @return the stack dump.
+     */
+    private String getStackDump(InterpreterState state) {
+        Stack<Integer> stack = state.getCallStack();
+        String stackDump = "";
+        LineAndStatement las = statementIndexToLineNumberAndStatement.get(state.getStatementIndex());
+        stackDump = "\n" + stackTraceEntry(las, state.getStatementIndex());
+        if (!stack.isEmpty()) {
+            stackDump += '\n' + stack.reversed().stream().map(stmt -> {
+                LineAndStatement sdlas = statementIndexToLineNumberAndStatement.get(stmt - 1);
+                return stackTraceEntry(sdlas, stmt);
+            }).collect(Collectors.joining("\n"));
+        }
+        return stackDump;
     }
 
     /**
