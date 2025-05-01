@@ -11,6 +11,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * A representation of the BASIC interpreter's runtime state. This includes control flow, variables, and I/O channels.
@@ -211,6 +212,13 @@ public class InterpreterState {
     }
 
     /**
+     * @return a stream of all variable bindings.
+     */
+    public Stream<Map.Entry<String, Object>> getVarStream() {
+        return vars.entrySet().stream();
+    }
+
+    /**
      * Set an array. This is <em>not</em> setting a value at some index in an array, but rather binding an array to a
      * variable name.
      *
@@ -229,6 +237,13 @@ public class InterpreterState {
      */
     public Optional<BasicArray> getArray(String id) {
         return Optional.ofNullable(arrays.get(id));
+    }
+
+    /**
+     * @return a stream of all array bindings.
+     */
+    public Stream<Map.Entry<String, BasicArray>> getArrayStream() {
+        return arrays.entrySet().stream();
     }
 
     /**

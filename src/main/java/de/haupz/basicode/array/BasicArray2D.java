@@ -92,8 +92,20 @@ public class BasicArray2D extends BasicArray {
     private void checkBoundaries(int a, int b) {
         if (a >= dim1 || b >= dim2) {
             throw new IllegalStateException(
-                    String.format("out of bounds access (%d,%d) in 1D array [%d,%d]", a, b, dim1, dim2));
+                    String.format("out of bounds access (%d,%d) in 2D array [%d,%d]", a, b, dim1, dim2));
         }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append('(').append(dim1).append(',').append(dim2).append(')');
+        for (int d1 = 0; d1 < dim1; d1++) {
+            for (int d2 = 0; d2 < dim2; d2++) {
+                sb.append("\n (").append(d1).append(',').append(d2).append(") ").append(data[d1 * dim2 + d2]);
+            }
+        }
+        return sb.toString();
     }
 
 }

@@ -130,7 +130,8 @@ public class ProgramNode extends BasicNode {
                 }
             } catch (Exception e) {
                 String stackDump = getStackDump(state);
-                throw new IllegalStateException(e.getMessage() + stackDump, e);
+                String values = getValues(state);
+                throw new IllegalStateException(e.getMessage() + stackDump + "\n" + values, e);
             }
             if (state.isLineJumpNext()) {
                 resolveJump(state);
@@ -175,6 +176,23 @@ public class ProgramNode extends BasicNode {
             }).collect(Collectors.joining("\n"));
         }
         return stackDump;
+    }
+
+    /**
+     * Helper method to generate a textual representation of the BASICODE program's variables for debugging purposes.
+     *
+     * @param state the interpreter state.
+     * @return all variable and array values at the current state.
+     */
+    private String getValues(InterpreterState state) {
+        StringBuilder values = new StringBuilder();
+        values.append("== variables ==\n");
+        state.getVarStream().forEach(
+                v -> values.append(v.getKey()).append(" = ").append(v.getValue()).append('\n'));
+        values.append("== arrays ==\n");
+        state.getArrayStream().forEach(
+                a -> values.append(a.getKey()).append(" = ").append(a.getValue()).append('\n'));
+        return values.toString();
     }
 
     /**

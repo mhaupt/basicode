@@ -86,4 +86,13 @@ public class BasicArray1D extends BasicArray {
         }
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append('(').append(dim).append(')');
+        for (int i = 0; i < dim; i++) {
+            sb.append("\n (").append(i).append(") ").append(data[i]);
+        }
+        return sb.toString();
+    }
 }
