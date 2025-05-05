@@ -9,6 +9,7 @@
 *   Show more detailed stack traces and variable/array values when errors occur.
 *   Display error information in a window instead of on the console only.
 *   Open a file picker if a directory is given on the command line.
+*   Support running subroutines with GOTO (implicit RETURN).
 *   Bug fixes:
     *   GOSUB 450 should modify interpreter state (`SD`, `IN`, `IN$`).
     *   Support special characters (`STX`, `ETX`, `FS`) in 8-bit era files.

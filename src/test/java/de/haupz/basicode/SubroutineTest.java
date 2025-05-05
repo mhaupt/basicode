@@ -45,4 +45,22 @@ public class SubroutineTest extends InterpreterTest {
                 """);
     }
 
+    @Test
+    public void testGotoInsteadOfGosub() {
+        testInterpreter("""
+                1000 GOTO 20
+                1010 GOSUB 2000
+                1020 PRINT "Returned."
+                1030 GOTO 950
+                2000 PRINT "Hello."
+                2010 GOTO 120
+                2020 PRINT "Not to be seen."
+                2030 RETURN
+                """,
+                """
+                Hello.
+                Returned.
+                """);
+    }
+
 }

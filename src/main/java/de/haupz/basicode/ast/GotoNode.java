@@ -27,6 +27,12 @@ public class GotoNode extends StatementNode {
     public void run(InterpreterState state) {
         if (target < 1000) {
             Subroutines.runGoto(target, state);
+            // It is technically possible to reach a subroutine via GOTO that should be reached via GOSUB. In that case,
+            // the interpreter should run a RETURN next. The only exception from this is GOTO 20, which is the default
+            // jump at the beginning of a BASICODE program.
+            if (target != 20) {
+                state.requestReturn();
+            }
         } else {
             state.setLineJumpTarget(target);
             state.requestLineJump();

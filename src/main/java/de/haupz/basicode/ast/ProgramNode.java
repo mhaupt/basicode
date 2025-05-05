@@ -133,6 +133,12 @@ public class ProgramNode extends BasicNode {
                 String values = getValues(state);
                 throw new IllegalStateException(e.getMessage() + stackDump + "\n" + values, e);
             }
+
+            // In case the statement execution has led to program termination, don't bother.
+            if (state.shouldEnd()) {
+                continue;
+            }
+
             if (state.isLineJumpNext()) {
                 resolveJump(state);
             } else if (state.isReturnNext()) {
