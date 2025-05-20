@@ -128,8 +128,9 @@ public class LetTest extends StatementTest {
         Optional<Object> au = state.getVar("A");
         Optional<Object> al = state.getVar("a");
         assertTrue(au.isPresent());
-        assertFalse(al.isPresent());
+        assertTrue(al.isPresent());
         assertEquals(2.0, au.get());
+        assertEquals(2.0, al.get());
     }
 
     @Test
@@ -138,8 +139,9 @@ public class LetTest extends StatementTest {
         Optional<Object> au = state.getVar("A$");
         Optional<Object> al = state.getVar("a$");
         assertTrue(au.isPresent());
-        assertFalse(al.isPresent());
+        assertTrue(al.isPresent());
         assertEquals("world", au.get());
+        assertEquals("world", al.get());
     }
 
 }

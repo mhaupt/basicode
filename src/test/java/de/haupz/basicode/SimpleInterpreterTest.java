@@ -82,4 +82,30 @@ public class SimpleInterpreterTest extends InterpreterTest {
                 """);
     }
 
+    @Test
+    public void testUpperCaseLowerCaseIdentifier() {
+        testInterpreter("""
+                10 FOR I=1 TO 3
+                20 PRINT i;I
+                30 NEXT I
+                """, """
+                 1  1\s
+                 2  2\s
+                 3  3\s
+                """);
+    }
+
+    @Test
+    public void testLowerCaseUpperCaseIdentifier() {
+        testInterpreter("""
+                10 FOR i=1 TO 3
+                20 PRINT i;I
+                30 NEXT i
+                """, """
+                 1  1\s
+                 2  2\s
+                 3  3\s
+                """);
+    }
+
 }

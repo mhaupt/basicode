@@ -192,23 +192,23 @@ public class InterpreterState {
 
     /**
      * Set a variable. If the variable does not exist, it will be created; if it exists, its previous value will be
-     * overwritten.
+     * overwritten. Note that the variable name will be converted to upper case if it isn't.
      *
      * @param id the variable's name.
      * @param value the variable's new value.
      */
     public void setVar(String id, Object value) {
-        vars.put(id, value);
+        vars.put(id.toUpperCase(), value);
     }
 
     /**
-     * Retrieve a variable, if it exists.
+     * Retrieve a variable, if it exists. Note that the variable name will be converted to upper case if it isn't.
      *
      * @param id the variable's name.
      * @return the variable's value wrapped in an {@link Optional}, if it exists; otherwise, {@code empty}.
      */
     public Optional<Object> getVar(String id) {
-        return Optional.ofNullable(vars.get(id));
+        return Optional.ofNullable(vars.get(id.toUpperCase()));
     }
 
     /**
@@ -220,23 +220,23 @@ public class InterpreterState {
 
     /**
      * Set an array. This is <em>not</em> setting a value at some index in an array, but rather binding an array to a
-     * variable name.
+     * variable name. Note that the array name will be converted to upper case if it isn't.
      *
      * @param id the array variable's name.
      * @param value the array.
      */
     public void setArray(String id, BasicArray value) {
-        arrays.put(id, value);
+        arrays.put(id.toUpperCase(), value);
     }
 
     /**
-     * Retrieve an array, if it exists.
+     * Retrieve an array, if it exists. Note that the array name will be converted to upper case if it isn't.
      *
      * @param id the array's variable name.
      * @return the array, wrapped in an {@link Optional}, if it exists; otherwise, {@code empty}.
      */
     public Optional<BasicArray> getArray(String id) {
-        return Optional.ofNullable(arrays.get(id));
+        return Optional.ofNullable(arrays.get(id.toUpperCase()));
     }
 
     /**

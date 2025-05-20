@@ -224,9 +224,11 @@ public class DimTest extends StatementTest {
         Optional<BasicArray> au = state.getArray("A");
         Optional<BasicArray> al = state.getArray("a");
         assertTrue(au.isPresent());
-        assertFalse(al.isPresent());
+        assertTrue(al.isPresent());
         assertEquals(3, au.get().getDim1());
+        assertEquals(3, al.get().getDim1());
         assertThrows(IllegalStateException.class, () -> au.get().getDim2());
+        assertThrows(IllegalStateException.class, () -> al.get().getDim2());
     }
 
     @Test
