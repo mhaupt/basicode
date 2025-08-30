@@ -749,6 +749,17 @@ public class Subroutines {
     }
 
     /**
+     * Helper method: Convert a fractional graphics mode coordinate to a pixel coordinate on a given axis.
+     *
+     * @param coordinate the fractional coordinate, in the range 0 <= {@code coordinate} <= 1.
+     * @param resolution the resolution (number of pixels) of the axis.
+     * @return the pixel coordinate corresponding to the fractional coordinate.
+     */
+    private static int pixelCoordinate(double coordinate, int resolution) {
+        return (int) (coordinate * resolution);
+    }
+
+    /**
      * {@code GOSUB 620}: in graphics mode, paint a dot at the horizontal and vertical position indicated by {@code HO}
      * and {@code VE}. Both must be in the {@linkplain Subroutines#checkBoundaries(String, double) correct range} for
      * graphics operations. The dot's colour will be the one set in {@code CC(0)}.
@@ -767,10 +778,10 @@ public class Subroutines {
         Color c = establishColours(state);
         g2.setPaint(c);
         g2.setStroke(STROKE);
-        double h = im.getWidth() * ho;
-        double v = im.getHeight() * ve;
-        g2.drawLine((int) h, (int) v, (int) h, (int) v);
-        state.getOutput().setGraphicsCursor(h, v);
+        int h = pixelCoordinate(ho, im.getWidth());
+        int v = pixelCoordinate(ve, im.getHeight());
+        g2.drawLine(h, v, h, v);
+        state.getOutput().setGraphicsCursor(ho, ve);
         state.getOutput().flush();
     }
 
@@ -796,10 +807,12 @@ public class Subroutines {
         Color c = establishColours(state);
         g2.setPaint(c);
         g2.setStroke(STROKE);
-        double nh = im.getWidth() * ho;
-        double nv = im.getHeight() * ve;
-        g2.drawLine((int) gc.h(), (int) gc.v(), (int) nh, (int) nv);
-        state.getOutput().setGraphicsCursor(nh, nv);
+        int h = pixelCoordinate(gc.h(), im.getWidth());
+        int v = pixelCoordinate(gc.v(), im.getHeight());
+        int nh = pixelCoordinate(ho, im.getWidth());
+        int nv = pixelCoordinate(ve, im.getHeight());
+        g2.drawLine(h, v, nh, nv);
+        state.getOutput().setGraphicsCursor(ho, ve);
         state.getOutput().flush();
     }
 
@@ -826,10 +839,10 @@ public class Subroutines {
         g2.setPaint(c);
         g2.setFont(state.getOutput().getFont());
         FontMetrics fm = g2.getFontMetrics();
-        double h = im.getWidth() * ho;
-        double v = im.getHeight() * ve;
-        g2.drawString(sr, (int) h, fm.getHeight() + (int) v);
-        state.getOutput().setGraphicsCursor(h, v);
+        int h = pixelCoordinate(ho, im.getWidth());
+        int v = pixelCoordinate(ve, im.getHeight());
+        g2.drawString(sr, h, fm.getHeight() + v);
+        state.getOutput().setGraphicsCursor(ho, ve);
         state.getOutput().flush();
     }
 
