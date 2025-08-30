@@ -756,7 +756,7 @@ public class Subroutines {
      * @return the pixel coordinate corresponding to the fractional coordinate.
      */
     private static int pixelCoordinate(double coordinate, int resolution) {
-        return (int) (coordinate * resolution);
+        return (int) Math.round(coordinate * (resolution - 1));
     }
 
     /**

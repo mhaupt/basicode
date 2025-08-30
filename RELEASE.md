@@ -15,6 +15,7 @@
     *   Support special characters (`STX`, `ETX`, `FS`) in 8-bit era files.
     *   Avoid deleting the entire line with backspace on INPUT.
     *   Treat variable names always as upper case internally.
+    *   Address graphics quantisation gap.
 
 ## 0.12
 
