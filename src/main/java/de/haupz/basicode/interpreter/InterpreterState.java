@@ -212,10 +212,10 @@ public class InterpreterState {
     }
 
     /**
-     * @return a stream of all variable bindings.
+     * @return a stream of all variable bindings, sorted by variable name.
      */
     public Stream<Map.Entry<String, Object>> getVarStream() {
-        return vars.entrySet().stream();
+        return vars.entrySet().stream().sorted(Map.Entry.comparingByKey());
     }
 
     /**
@@ -240,10 +240,10 @@ public class InterpreterState {
     }
 
     /**
-     * @return a stream of all array bindings.
+     * @return a stream of all array bindings, sorted by array name.
      */
     public Stream<Map.Entry<String, BasicArray>> getArrayStream() {
-        return arrays.entrySet().stream();
+        return arrays.entrySet().stream().sorted(Map.Entry.comparingByKey());
     }
 
     /**
