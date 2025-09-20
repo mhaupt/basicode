@@ -1,4 +1,4 @@
-## upcoming
+## 1.0
 
 *   Support colours in text mode (GOSUB 110).
 *   Add a splash screen (playable with the `-intro` command line parameter).
