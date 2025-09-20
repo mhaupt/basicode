@@ -1,9 +1,12 @@
 package de.haupz.basicode.ast;
 
 import de.haupz.basicode.interpreter.InterpreterState;
+import de.haupz.basicode.interpreter.ProgramInfo;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static de.haupz.basicode.interpreter.ProgramInfo.LineAndStatement;
 
 /**
  * <p>The {@code ProgramNode} class represents BASICODE programs, and also implements the main interpreter logic,
@@ -35,14 +38,6 @@ public class ProgramNode extends BasicNode {
      * number is the index of the first statement on the respective line.
      */
     private Map<Integer, Integer> lineNumberToStatementIndex = new HashMap<>();
-
-    /**
-     * A "code address", comprising of a line and statement index on that line.
-     *
-     * @param line a BASIC line number.
-     * @param statement a 0-based statement index into the respective BASIC line.
-     */
-    record LineAndStatement(int line, int statement) {}
 
     /**
      * Map statement indices from the {@link #statements} list back to line numbers and statements. This is used for
@@ -149,10 +144,10 @@ public class ProgramNode extends BasicNode {
                 state.backedgeDone();
             } else if (state.isSkipLine()) {
                 int stmt = state.getStatementIndex();
-                int lineToSkip = statementIndexToLineNumberAndStatement.get(stmt).line;
+                int lineToSkip = statementIndexToLineNumberAndStatement.get(stmt).line();
                 do {
                     ++stmt;
-                } while (lineToSkip == statementIndexToLineNumberAndStatement.get(stmt).line);
+                } while (lineToSkip == statementIndexToLineNumberAndStatement.get(stmt).line());
                 state.setNextStatement(stmt);
                 state.skipLineDone();
             } else {
@@ -214,9 +209,9 @@ public class ProgramNode extends BasicNode {
      * @return a textual representation of the stack trace entry.
      */
     private String stackTraceEntry(LineAndStatement las, int statementIndex) {
-        LineNode line = lines.stream().filter(l -> l.getLineNumber() == las.line).findFirst().orElse(null);
+        LineNode line = lines.stream().filter(l -> l.getLineNumber() == las.line()).findFirst().orElse(null);
         String pointer = "-".repeat(statements.get(statementIndex).getStartPosition()) +"^";
-        return String.format("at line %d, statement %d\n%s\n%s", las.line, las.statement, line.getLineText(), pointer);
+        return String.format("at line %d, statement %d\n%s\n%s", las.line(), las.statement(), line.getLineText(), pointer);
     }
 
     /**
