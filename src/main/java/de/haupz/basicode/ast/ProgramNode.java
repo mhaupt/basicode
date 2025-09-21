@@ -1,6 +1,7 @@
 package de.haupz.basicode.ast;
 
 import de.haupz.basicode.interpreter.InterpreterState;
+import de.haupz.basicode.interpreter.ProgramInfo;
 import de.haupz.basicode.interpreter.StatementIterator;
 
 import java.util.*;
@@ -29,18 +30,6 @@ public class ProgramNode extends BasicNode {
     private final List<LineNode> lines;
 
     /**
-     * Map BASIC line numbers to indices in the flattened {@link StatementIterator#statements statements list}. The
-     * statement index for any line number is the index of the first statement on the respective line.
-     */
-    private Map<Integer, Integer> lineNumberToStatementIndex = new HashMap<>();
-
-    /**
-     * Map statement indices from the {@link StatementIterator#statements statements list} back to line numbers and
-     * statements. This is used for debugging support.
-     */
-    private Map<Integer, LineAndStatement> statementIndexToLineNumberAndStatement = new HashMap<>();
-
-    /**
      * The flattened list of all elements from {@code DATA} lines, in the order they appear in in the BASIC source code.
      */
     private final List<Object> dataList;
@@ -48,26 +37,11 @@ public class ProgramNode extends BasicNode {
     /**
      * <p>Construct a program from a list of line nodes and data elements.</p>
      *
-     * <p>Aside from initialising the {@link #lines} and {@link #dataList}, the constructor also populates the
-     * {@link #lineNumberToStatementIndex} and {@link #statementIndexToLineNumberAndStatement} maps.</p>
-     *
      * @param lines the {@link LineNode}s representing the source code.
      * @param dataList the {@code DATA} elements from the source code.
      */
     public ProgramNode(List<LineNode> lines, List<Object> dataList) {
         this.lines = List.copyOf(lines);
-        for (int i = 0, totalStatements = 0; i < lines.size(); ++i) {
-            LineNode line = lines.get(i);
-            // A new line: the index of its first statement is the current size of the statements array.
-            lineNumberToStatementIndex.put(line.getLineNumber(), totalStatements);
-            totalStatements += line.getStatements().size();
-            int nStatementsOnLine = line.getStatements().size();
-            int lineNum = line.getLineNumber();
-            for (int s = 0; s < nStatementsOnLine; ++s) {
-                statementIndexToLineNumberAndStatement.put(
-                        totalStatements - nStatementsOnLine + s, new LineAndStatement(lineNum, s));
-            }
-        }
         this.dataList = List.copyOf(dataList);
     }
 
@@ -75,8 +49,8 @@ public class ProgramNode extends BasicNode {
      * <p>The main interpreter loop.</p>
      *
      * <p>Until the interpreter state is {@linkplain InterpreterState#shouldEnd() notified about termination}, the
-     * interpreter fetches the {@linkplain StatementIterator#getStatementIndex() next statement} from the interpreter
-     * state and runs it.</p>
+     * interpreter fetches the {@linkplain StatementIterator#getNext() next statement} from the interpreter state and
+     * runs it.</p>
      *
      * <p>Statements may set specific flags in the {@linkplain InterpreterState interpreter state}. After each statement
      * execution, the interpreter checks if any of the flags is set, and handles it accordingly before resetting it
@@ -138,10 +112,10 @@ public class ProgramNode extends BasicNode {
                 state.backedgeDone();
             } else if (state.isSkipLine()) {
                 int stmt = state.getStatementIterator().getNextIndex() - 1;
-                int lineToSkip = statementIndexToLineNumberAndStatement.get(stmt).line();
+                int lineToSkip = state.getProgramInfo().locateStatement(stmt).line();
                 do {
                     ++stmt;
-                } while (lineToSkip == statementIndexToLineNumberAndStatement.get(stmt).line());
+                } while (lineToSkip == state.getProgramInfo().locateStatement(stmt).line());
                 state.getStatementIterator().setIndex(stmt);
                 state.skipLineDone();
             } else {
@@ -161,11 +135,11 @@ public class ProgramNode extends BasicNode {
     private String getStackDump(InterpreterState state) {
         Stack<Integer> stack = state.getCallStack();
         String stackDump = "";
-        LineAndStatement las = statementIndexToLineNumberAndStatement.get(state.getStatementIterator().getNextIndex() - 1);
+        LineAndStatement las = state.getProgramInfo().locateStatement(state.getStatementIterator().getNextIndex() - 1);
         stackDump = "\n" + stackTraceEntry(state, las, state.getStatementIterator().getNextIndex() - 1);
         if (!stack.isEmpty()) {
             stackDump += '\n' + stack.reversed().stream().map(stmt -> {
-                LineAndStatement sdlas = statementIndexToLineNumberAndStatement.get(stmt - 1);
+                LineAndStatement sdlas = state.getProgramInfo().locateStatement(stmt - 1);
                 return stackTraceEntry(state, sdlas, stmt - 1);
             }).collect(Collectors.joining("\n"));
         }
@@ -209,8 +183,8 @@ public class ProgramNode extends BasicNode {
     }
 
     /**
-     * Resolve a jump by {@linkplain #lineNumberToStatementIndex retrieving the index of the first statement} of the
-     * {@linkplain InterpreterState#getLineJumpTarget() target line}, and
+     * Resolve a jump by {@linkplain ProgramInfo#getLineStartStamentIndex(int) retrieving the index of the first
+     * statement} of the {@linkplain InterpreterState#getLineJumpTarget() target line}, and
      * {@linkplain de.haupz.basicode.interpreter.StatementIterator#setIndex(int) setting that} to be the next statement
      * to execute}.
      *
@@ -218,7 +192,8 @@ public class ProgramNode extends BasicNode {
      */
     private void resolveJump(InterpreterState state) {
         try {
-            state.getStatementIterator().setIndex(lineNumberToStatementIndex.get(state.getLineJumpTarget()));
+            state.getStatementIterator().setIndex(
+                    state.getProgramInfo().getLineStartStamentIndex(state.getLineJumpTarget()));
         } catch (NullPointerException npe) {
             throw new IllegalStateException("line not found: " + state.getLineJumpTarget());
         }

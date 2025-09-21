@@ -61,6 +61,11 @@ public class InterpreterState {
     private final StatementIterator statementIterator;
 
     /**
+     * Additional metadata about the program.
+     */
+    private final ProgramInfo programInfo;
+
+    /**
      * A triple to keep track of running {@code FOR} loops.
      *
      * @param startIndex the index, into the {@link #program}'s statements list, of the {@code FOR} statement that is
@@ -143,6 +148,7 @@ public class InterpreterState {
     public InterpreterState(ProgramNode program, BasicInput in, BasicOutput out, Configuration configuration) {
         this.program = program;
         this.statementIterator = new StatementIterator(program.getLines());
+        this.programInfo = new ProgramInfo(program.getLines());
         this.in = in;
         this.out = out;
         this.configuration = configuration;
@@ -561,6 +567,13 @@ public class InterpreterState {
      */
     public StatementIterator getStatementIterator() {
         return statementIterator;
+    }
+
+    /**
+     * @return additional metadata about the program.
+     */
+    public ProgramInfo getProgramInfo() {
+        return programInfo;
     }
 
 }
