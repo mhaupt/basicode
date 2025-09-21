@@ -17,12 +17,9 @@ public class BreakpointDialog extends JDialog {
      */
     private JTextArea text;
 
-    public BreakpointDialog(InterpreterState state) {
-        super(state.getFrame(), "Breakpoint", true);
+    public BreakpointDialog(JFrame owner, String content) {
+        super(owner, "Breakpoint", true);
 
-        String stackDump = state.getStackDump(true);
-        String values = state.getValues();
-        String content = stackDump + "\n" + values;
         text = new JTextArea(content);
         text.setFont(new Font("Monospaced", Font.PLAIN, 12));
         JScrollPane sp = new JScrollPane(text);
@@ -41,7 +38,7 @@ public class BreakpointDialog extends JDialog {
         getContentPane().add(sp, BorderLayout.CENTER);
         getContentPane().add(buttons, BorderLayout.SOUTH);
         pack();
-        setLocationRelativeTo(state.getFrame());
+        setLocationRelativeTo(owner);
     }
 
     private void copyToClipboard() {

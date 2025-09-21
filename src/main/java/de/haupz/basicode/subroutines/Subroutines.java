@@ -872,7 +872,11 @@ public class Subroutines {
      * @param state the interpreter state.
      */
     public static void gosub963(InterpreterState state) {
-        BreakpointDialog bpd = new BreakpointDialog(state);
+        String stackDump = state.getStackDump(true);
+        String values = state.getValues();
+        String content = stackDump + "\n" + values;
+
+        BreakpointDialog bpd = new BreakpointDialog(state.getFrame(), content);
         bpd.setVisible(true);
     }
 
