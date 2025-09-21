@@ -10,8 +10,8 @@ import java.util.stream.Collectors;
 import static de.haupz.basicode.interpreter.ProgramInfo.LineAndStatement;
 
 /**
- * <p>The {@code ProgramNode} class represents BASICODE programs, and also implements the main interpreter logic,
- * mapping statements onto lines, and some debugging support.</p>
+ * <p>The {@code ProgramNode} class represents BASICODE programs, and also implements the main interpreter logic, and
+ * some debugging support, with the help of {@link StatementIterator} and {@link ProgramInfo}.</p>
  *
  * <p>This node qualifies as a statement, by virtue of overriding the {@link BasicNode#run(InterpreterState)} method,
  * but stands on its own in the class hierarchy.</p>
