@@ -16,7 +16,7 @@ public class RunNode extends StatementNode {
         state.clearVars();
         state.clearCallStack();
         state.resetDataPtr();
-        state.setNextStatement(0);
+        state.getStatementIterator().setIndex(0);
     }
 
 }

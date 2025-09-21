@@ -1,6 +1,9 @@
 package de.haupz.basicode;
 
 import de.haupz.basicode.ast.ExpressionNode;
+import de.haupz.basicode.ast.LineNode;
+import de.haupz.basicode.ast.ProgramNode;
+import de.haupz.basicode.ast.RemNode;
 import de.haupz.basicode.interpreter.Configuration;
 import de.haupz.basicode.interpreter.InterpreterState;
 import de.haupz.basicode.parser.Parser;
@@ -8,6 +11,7 @@ import de.haupz.basicode.parser.ParserException;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.io.StringReader;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -15,9 +19,17 @@ public abstract class ExpressionTest {
 
     InterpreterState state;
 
+    static final ProgramNode PSEUDO_PROGRAM;
+
+    static {
+        RemNode rem = new RemNode(2, "REM Test");
+        LineNode line = new LineNode(1, List.of(rem), "1 REM Test");
+        PSEUDO_PROGRAM = new ProgramNode(List.of(line), List.of());
+    }
+
     @BeforeEach
     void setUp() {
-        state = new InterpreterState(null, null, null, new Configuration());
+        state = new InterpreterState(PSEUDO_PROGRAM, null, null, new Configuration());
     }
 
     ExpressionNode parseExpression(String expression) {

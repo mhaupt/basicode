@@ -5,7 +5,6 @@ package de.haupz.basicode.interpreter;
  */
 public class ProgramInfo {
 
-
     /**
      * A "code address", comprising of a line and statement index on that line.
      *
@@ -13,4 +12,5 @@ public class ProgramInfo {
      * @param statement a 0-based statement index into the respective BASIC line.
      */
     public record LineAndStatement(int line, int statement) {}
+
 }

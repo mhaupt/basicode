@@ -1,5 +1,8 @@
 package de.haupz.basicode;
 
+import de.haupz.basicode.ast.LineNode;
+import de.haupz.basicode.ast.ProgramNode;
+import de.haupz.basicode.ast.RemNode;
 import de.haupz.basicode.ast.StatementNode;
 import de.haupz.basicode.interpreter.Configuration;
 import de.haupz.basicode.interpreter.InterpreterState;
@@ -20,13 +23,21 @@ public abstract class StatementTest {
 
     InterpreterState state;
 
+    static final ProgramNode PSEUDO_PROGRAM;
+
+    static {
+        RemNode rem = new RemNode(2, "REM Test");
+        LineNode line = new LineNode(1, List.of(rem), "1 REM Test");
+        PSEUDO_PROGRAM = new ProgramNode(List.of(line), List.of());
+    }
+
     void setUpState(String input) {
         ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(bytesOut, true);
         BasicOutput out = new PrintStreamOutput(ps);
         BufferedReader br = new BufferedReader(new StringReader(input));
         BasicInput in = new BufferedReaderInput(br);
-        state = new InterpreterState(null, in, out, new Configuration());
+        state = new InterpreterState(PSEUDO_PROGRAM, in, out, new Configuration());
     }
 
     void run(String source) {

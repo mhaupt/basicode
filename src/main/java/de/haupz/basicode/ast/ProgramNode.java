@@ -1,7 +1,7 @@
 package de.haupz.basicode.ast;
 
 import de.haupz.basicode.interpreter.InterpreterState;
-import de.haupz.basicode.interpreter.ProgramInfo;
+import de.haupz.basicode.interpreter.StatementIterator;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -29,19 +29,14 @@ public class ProgramNode extends BasicNode {
     private final List<LineNode> lines;
 
     /**
-     * The flattened representation of all statements of the program, for easier execution.
-     */
-    private List<StatementNode> statements = new ArrayList<>();
-
-    /**
-     * Map BASIC line numbers to indices in the flattened {@link #statements} list. The statement index for any line
-     * number is the index of the first statement on the respective line.
+     * Map BASIC line numbers to indices in the flattened {@link StatementIterator#statements statements list}. The
+     * statement index for any line number is the index of the first statement on the respective line.
      */
     private Map<Integer, Integer> lineNumberToStatementIndex = new HashMap<>();
 
     /**
-     * Map statement indices from the {@link #statements} list back to line numbers and statements. This is used for
-     * debugging support.
+     * Map statement indices from the {@link StatementIterator#statements statements list} back to line numbers and
+     * statements. This is used for debugging support.
      */
     private Map<Integer, LineAndStatement> statementIndexToLineNumberAndStatement = new HashMap<>();
 
@@ -53,27 +48,26 @@ public class ProgramNode extends BasicNode {
     /**
      * <p>Construct a program from a list of line nodes and data elements.</p>
      *
-     * <p>Aside from initialising the {@link #lines} and {@link #dataList}, the constructor also builds the flattened
-     * {@link #statements} list and populates the {@link #lineNumberToStatementIndex} and
-     * {@link #statementIndexToLineNumberAndStatement} maps.</p>
+     * <p>Aside from initialising the {@link #lines} and {@link #dataList}, the constructor also populates the
+     * {@link #lineNumberToStatementIndex} and {@link #statementIndexToLineNumberAndStatement} maps.</p>
      *
      * @param lines the {@link LineNode}s representing the source code.
      * @param dataList the {@code DATA} elements from the source code.
      */
     public ProgramNode(List<LineNode> lines, List<Object> dataList) {
         this.lines = List.copyOf(lines);
-        lines.forEach(line -> {
+        for (int i = 0, totalStatements = 0; i < lines.size(); ++i) {
+            LineNode line = lines.get(i);
             // A new line: the index of its first statement is the current size of the statements array.
-            lineNumberToStatementIndex.put(line.getLineNumber(), statements.size());
-            statements.addAll(List.copyOf(line.getStatements()));
-            int nStatements = statements.size();
+            lineNumberToStatementIndex.put(line.getLineNumber(), totalStatements);
+            totalStatements += line.getStatements().size();
             int nStatementsOnLine = line.getStatements().size();
             int lineNum = line.getLineNumber();
             for (int s = 0; s < nStatementsOnLine; ++s) {
                 statementIndexToLineNumberAndStatement.put(
-                        nStatements - nStatementsOnLine + s, new LineAndStatement(lineNum, s));
+                        totalStatements - nStatementsOnLine + s, new LineAndStatement(lineNum, s));
             }
-        });
+        }
         this.dataList = List.copyOf(dataList);
     }
 
@@ -81,8 +75,8 @@ public class ProgramNode extends BasicNode {
      * <p>The main interpreter loop.</p>
      *
      * <p>Until the interpreter state is {@linkplain InterpreterState#shouldEnd() notified about termination}, the
-     * interpreter fetches the {@linkplain InterpreterState#getStatementIndex() next statement} from the
-     * {@link #statements} list and runs it.</p>
+     * interpreter fetches the {@linkplain StatementIterator#getStatementIndex() next statement} from the interpreter
+     * state and runs it.</p>
      *
      * <p>Statements may set specific flags in the {@linkplain InterpreterState interpreter state}. After each statement
      * execution, the interpreter checks if any of the flags is set, and handles it accordingly before resetting it
@@ -113,7 +107,7 @@ public class ProgramNode extends BasicNode {
     public void run(InterpreterState state) {
         StatementNode statement;
         while (!state.shouldEnd()) {
-            statement = statements.get(state.getStatementIndex());
+            statement = state.getStatementIterator().getNext();
             try {
                 statement.run(state);
                 if (state.getConfiguration().slowness() > 0) {
@@ -137,22 +131,21 @@ public class ProgramNode extends BasicNode {
             if (state.isLineJumpNext()) {
                 resolveJump(state);
             } else if (state.isReturnNext()) {
-                state.setNextStatement(state.getReturnIndex());
+                state.getStatementIterator().setIndex(state.getReturnIndex());
                 state.returnDone();
             } else if (state.isBackedgeNext()) {
-                state.setNextStatement(state.getBackedgeTarget());
+                state.getStatementIterator().setIndex(state.getBackedgeTarget());
                 state.backedgeDone();
             } else if (state.isSkipLine()) {
-                int stmt = state.getStatementIndex();
+                int stmt = state.getStatementIterator().getNextIndex() - 1;
                 int lineToSkip = statementIndexToLineNumberAndStatement.get(stmt).line();
                 do {
                     ++stmt;
                 } while (lineToSkip == statementIndexToLineNumberAndStatement.get(stmt).line());
-                state.setNextStatement(stmt);
+                state.getStatementIterator().setIndex(stmt);
                 state.skipLineDone();
             } else {
-                state.incStatementIndex();
-                if (state.getStatementIndex() >= statements.size()) {
+                if (!state.getStatementIterator().hasNext()) {
                     state.terminate();
                 }
             }
@@ -168,12 +161,12 @@ public class ProgramNode extends BasicNode {
     private String getStackDump(InterpreterState state) {
         Stack<Integer> stack = state.getCallStack();
         String stackDump = "";
-        LineAndStatement las = statementIndexToLineNumberAndStatement.get(state.getStatementIndex());
-        stackDump = "\n" + stackTraceEntry(las, state.getStatementIndex());
+        LineAndStatement las = statementIndexToLineNumberAndStatement.get(state.getStatementIterator().getNextIndex() - 1);
+        stackDump = "\n" + stackTraceEntry(state, las, state.getStatementIterator().getNextIndex() - 1);
         if (!stack.isEmpty()) {
             stackDump += '\n' + stack.reversed().stream().map(stmt -> {
                 LineAndStatement sdlas = statementIndexToLineNumberAndStatement.get(stmt - 1);
-                return stackTraceEntry(sdlas, stmt - 1);
+                return stackTraceEntry(state, sdlas, stmt - 1);
             }).collect(Collectors.joining("\n"));
         }
         return stackDump;
@@ -204,26 +197,28 @@ public class ProgramNode extends BasicNode {
      *     <li>a pointer to the statement on the source code line.</li>
      * </ul></p>
      *
+     * @param state the interpreter state.
      * @param las the {@link LineAndStatement BASICODE line number and statement index} of the statement from the trace.
      * @param statementIndex the index of the traced statement in the global statement list.
      * @return a textual representation of the stack trace entry.
      */
-    private String stackTraceEntry(LineAndStatement las, int statementIndex) {
+    private String stackTraceEntry(InterpreterState state, LineAndStatement las, int statementIndex) {
         LineNode line = lines.stream().filter(l -> l.getLineNumber() == las.line()).findFirst().orElse(null);
-        String pointer = "-".repeat(statements.get(statementIndex).getStartPosition()) +"^";
+        String pointer = "-".repeat(state.getStatementIterator().peek(statementIndex).getStartPosition()) +"^";
         return String.format("at line %d, statement %d\n%s\n%s", las.line(), las.statement(), line.getLineText(), pointer);
     }
 
     /**
      * Resolve a jump by {@linkplain #lineNumberToStatementIndex retrieving the index of the first statement} of the
      * {@linkplain InterpreterState#getLineJumpTarget() target line}, and
-     * {@linkplain InterpreterState#setNextStatement(int) setting that to be the next statement to execute}.
+     * {@linkplain de.haupz.basicode.interpreter.StatementIterator#setIndex(int) setting that} to be the next statement
+     * to execute}.
      *
      * @param state the interpreter state.
      */
     private void resolveJump(InterpreterState state) {
         try {
-            state.setNextStatement(lineNumberToStatementIndex.get(state.getLineJumpTarget()));
+            state.getStatementIterator().setIndex(lineNumberToStatementIndex.get(state.getLineJumpTarget()));
         } catch (NullPointerException npe) {
             throw new IllegalStateException("line not found: " + state.getLineJumpTarget());
         }
@@ -246,6 +241,13 @@ public class ProgramNode extends BasicNode {
      */
     public List<Object> getDataList() {
         return dataList;
+    }
+
+    /**
+     * @return the lines of the program.
+     */
+    public List<LineNode> getLines() {
+        return lines;
     }
 
 }

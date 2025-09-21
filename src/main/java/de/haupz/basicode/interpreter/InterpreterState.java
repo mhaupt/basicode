@@ -56,6 +56,11 @@ public class InterpreterState {
     private final Stack<Integer> callStack = new Stack<>();
 
     /**
+     * The iterator for statement retrieval from a flattened list of all statements in the program.
+     */
+    private final StatementIterator statementIterator;
+
+    /**
      * A triple to keep track of running {@code FOR} loops.
      *
      * @param startIndex the index, into the {@link #program}'s statements list, of the {@code FOR} statement that is
@@ -69,11 +74,6 @@ public class InterpreterState {
      * Map the names of running loops' iterator variables to their {@linkplain For loop records}.
      */
     private final Map<String, For> runningForLoops = new HashMap<>();
-
-    /**
-     * The index, into the {@link #program}'s statements list, of the next statement to execute.
-     */
-    private int statementIndex = 0;
 
     /**
      * If {@code true}, notifies the interpreter that it should terminate execution.
@@ -142,6 +142,7 @@ public class InterpreterState {
      */
     public InterpreterState(ProgramNode program, BasicInput in, BasicOutput out, Configuration configuration) {
         this.program = program;
+        this.statementIterator = new StatementIterator(program.getLines());
         this.in = in;
         this.out = out;
         this.configuration = configuration;
@@ -336,34 +337,11 @@ public class InterpreterState {
     }
 
     /**
-     * @return the index of the next statement to be executed in the {@link #program}'s statement list.
-     */
-    public int getStatementIndex() {
-        return statementIndex;
-    }
-
-    /**
-     * Increment the {@link #program}'s statement index.
-     */
-    public void incStatementIndex() {
-        ++statementIndex;
-    }
-
-    /**
-     * Set the index of the next statement to be executed in the {@link #program}'s statement list.
-     *
-     * @param nextStmt the index of the next statement to be executed.
-     */
-    public void setNextStatement(int nextStmt) {
-        statementIndex = nextStmt;
-    }
-
-    /**
      * Push a "return address" on the call stack. This is the next statement after a {@code GOSUB} statement, for
      * instance.
      */
     public void pushReturnIndex() {
-        callStack.push(statementIndex + 1);
+        callStack.push(statementIterator.getNextIndex());
     }
 
     /**
@@ -406,7 +384,7 @@ public class InterpreterState {
      * @param step the step width by which the iterator variable is to be incremented/decremented after each iteration.
      */
     public void startLoop(String id, Number end, Number step) {
-        runningForLoops.put(id, new For(statementIndex, end, step));
+        runningForLoops.put(id, new For(statementIterator.getNextIndex(), end, step));
     }
 
     /**
@@ -576,6 +554,13 @@ public class InterpreterState {
             printer.flush();
             printer.close();
         }
+    }
+
+    /**
+     * @return the iterator over the flattened list of statements in the program.
+     */
+    public StatementIterator getStatementIterator() {
+        return statementIterator;
     }
 
 }
