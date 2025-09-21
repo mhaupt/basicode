@@ -29,7 +29,7 @@ public abstract class InterpreterTest {
         BasicOutput out = new PrintStreamOutput(ps);
         BufferedReader br = new BufferedReader(new StringReader(input));
         BasicInput in = new BufferedReaderInput(br);
-        state = new InterpreterState(prog, in, out, new Configuration());
+        state = new InterpreterState(prog, null, in, out, new Configuration());
     }
 
     private ProgramNode buildProgram(String source) {

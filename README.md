@@ -143,6 +143,18 @@ A vast set of examples can be found on Rob Hagemans' [BASICODE in the browser](h
 page, or in his [GitHub repository](https://github.com/robhagemans/basicode) 
 dedicated to BASICODE examples.
 
+## Extensions
+
+This BASICODE implementation takes advantage of the fact that it's written in
+Java and there are multiple unused line numbers below 1000 that can be used 
+for additional subroutines.
+
+### Breakpoints: `GOSUB 963`
+
+Use this to trigger a breakpoint during execution. When this subroutine is 
+called, a dialogue box will open that displays the current call stack and 
+the values of all variables and contents of all arrays.
+
 ## Contributions
 
 If you're interested in contributing to this project, please find details in 

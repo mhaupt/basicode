@@ -26,7 +26,7 @@ public abstract class StatementTest extends PseudoProgramTest {
         BasicOutput out = new PrintStreamOutput(ps);
         BufferedReader br = new BufferedReader(new StringReader(input));
         BasicInput in = new BufferedReaderInput(br);
-        state = new InterpreterState(PSEUDO_PROGRAM, in, out, new Configuration());
+        state = new InterpreterState(PSEUDO_PROGRAM, null, in, out, new Configuration());
     }
 
     void run(String source) {

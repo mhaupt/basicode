@@ -5,6 +5,7 @@ import de.haupz.basicode.interpreter.InterpreterState;
 import de.haupz.basicode.io.ConsoleConfiguration;
 import de.haupz.basicode.io.GraphicsCursor;
 import de.haupz.basicode.io.TextCursor;
+import de.haupz.basicode.ui.BreakpointDialog;
 import de.haupz.basicode.ui.Sound;
 
 import java.awt.*;
@@ -860,6 +861,19 @@ public class Subroutines {
             gosub210(state);
         }
         state.terminate();
+    }
+
+    /**
+     * <p>{@code GOSUB 963}: trigger a breakpoint.</p>
+     *
+     * <p>When this subroutine is called, a dialogue box will open that displays the current call stack and
+     * the values of all variables and contents of all arrays.</p>
+     *
+     * @param state the interpreter state.
+     */
+    public static void gosub963(InterpreterState state) {
+        BreakpointDialog bpd = new BreakpointDialog(state);
+        bpd.setVisible(true);
     }
 
 }

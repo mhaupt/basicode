@@ -3,15 +3,20 @@ package de.haupz.basicode.interpreter;
 import de.haupz.basicode.array.ArrayType;
 import de.haupz.basicode.array.BasicArray;
 import de.haupz.basicode.array.BasicArray1D;
+import de.haupz.basicode.ast.LineNode;
 import de.haupz.basicode.ast.ProgramNode;
 import de.haupz.basicode.io.BasicInput;
 import de.haupz.basicode.io.BasicOutput;
+import de.haupz.basicode.ui.BasicFrame;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static de.haupz.basicode.interpreter.ProgramInfo.LineAndStatement;
 
 /**
  * A representation of the BASIC interpreter's runtime state. This includes control flow, variables, and I/O channels.
@@ -22,6 +27,11 @@ public class InterpreterState {
      * The root node of the program whose state this instance represents.
      */
     private final ProgramNode program;
+
+    /**
+     * The Swing frame for the BASICODE GUI.
+     */
+    private final BasicFrame frame;
 
     /**
      * The running program's output channel.
@@ -141,12 +151,15 @@ public class InterpreterState {
      * Create an interpreter state, and initialise BASICODE standard variables.
      *
      * @param program the program whose run this interpreter state represents.
+     * @param frame the Swing frame for the BASICODE GUI.
      * @param in the input channel for the program.
      * @param out the output channel for the program.
      * @param configuration the interpreter configuration used for the execution of the program.
      */
-    public InterpreterState(ProgramNode program, BasicInput in, BasicOutput out, Configuration configuration) {
+    public InterpreterState(ProgramNode program, BasicFrame frame, BasicInput in, BasicOutput out,
+                            Configuration configuration) {
         this.program = program;
+        this.frame = frame;
         this.statementIterator = new StatementIterator(program.getLines());
         this.programInfo = new ProgramInfo(program.getLines());
         this.in = in;
@@ -574,6 +587,71 @@ public class InterpreterState {
      */
     public ProgramInfo getProgramInfo() {
         return programInfo;
+    }
+
+    /**
+     * @return the Swing frame for the BASICODE GUI.
+     */
+    public BasicFrame getFrame() {
+        return frame;
+    }
+
+    /**
+     * Helper method to generate a textual representation of the BASICODE call stack for debugging purposes.
+     *
+     * @param suppressNativeFrame {@code true} if the native frame should be omitted from the stack dump, e.g., when
+     *                            this is called from a {@link de.haupz.basicode.subroutines.Subroutines subroutine}.
+     * @return the stack dump.
+     */
+    public String getStackDump(boolean suppressNativeFrame) {
+        Stack<Integer> stack = getCallStack();
+        String stackDump = "";
+        if (!suppressNativeFrame) {
+            LineAndStatement las = getProgramInfo().locateStatement(getStatementIterator().getNextIndex() - 1);
+            stackDump = stackTraceEntry(las, getStatementIterator().getNextIndex() - 1);
+        }
+        if (!stack.isEmpty()) {
+            stackDump += (!suppressNativeFrame?"\n":"") + stack.reversed().stream().map(stmt -> {
+                LineAndStatement sdlas = getProgramInfo().locateStatement(stmt - 1);
+                return stackTraceEntry(sdlas, stmt - 1);
+            }).collect(Collectors.joining("\n"));
+        }
+        return stackDump;
+    }
+
+    /**
+     * Helper method to generate a textual representation of the BASICODE program's variables for debugging purposes.
+     *
+     * @return all variable and array values at the current state.
+     */
+    public String getValues() {
+        StringBuilder values = new StringBuilder();
+        values.append("== variables ==\n");
+        getVarStream().forEach(
+                v -> values.append(v.getKey()).append(" = ").append(v.getValue()).append('\n'));
+        values.append("== arrays ==\n");
+        getArrayStream().forEach(
+                a -> values.append(a.getKey()).append(" = ").append(a.getValue()).append('\n'));
+        return values.toString();
+    }
+
+    /**
+     * <p>Helper method to generate a textual representation of a stack trace entry for debugging purposes. This
+     * consists of the following:<ul>
+     *     <li>the BASICODE line number and statement index;</li>
+     *     <li>the complete BASICODE source code line on which the statement from the stack trace is found;</li>
+     *     <li>a pointer to the statement on the source code line.</li>
+     * </ul></p>
+     *
+     * @param las the {@link LineAndStatement BASICODE line number and statement index} of the statement from the trace.
+     * @param statementIndex the index of the traced statement in the global statement list.
+     * @return a textual representation of the stack trace entry.
+     */
+    private String stackTraceEntry(LineAndStatement las, int statementIndex) {
+        LineNode line = program.getLines().stream().
+                filter(l -> l.getLineNumber() == las.line()).findFirst().orElse(null);
+        String pointer = "-".repeat(getStatementIterator().peek(statementIndex).getStartPosition()) +"^";
+        return String.format("at line %d, statement %d\n%s\n%s", las.line(), las.statement(), line.getLineText(), pointer);
     }
 
 }

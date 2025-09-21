@@ -126,7 +126,7 @@ public class Main {
             });
             final Parser parser = new Parser(new StringReader(code));
             ProgramNode prog = parser.program();
-            InterpreterState state = new InterpreterState(prog, bc, bc, configuration);
+            InterpreterState state = new InterpreterState(prog, bf, bc, bc, configuration);
             bc.registerStopKeyHandler(state::terminate);
             prog.run(state);
             state.closeFiles();

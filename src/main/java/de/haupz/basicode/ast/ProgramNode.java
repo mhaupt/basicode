@@ -92,9 +92,9 @@ public class ProgramNode extends BasicNode {
                     }
                 }
             } catch (Exception e) {
-                String stackDump = getStackDump(state);
-                String values = getValues(state);
-                throw new IllegalStateException(e.getMessage() + stackDump + "\n" + values, e);
+                String stackDump = state.getStackDump(false);
+                String values = state.getValues();
+                throw new IllegalStateException(e.getMessage() + "\n" + stackDump + "\n" + values, e);
             }
 
             // In case the statement execution has led to program termination, don't bother.
@@ -124,62 +124,6 @@ public class ProgramNode extends BasicNode {
                 }
             }
         }
-    }
-
-    /**
-     * Helper method to generate a textual representation of the BASICODE call stack for debugging purposes.
-     *
-     * @param state the interpreter state.
-     * @return the stack dump.
-     */
-    private String getStackDump(InterpreterState state) {
-        Stack<Integer> stack = state.getCallStack();
-        String stackDump = "";
-        LineAndStatement las = state.getProgramInfo().locateStatement(state.getStatementIterator().getNextIndex() - 1);
-        stackDump = "\n" + stackTraceEntry(state, las, state.getStatementIterator().getNextIndex() - 1);
-        if (!stack.isEmpty()) {
-            stackDump += '\n' + stack.reversed().stream().map(stmt -> {
-                LineAndStatement sdlas = state.getProgramInfo().locateStatement(stmt - 1);
-                return stackTraceEntry(state, sdlas, stmt - 1);
-            }).collect(Collectors.joining("\n"));
-        }
-        return stackDump;
-    }
-
-    /**
-     * Helper method to generate a textual representation of the BASICODE program's variables for debugging purposes.
-     *
-     * @param state the interpreter state.
-     * @return all variable and array values at the current state.
-     */
-    private String getValues(InterpreterState state) {
-        StringBuilder values = new StringBuilder();
-        values.append("== variables ==\n");
-        state.getVarStream().forEach(
-                v -> values.append(v.getKey()).append(" = ").append(v.getValue()).append('\n'));
-        values.append("== arrays ==\n");
-        state.getArrayStream().forEach(
-                a -> values.append(a.getKey()).append(" = ").append(a.getValue()).append('\n'));
-        return values.toString();
-    }
-
-    /**
-     * <p>Helper method to generate a textual representation of a stack trace entry for debugging purposes. This
-     * consists of the following:<ul>
-     *     <li>the BASICODE line number and statement index;</li>
-     *     <li>the complete BASICODE source code line on which the statement from the stack trace is found;</li>
-     *     <li>a pointer to the statement on the source code line.</li>
-     * </ul></p>
-     *
-     * @param state the interpreter state.
-     * @param las the {@link LineAndStatement BASICODE line number and statement index} of the statement from the trace.
-     * @param statementIndex the index of the traced statement in the global statement list.
-     * @return a textual representation of the stack trace entry.
-     */
-    private String stackTraceEntry(InterpreterState state, LineAndStatement las, int statementIndex) {
-        LineNode line = lines.stream().filter(l -> l.getLineNumber() == las.line()).findFirst().orElse(null);
-        String pointer = "-".repeat(state.getStatementIterator().peek(statementIndex).getStartPosition()) +"^";
-        return String.format("at line %d, statement %d\n%s\n%s", las.line(), las.statement(), line.getLineText(), pointer);
     }
 
     /**
