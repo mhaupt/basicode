@@ -620,6 +620,15 @@ public class InterpreterState {
     }
 
     /**
+     * Helper method to generate a textual representation of a BASICODE key/value pair.
+     * @param e the key/value pair.
+     * @param sb the {@link StringBuilder} to which the textual representation should be appended.
+     */
+    private <T> void appendRep(Map.Entry<String, T> e, StringBuilder sb) {
+        sb.append(e.getKey()).append(" = ").append(e.getValue()).append('\n');
+    }
+
+    /**
      * Helper method to generate a textual representation of the BASICODE program's variables for debugging purposes.
      *
      * @return all variable and array values at the current state.
@@ -627,11 +636,46 @@ public class InterpreterState {
     public String getValues() {
         StringBuilder values = new StringBuilder();
         values.append("== variables ==\n");
-        getVarStream().forEach(
-                v -> values.append(v.getKey()).append(" = ").append(v.getValue()).append('\n'));
+        getVarStream().forEach(v -> appendRep(v, values));
         values.append("== arrays ==\n");
-        getArrayStream().forEach(
-                a -> values.append(a.getKey()).append(" = ").append(a.getValue()).append('\n'));
+        getArrayStream().forEach(a -> appendRep(a, values));
+        return values.toString();
+    }
+
+    /**
+     * Helper method to generate a textual representation of some of the BASICODE program's variables for debugging
+     * purposes. The argument is an array of strings, each of which is the name of a variable or array the values or
+     * contents of which should be displayed.
+     *
+     * @param selection names of the variables or arrays for which the values should be displayed.
+     * @return a textual representation of the selected variables and arrays.
+     */
+    public String getValues(String[] selection) {
+        List<String> selectedVars = Stream.of(selection).
+                filter(v -> !v.isEmpty()).
+                filter(v -> !v.endsWith("()")).
+                toList();
+        List<String> selectedArrays = Stream.of(selection).
+                filter(a -> a.endsWith("()")).
+                map(a -> a.substring(0, a.length() - 2)).
+                toList();
+
+        StringBuilder values = new StringBuilder();
+        if (selectedVars.isEmpty() && selectedArrays.isEmpty()) {
+            values.append("-- no variables or arrays selected --");
+        }
+        if (!selectedVars.isEmpty()) {
+            values.append("== variables ==\n");
+            getVarStream().
+                    filter(v -> selectedVars.contains(v.getKey())).
+                    forEach(v -> appendRep(v, values));
+        }
+        if (!selectedArrays.isEmpty()) {
+            values.append("== arrays ==\n");
+            getArrayStream().
+                    filter(a -> selectedArrays.contains(a.getKey())).
+                    forEach(a -> appendRep(a, values));
+        }
         return values.toString();
     }
 

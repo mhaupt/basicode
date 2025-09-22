@@ -83,4 +83,11 @@ public abstract class BasicArray {
      */
     public abstract void setAt(int a, int b, Object v);
 
+    /**
+     * @return the raw data storage of this array.
+     */
+    public Object[] getRawData() {
+        return data;
+    }
+
 }

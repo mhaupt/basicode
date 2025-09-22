@@ -155,6 +155,15 @@ Use this to trigger a breakpoint during execution. When this subroutine is
 called, a dialogue box will open that displays the current call stack and 
 the values of all variables and contents of all arrays.
 
+### Breakpoints With Selective Value Display: `GOSUB 964`
+
+Similarly to `GOSUB 963`, this will trigger a breakpoint during execution. 
+The variable values and array contents displayed will however be governed by 
+what is contained in the `OD$()` array. Each element of that array should be 
+the name of a variable or array the values or contents of which should be 
+displayed. The `OD$()` array must be declared and properly dimensioned before 
+the first use of this subroutine.
+
 ## Contributions
 
 If you're interested in contributing to this project, please find details in 

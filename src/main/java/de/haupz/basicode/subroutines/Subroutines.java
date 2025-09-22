@@ -1,5 +1,6 @@
 package de.haupz.basicode.subroutines;
 
+import de.haupz.basicode.array.BasicArray;
 import de.haupz.basicode.array.BasicArray1D;
 import de.haupz.basicode.interpreter.InterpreterState;
 import de.haupz.basicode.io.ConsoleConfiguration;
@@ -874,6 +875,42 @@ public class Subroutines {
     public static void gosub963(InterpreterState state) {
         String stackDump = state.getStackDump(true);
         String values = state.getValues();
+        String content = stackDump + "\n" + values;
+
+        BreakpointDialog bpd = new BreakpointDialog(state.getFrame(), content);
+        bpd.setVisible(true);
+    }
+
+    /**
+     * <p>{@code GOSUB 964}: trigger a breakpoint with selective variable and array display.</p>
+     *
+     * <p>When this subroutine is called, a dialogue box will open that displays the current call stack and the values
+     * of all variables and contents of all arrays. The variable values and array contents displayed will be governed by
+     * what is contained in the {@code OD$()} array. Each element of that array should be the name of a variable or
+     * array the values or contents of which should be displayed. The {@code OD$()} array must be declared and properly
+     * dimensioned before the first use of this subroutine.</p>
+     *
+     * <p>If an element of {@code OD$()} is unusable (empty string, or a name that's not defined), it will be ignored.
+     * If the {@code OD$()} array is not defined, this will be ignored, and the breakpoint will display no variable
+     * values or array contents.</p>
+     *
+     * <p>Variable names are simply the names including a {@code $} for string variables; array names must have the form
+     * {@code ARRAY_NAME$()} or {@code ARRAY_NAME()}.</p>
+     *
+     * @param state the interpreter state.
+     */
+    public static void gosub964(InterpreterState state) {
+        String values;
+        Optional<BasicArray> oods = state.getArray("OD$");
+        if (oods.isPresent()) {
+            Object[] oodsObjects = oods.get().getRawData();
+            String[] oodsStrings = Arrays.copyOf(oodsObjects, oodsObjects.length, String[].class);
+            values = state.getValues(oodsStrings);
+        } else {
+            values = "-- OD$() not present --";
+        }
+
+        String stackDump = state.getStackDump(true);
         String content = stackDump + "\n" + values;
 
         BreakpointDialog bpd = new BreakpointDialog(state.getFrame(), content);
