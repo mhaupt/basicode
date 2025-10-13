@@ -1,10 +1,13 @@
 package de.haupz.basicode.interpreter;
 
+import de.haupz.basicode.ast.ExpressionNode;
 import de.haupz.basicode.ast.LineNode;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 /**
  * A holder for information about a program.
@@ -30,6 +33,11 @@ public class ProgramInfo {
      * and statements.
      */
     private Map<Integer, LineAndStatement> statementIndexToLineNumberAndStatement = new HashMap<>();
+
+    /**
+     * The list of watchpoints for this BASICODE program.
+     */
+    private List<Watchpoint> watchpoints = new ArrayList<>();
 
     /**
      * Populate the {@link #lineNumberToStatementIndex} and {@link #statementIndexToLineNumberAndStatement} maps by
@@ -69,6 +77,25 @@ public class ProgramInfo {
      */
     public LineAndStatement locateStatement(int flatIndex) {
         return statementIndexToLineNumberAndStatement.get(flatIndex);
+    }
+
+    /**
+     * Register a new watchpoint.
+     *
+     * @param condition the condition that should trigger the new watchpoint.
+     * @return the newly registered watchpoint's ID.
+     */
+    public int registerWatchpoint(ExpressionNode condition) {
+        int id = watchpoints.size() + 1;
+        watchpoints.add(new Watchpoint(id, condition));
+        return id;
+    }
+
+    /**
+     * @return the stream of conditional watchpoints for this BASICODE program.
+     */
+    public Stream<Watchpoint> watchpoints() {
+        return watchpoints.stream();
     }
 
 }

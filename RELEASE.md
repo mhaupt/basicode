@@ -1,7 +1,7 @@
 ## upcoming
 
-*   Breakpoints (GOSUB 963), and breakpoints with selective display of variable
-    values and array contents (GOSUB 964).
+*   Breakpoints (GOSUB 963), breakpoints with selective display of variable
+    values and array contents (GOSUB 964), and watchpoints (GOSUB 965).
 
 ## 1.0
 

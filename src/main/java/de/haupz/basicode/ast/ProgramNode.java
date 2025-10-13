@@ -3,11 +3,9 @@ package de.haupz.basicode.ast;
 import de.haupz.basicode.interpreter.InterpreterState;
 import de.haupz.basicode.interpreter.ProgramInfo;
 import de.haupz.basicode.interpreter.StatementIterator;
+import de.haupz.basicode.subroutines.Subroutines;
 
 import java.util.*;
-import java.util.stream.Collectors;
-
-import static de.haupz.basicode.interpreter.ProgramInfo.LineAndStatement;
 
 /**
  * <p>The {@code ProgramNode} class represents BASICODE programs, and also implements the main interpreter logic, and
@@ -84,6 +82,12 @@ public class ProgramNode extends BasicNode {
             statement = state.getStatementIterator().getNext();
             try {
                 statement.run(state);
+                state.getProgramInfo().watchpoints().forEach(watchpoint -> {
+                    Object cond = watchpoint.condition().eval(state);
+                    if (cond instanceof Number n && n.doubleValue() != 0.0) {
+                        Subroutines.gosub964(state);
+                    }
+                });
                 if (state.getConfiguration().slowness() > 0) {
                     try {
                         Thread.sleep(BASE_SLOWDOWN * state.getConfiguration().slowness());

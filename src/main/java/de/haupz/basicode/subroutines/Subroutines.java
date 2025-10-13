@@ -2,10 +2,12 @@ package de.haupz.basicode.subroutines;
 
 import de.haupz.basicode.array.BasicArray;
 import de.haupz.basicode.array.BasicArray1D;
+import de.haupz.basicode.ast.ExpressionNode;
 import de.haupz.basicode.interpreter.InterpreterState;
 import de.haupz.basicode.io.ConsoleConfiguration;
 import de.haupz.basicode.io.GraphicsCursor;
 import de.haupz.basicode.io.TextCursor;
+import de.haupz.basicode.parser.Parser;
 import de.haupz.basicode.ui.BreakpointDialog;
 import de.haupz.basicode.ui.Sound;
 
@@ -915,6 +917,32 @@ public class Subroutines {
 
         BreakpointDialog bpd = new BreakpointDialog(state.getFrame(), content);
         bpd.setVisible(true);
+    }
+
+    /**
+     * <p>{@code GOSUB 965}: register a watchpoint.</p>
+     *
+     * <p>Calling this subroutine registers a watchpoint. It will be triggered when a condition is met. The condition
+     * is expressed in BASICODE syntax in the {@code OC$} variable. After execution of the subroutine, the variable
+     * {@code OP} will contain a running number of the watchpoint. Numbering starts at 1. If anything goes wrong during
+     * watchpoint registration, {@code OP} will be set to -1. Thus, 0 is an undefined value for {@code OP}.</p>
+     *
+     * <p>The watchpoint will be triggered whenever the condition is met after the execution of a statement. It will
+     * honour the contents of the {@code OD$()} array for selective display of variable values and array contents, as
+     * described for {@link #gosub964 subroutine 964}.</p>
+     *
+     * @param state the interpreter state.
+     */
+    public static void gosub965(InterpreterState state) {
+        double op = -1.0;
+        Optional<Object> oods = state.getVar("OC$");
+        if (oods.isPresent()) {
+            String ods = (String) oods.get();
+            Parser parser = new Parser(new StringReader(ods));
+            ExpressionNode condition = parser.expression();
+            op = state.getProgramInfo().registerWatchpoint(condition);
+        }
+        state.setVar("OP", Double.valueOf(op));
     }
 
 }
