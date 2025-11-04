@@ -167,13 +167,14 @@ the first use of this subroutine.
 ### Watchpoints: `GOSUB 965`
 
 Calling this subroutine registers a watchpoint. It will be triggered when a 
-condition is met. The condition is expressed in BASICODE syntax in the `OC$` 
-variable. After execution of the subroutine, the variable `OP` will contain 
-a running number of the watchpoint. Numbering starts at 1. A value of -1 
-indicates an error during registration. The watchpoint will be triggered 
-whenever the condition is met after the execution of a statement. It will
-honour the contents of the `OD$()` array for selective display of variable
-values and array contents, as described above.
+condition flips from "unmet" to "met". The condition is expressed in BASICODE 
+syntax in the `OC$` variable. After execution of the subroutine, the 
+variable `OP` will contain a running number of the watchpoint. Numbering 
+starts at 1. A value of -1 indicates an error during registration. The
+watchpoint will be triggered  whenever the condition flips from "unmet" to 
+"met" after the execution of a statement. It will honour the contents of the 
+`OD$()` array for selective display of variable values and array contents, 
+as described above.
 
 ## Contributions
 

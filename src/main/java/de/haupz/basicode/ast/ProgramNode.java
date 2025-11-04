@@ -83,8 +83,7 @@ public class ProgramNode extends BasicNode {
             try {
                 statement.run(state);
                 state.getProgramInfo().watchpoints().forEach(watchpoint -> {
-                    Object cond = watchpoint.condition().eval(state);
-                    if (cond instanceof Number n && n.doubleValue() != 0.0) {
+                    if (watchpoint.shouldIntercept(state)) {
                         Subroutines.gosub964(state);
                     }
                 });

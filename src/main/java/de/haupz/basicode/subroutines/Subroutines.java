@@ -922,14 +922,15 @@ public class Subroutines {
     /**
      * <p>{@code GOSUB 965}: register a watchpoint.</p>
      *
-     * <p>Calling this subroutine registers a watchpoint. It will be triggered when a condition is met. The condition
-     * is expressed in BASICODE syntax in the {@code OC$} variable. After execution of the subroutine, the variable
-     * {@code OP} will contain a running number of the watchpoint. Numbering starts at 1. If anything goes wrong during
-     * watchpoint registration, {@code OP} will be set to -1. Thus, 0 is an undefined value for {@code OP}.</p>
+     * <p>Calling this subroutine registers a watchpoint. It will be triggered when a condition flips from "unmet" to
+     * "met". The condition is expressed in BASICODE syntax in the {@code OC$} variable. After execution of the
+     * subroutine, the variable {@code OP} will contain a running number of the watchpoint. Numbering starts at 1. If
+     * anything goes wrong during watchpoint registration, {@code OP} will be set to -1. Thus, 0 is an undefined value
+     * for {@code OP}.</p>
      *
-     * <p>The watchpoint will be triggered whenever the condition is met after the execution of a statement. It will
-     * honour the contents of the {@code OD$()} array for selective display of variable values and array contents, as
-     * described for {@link #gosub964 subroutine 964}.</p>
+     * <p>The watchpoint will be triggered whenever the condition flips from "unmet" to "met" after the execution of a
+     * statement. It will honour the contents of the {@code OD$()} array for selective display of variable values and
+     * array contents, as described for {@link #gosub964 subroutine 964}.</p>
      *
      * @param state the interpreter state.
      */
