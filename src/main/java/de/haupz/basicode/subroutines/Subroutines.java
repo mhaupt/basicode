@@ -878,9 +878,7 @@ public class Subroutines {
         String stackDump = state.getStackDump(true);
         String values = state.getValues();
         String content = stackDump + "\n" + values;
-
-        BreakpointDialog bpd = new BreakpointDialog(state.getFrame(), content);
-        bpd.setVisible(true);
+        state.getBreakpointHandler().breakRun(state, content);
     }
 
     /**
@@ -914,9 +912,7 @@ public class Subroutines {
 
         String stackDump = state.getStackDump(true);
         String content = stackDump + "\n" + values;
-
-        BreakpointDialog bpd = new BreakpointDialog(state.getFrame(), content);
-        bpd.setVisible(true);
+        state.getBreakpointHandler().breakRun(state, content);
     }
 
     /**

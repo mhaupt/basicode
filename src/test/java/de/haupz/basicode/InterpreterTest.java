@@ -9,6 +9,7 @@ import de.haupz.basicode.io.BufferedReaderInput;
 import de.haupz.basicode.io.PrintStreamOutput;
 import de.haupz.basicode.parser.Parser;
 import de.haupz.basicode.parser.ParserException;
+import de.haupz.basicode.util.TestBreakpointHandler;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -29,7 +30,7 @@ public abstract class InterpreterTest {
         BasicOutput out = new PrintStreamOutput(ps);
         BufferedReader br = new BufferedReader(new StringReader(input));
         BasicInput in = new BufferedReaderInput(br);
-        state = new InterpreterState(prog, null, in, out, new Configuration());
+        state = new InterpreterState(prog, null, in, out, new TestBreakpointHandler(), new Configuration());
     }
 
     private ProgramNode buildProgram(String source) {

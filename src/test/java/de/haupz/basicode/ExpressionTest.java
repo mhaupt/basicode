@@ -18,7 +18,7 @@ public abstract class ExpressionTest extends PseudoProgramTest {
 
     @BeforeEach
     void setUp() {
-        state = new InterpreterState(PSEUDO_PROGRAM, null, null, null, new Configuration());
+        state = new InterpreterState(PSEUDO_PROGRAM, null, null, null, null, new Configuration());
     }
 
     ExpressionNode parseExpression(String expression) {

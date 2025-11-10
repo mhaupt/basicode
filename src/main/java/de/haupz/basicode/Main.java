@@ -6,6 +6,7 @@ import de.haupz.basicode.interpreter.InterpreterState;
 import de.haupz.basicode.parser.Parser;
 import de.haupz.basicode.ui.BasicFrame;
 import de.haupz.basicode.ui.BasicContainer;
+import de.haupz.basicode.ui.DialogueBreakpointHandler;
 import de.haupz.basicode.ui.ErrorDialog;
 
 import javax.swing.*;
@@ -126,7 +127,8 @@ public class Main {
             });
             final Parser parser = new Parser(new StringReader(code));
             ProgramNode prog = parser.program();
-            InterpreterState state = new InterpreterState(prog, bf, bc, bc, configuration);
+            InterpreterState state =
+                    new InterpreterState(prog, bf, bc, bc, new DialogueBreakpointHandler(), configuration);
             bc.registerStopKeyHandler(state::terminate);
             prog.run(state);
             state.closeFiles();

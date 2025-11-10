@@ -148,22 +148,29 @@ public class InterpreterState {
     private PrintStream printer;
 
     /**
+     * The breakpoint handler.
+     */
+    private BreakpointHandler breakpointHandler;
+
+    /**
      * Create an interpreter state, and initialise BASICODE standard variables.
      *
      * @param program the program whose run this interpreter state represents.
      * @param frame the Swing frame for the BASICODE GUI.
      * @param in the input channel for the program.
      * @param out the output channel for the program.
+     * @param breakpointHandler the breakpoint handler for the program.
      * @param configuration the interpreter configuration used for the execution of the program.
      */
     public InterpreterState(ProgramNode program, BasicFrame frame, BasicInput in, BasicOutput out,
-                            Configuration configuration) {
+                            BreakpointHandler breakpointHandler, Configuration configuration) {
         this.program = program;
         this.frame = frame;
         this.statementIterator = new StatementIterator(program.getLines());
         this.programInfo = new ProgramInfo(program.getLines());
         this.in = in;
         this.out = out;
+        this.breakpointHandler = breakpointHandler;
         this.configuration = configuration;
         initialiseStandardVariables();
     }
@@ -201,6 +208,13 @@ public class InterpreterState {
      */
     public BasicOutput getOutput() {
         return out;
+    }
+
+    /**
+     * @return the breakpoint handler.
+     */
+    public BreakpointHandler getBreakpointHandler() {
+        return breakpointHandler;
     }
 
     /**
