@@ -63,4 +63,53 @@ public class BreakpointTest extends InterpreterTest {
                 """);
     }
 
+    @Test
+    public void testBreakpointSelectiveDisplay() {
+        testInterpreter("""
+                1000 GOTO 20
+                1010 DIM OD$(2):OD$(1)="X":OD$(2)="Y$"
+                1020 X=23:Y$="Hello.":GOSUB 964
+                1030 GOTO 950
+                """, """
+                at line 1020, statement 2
+                1020 X=23:Y$="Hello.":GOSUB 964
+                ----------------------^
+                == variables ==
+                X = 23.0
+                Y$ = Hello.
+                """);
+    }
+
+    @Test
+    public void testNormalBreakpointIsNotSelective() {
+        testInterpreter("""
+                1000 GOTO 20
+                1010 DIM OD$(2):OD$(1)="X":OD$(2)="Y$"
+                1020 X=23:Y$="Hello.":GOSUB 963
+                1030 GOTO 950
+                """, """
+                at line 1020, statement 2
+                1020 X=23:Y$="Hello.":GOSUB 963
+                ----------------------^
+                == variables ==
+                CN = 0.0
+                HG = 320.0
+                HO = 39.0
+                SV = 15.0
+                VE = 24.0
+                VG = 200.0
+                X = 23.0
+                Y$ = Hello.
+                == arrays ==
+                CC = (3)
+                 (0) 6.0
+                 (1) 1.0
+                 (2) 0.0
+                OD$ = (3)
+                 (0)\s
+                 (1) X
+                 (2) Y$
+                """);
+    }
+
 }
