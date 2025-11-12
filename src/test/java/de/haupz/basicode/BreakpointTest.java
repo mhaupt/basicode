@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 public class BreakpointTest extends InterpreterTest {
 
     @Test
-    public void testSimpleBreakpoint() {
+    public void testBreakpoint() {
         testInterpreter("""
                 1000 GOTO 20
                 1010 GOSUB 963
@@ -30,7 +30,7 @@ public class BreakpointTest extends InterpreterTest {
     }
 
     @Test
-    public void testSimpleBreakpointGosub() {
+    public void testBreakpointGosub() {
         testInterpreter("""
                 1000 GOTO 20
                 1010 GOSUB 1100
