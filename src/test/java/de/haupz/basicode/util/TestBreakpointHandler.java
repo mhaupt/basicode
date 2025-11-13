@@ -4,14 +4,13 @@ import de.haupz.basicode.interpreter.BreakpointHandler;
 import de.haupz.basicode.interpreter.InterpreterState;
 
 /**
- * A breakpoint handler that simply outputs breakpoint information and then terminates execution.
+ * A breakpoint handler that simply outputs breakpoint information and then continues execution.
  */
 public class TestBreakpointHandler implements BreakpointHandler {
 
     @Override
     public void breakRun(InterpreterState state, String info) {
-        state.getOutput().print(info);
-        state.terminate();
+        state.getOutput().println(info);
     }
 
 }

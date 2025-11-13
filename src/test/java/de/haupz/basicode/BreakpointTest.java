@@ -25,7 +25,7 @@ public class BreakpointTest extends InterpreterTest {
                 CC = (3)
                  (0) 6.0
                  (1) 1.0
-                 (2) 0.0
+                 (2) 0.0\n
                 """);
     }
 
@@ -59,7 +59,7 @@ public class BreakpointTest extends InterpreterTest {
                 CC = (3)
                  (0) 6.0
                  (1) 1.0
-                 (2) 0.0
+                 (2) 0.0\n
                 """);
     }
 
@@ -76,7 +76,7 @@ public class BreakpointTest extends InterpreterTest {
                 ----------------------^
                 == variables ==
                 X = 23.0
-                Y$ = Hello.
+                Y$ = Hello.\n
                 """);
     }
 
@@ -108,7 +108,7 @@ public class BreakpointTest extends InterpreterTest {
                 OD$ = (3)
                  (0)\s
                  (1) X
-                 (2) Y$
+                 (2) Y$\n
                 """);
     }
 
@@ -129,7 +129,7 @@ public class BreakpointTest extends InterpreterTest {
                 == arrays ==
                 A = (2)
                  (0) 0.0
-                 (1) 42.0
+                 (1) 42.0\n
                 """);
     }
 
@@ -146,7 +146,7 @@ public class BreakpointTest extends InterpreterTest {
                 1030 GOSUB 964
                 -----^
                 == variables ==
-                A = 23.0
+                A = 23.0\n
                 """);
     }
 
@@ -165,7 +165,7 @@ public class BreakpointTest extends InterpreterTest {
                 == arrays ==
                 A = (2)
                  (0) 0.0
-                 (1) 42.0
+                 (1) 42.0\n
                 """);
     }
 
@@ -180,7 +180,8 @@ public class BreakpointTest extends InterpreterTest {
                 at line 1020, statement 0
                 1020 GOSUB 964
                 -----^
-                -- OD$() not present --""");
+                -- OD$() not present --
+                """);
     }
 
 }
