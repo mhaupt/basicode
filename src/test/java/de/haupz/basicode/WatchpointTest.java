@@ -46,4 +46,35 @@ public class WatchpointTest extends InterpreterTest {
                 """);
     }
 
+    @Test
+    public void testMultipleWatchpoints() {
+        testInterpreter("""
+                1000 GOTO 20
+                1010 DIM OD$(2):OD$(1)="A":OD$(2)="B"
+                1020 OC$="A=2":GOSUB 965:PRINT "watchpoint";OP
+                1030 OC$="B=3":GOSUB 965:PRINT "watchpoint";OP
+                1040 FOR I=1 TO 4
+                1050 A=I
+                1060 B=I
+                1070 NEXT I
+                1080 GOTO 950
+                """, """
+                watchpoint 1\s
+                watchpoint 2\s
+                at line 1050, statement 0
+                1050 A=I
+                -----^
+                == variables ==
+                A = 2.0
+                B = 1.0
+                
+                at line 1060, statement 0
+                1060 B=I
+                -----^
+                == variables ==
+                A = 3.0
+                B = 3.0\n
+                """);
+    }
+
 }
