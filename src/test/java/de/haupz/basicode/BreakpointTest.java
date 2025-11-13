@@ -112,4 +112,75 @@ public class BreakpointTest extends InterpreterTest {
                 """);
     }
 
+    @Test
+    public void testDisplayVariableAndArray() {
+        testInterpreter("""
+                1000 GOTO 20
+                1010 DIM OD$(2):OD$(1)="A":OD$(2)="A()"
+                1020 A=23:DIM A(1):A(1)=42
+                1030 GOSUB 964
+                1040 GOTO 950
+                """, """
+                at line 1030, statement 0
+                1030 GOSUB 964
+                -----^
+                == variables ==
+                A = 23.0
+                == arrays ==
+                A = (2)
+                 (0) 0.0
+                 (1) 42.0
+                """);
+    }
+
+    @Test
+    public void testDisplayJustVariable() {
+        testInterpreter("""
+                1000 GOTO 20
+                1010 DIM OD$(1):OD$(1)="A"
+                1020 A=23:DIM A(1):A(1)=42
+                1030 GOSUB 964
+                1040 GOTO 950
+                """, """
+                at line 1030, statement 0
+                1030 GOSUB 964
+                -----^
+                == variables ==
+                A = 23.0
+                """);
+    }
+
+    @Test
+    public void testDisplayJustArray() {
+        testInterpreter("""
+                1000 GOTO 20
+                1010 DIM OD$(1):OD$(1)="A()"
+                1020 A=23:DIM A(1):A(1)=42
+                1030 GOSUB 964
+                1040 GOTO 950
+                """, """
+                at line 1030, statement 0
+                1030 GOSUB 964
+                -----^
+                == arrays ==
+                A = (2)
+                 (0) 0.0
+                 (1) 42.0
+                """);
+    }
+
+    @Test
+    public void testDisplayIfNothingGiven() {
+        testInterpreter("""
+                1000 GOTO 20
+                1010 A=23:DIM A(1):A(1)=42
+                1020 GOSUB 964
+                1030 GOTO 950
+                """, """
+                at line 1020, statement 0
+                1020 GOSUB 964
+                -----^
+                -- OD$() not present --""");
+    }
+
 }
