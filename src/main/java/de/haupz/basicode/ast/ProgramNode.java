@@ -84,7 +84,8 @@ public class ProgramNode extends BasicNode {
                 statement.run(state);
                 state.getProgramInfo().watchpoints().forEach(watchpoint -> {
                     if (watchpoint.shouldIntercept(state)) {
-                        Subroutines.gosub964(state);
+                        String content = state.getDebugInfo(false);
+                        state.getBreakpointHandler().breakRun(state, content);
                     }
                 });
                 if (state.getConfiguration().slowness() > 0) {

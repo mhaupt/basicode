@@ -900,18 +900,7 @@ public class Subroutines {
      * @param state the interpreter state.
      */
     public static void gosub964(InterpreterState state) {
-        String values;
-        Optional<BasicArray> oods = state.getArray("OD$");
-        if (oods.isPresent()) {
-            Object[] oodsObjects = oods.get().getRawData();
-            String[] oodsStrings = Arrays.copyOf(oodsObjects, oodsObjects.length, String[].class);
-            values = state.getValues(oodsStrings);
-        } else {
-            values = "-- OD$() not present --";
-        }
-
-        String stackDump = state.getStackDump(true);
-        String content = stackDump + "\n" + values;
+        String content = state.getDebugInfo(true);
         state.getBreakpointHandler().breakRun(state, content);
     }
 

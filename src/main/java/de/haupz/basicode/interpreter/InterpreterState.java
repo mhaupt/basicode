@@ -712,4 +712,30 @@ public class InterpreterState {
         return String.format("at line %d, statement %d\n%s\n%s", las.line(), las.statement(), line.getLineText(), pointer);
     }
 
+    /**
+     * Helper method to generate a textual representation of relevant information to be displayed at breakpoints and
+     * watchpoints. This consists of the stack trace and variable and array values and contents. Which variables and
+     * array contents should be displayed is {@link de.haupz.basicode.subroutines.Subroutines#gosub964(InterpreterState)
+     * controlled} by the {@code OD$} array.
+     *
+     * @param suppressNativeFrame {@code true} if the native frame should be omitted from the stack dump, e.g., when
+     *                            this is called from a {@link de.haupz.basicode.subroutines.Subroutines subroutine}.
+     * @return debug information consisting of the stack trace and variable and array values and contents.
+     */
+    public String getDebugInfo(boolean suppressNativeFrame) {
+        String values;
+        Optional<BasicArray> oods = getArray("OD$");
+        if (oods.isPresent()) {
+            Object[] oodsObjects = oods.get().getRawData();
+            String[] oodsStrings = Arrays.copyOf(oodsObjects, oodsObjects.length, String[].class);
+            values = getValues(oodsStrings);
+        } else {
+            values = "-- OD$() not present --";
+        }
+
+        String stackDump = getStackDump(suppressNativeFrame);
+        String debugInfo = stackDump + "\n" + values;
+        return debugInfo;
+    }
+
 }
