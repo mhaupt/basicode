@@ -867,6 +867,19 @@ public class Subroutines {
     }
 
     /**
+     * <p>{@code GOSUB 962}: print the call stack.</p>
+     *
+     * <p>This subroutine prints the current BASICODE call stack to the Java console. Execution will not be
+     * interrupted.</p>
+     *
+     * @param state the interpreter state.
+     */
+    public static void gosub962(InterpreterState state) {
+        String stackDump = state.getStackDump(true);
+        System.err.println("===== BASICODE stack dump =====\n" + stackDump + "\n===============================");
+    }
+
+    /**
      * <p>{@code GOSUB 963}: trigger a breakpoint.</p>
      *
      * <p>When this subroutine is called, a dialogue box will open that displays the current call stack and

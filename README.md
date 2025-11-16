@@ -149,6 +149,12 @@ This BASICODE implementation takes advantage of the fact that it's written in
 Java and there are multiple unused line numbers below 1000 that can be used 
 for additional subroutines.
 
+### Call Stack: `GOSUB 962`
+
+Whenever this subroutine is called during execution, the current BASICODE call
+stack will be printed to the Java console. Execution will _not_ be paused as 
+would be the case with a breakpoint (see below).
+
 ### Breakpoints: `GOSUB 963`
 
 Use this to trigger a breakpoint during execution. When this subroutine is 
