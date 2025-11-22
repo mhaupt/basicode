@@ -713,6 +713,23 @@ public class InterpreterState {
     }
 
     /**
+     * Helper method to get a selection of variables and arrays in textual form, based on the contents of the
+     * {@code OD$} BASICODE array. If the array is not defined, an error string will be returned.
+     *
+     * @return the selected variable values and array contents, or an error string.
+     */
+    public String getSelectedValues() {
+        Optional<BasicArray> oods = getArray("OD$");
+        if (oods.isPresent()) {
+            Object[] oodsObjects = oods.get().getRawData();
+            String[] oodsStrings = Arrays.copyOf(oodsObjects, oodsObjects.length, String[].class);
+            return getValues(oodsStrings);
+        } else {
+            return "-- OD$() not present --";
+        }
+    }
+
+    /**
      * Helper method to generate a textual representation of relevant information to be displayed at breakpoints and
      * watchpoints. This consists of the stack trace and variable and array values and contents. Which variables and
      * array contents should be displayed is {@link de.haupz.basicode.subroutines.Subroutines#gosub964(InterpreterState)
@@ -723,16 +740,7 @@ public class InterpreterState {
      * @return debug information consisting of the stack trace and variable and array values and contents.
      */
     public String getDebugInfo(boolean suppressNativeFrame) {
-        String values;
-        Optional<BasicArray> oods = getArray("OD$");
-        if (oods.isPresent()) {
-            Object[] oodsObjects = oods.get().getRawData();
-            String[] oodsStrings = Arrays.copyOf(oodsObjects, oodsObjects.length, String[].class);
-            values = getValues(oodsStrings);
-        } else {
-            values = "-- OD$() not present --";
-        }
-
+        String values = getSelectedValues();
         String stackDump = getStackDump(suppressNativeFrame);
         String debugInfo = stackDump + "\n" + values;
         return debugInfo;

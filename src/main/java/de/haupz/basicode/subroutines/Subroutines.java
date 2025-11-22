@@ -867,6 +867,40 @@ public class Subroutines {
     }
 
     /**
+     * <p>{@code GOSUB 960}: dump all variable values and array contents.</p>
+     *
+     * <p>This subroutine dumps all current BASICODE variables and arrays to the Java console.</p>
+     *
+     * @param state the interpreter state.
+     */
+    public static void gosub960(InterpreterState state) {
+        String values = state.getValues();
+        System.err.println("===== BASICODE values =====\n" + values + "\n===========================");
+    }
+
+    /**
+     * <p>{@code GOSUB 961}: dump selected variable values and array contents.</p>
+     *
+     * <p>This subroutine dumps selected current BASICODE variables and arrays to the Java console. The variable values
+     * and array contents displayed will be governed by what is contained in the {@code OD$()} array. Each element of
+     * that array should be the name of a variable or array the values or contents of which should be displayed. The
+     * {@code OD$()} array must be declared and properly dimensioned before the first use of this subroutine.</p>
+     *
+     * <p>If an element of {@code OD$()} is unusable (empty string, or a name that's not defined), it will be ignored.
+     * If the {@code OD$()} array is not defined, this will be ignored, and no variable values or array contents will be
+     * dumped.</p>
+     *
+     * <p>Variable names are simply the names including a {@code $} for string variables; array names must have the form
+     * {@code ARRAY_NAME$()} or {@code ARRAY_NAME()}.</p>
+     *
+     * @param state the interpreter state.
+     */
+    public static void gosub961(InterpreterState state) {
+        String values = state.getSelectedValues();
+        System.err.println("===== BASICODE values =====\n" + values + "\n===========================");
+    }
+
+    /**
      * <p>{@code GOSUB 962}: print the call stack.</p>
      *
      * <p>This subroutine prints the current BASICODE call stack to the Java console. Execution will not be

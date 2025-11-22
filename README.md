@@ -149,6 +149,15 @@ This BASICODE implementation takes advantage of the fact that it's written in
 Java and there are multiple unused line numbers below 1000 that can be used 
 for additional subroutines.
 
+### Dump All (Selected) Variable Values and Array Contents: `GOSUB 960 (961)`
+
+Call these subroutines to dump all (`960`) or a selection of (`961`) 
+variable values and array contents to the Java console. For `GOSUB 961`, the 
+`OD$()` array controls what is dumped. Each element of that array should be
+the name of a variable or array the values or contents of which should be
+displayed. The `OD$()` array must be declared and properly dimensioned before
+the first use of this subroutine.
+
 ### Call Stack: `GOSUB 962`
 
 Whenever this subroutine is called during execution, the current BASICODE call
