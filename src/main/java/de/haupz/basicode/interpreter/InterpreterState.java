@@ -3,15 +3,18 @@ package de.haupz.basicode.interpreter;
 import de.haupz.basicode.array.ArrayType;
 import de.haupz.basicode.array.BasicArray;
 import de.haupz.basicode.array.BasicArray1D;
+import de.haupz.basicode.ast.ExpressionNode;
 import de.haupz.basicode.ast.LineNode;
 import de.haupz.basicode.ast.ProgramNode;
 import de.haupz.basicode.io.BasicInput;
 import de.haupz.basicode.io.BasicOutput;
+import de.haupz.basicode.parser.Parser;
 import de.haupz.basicode.ui.BasicFrame;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.io.StringReader;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -744,6 +747,25 @@ public class InterpreterState {
         String stackDump = getStackDump(suppressNativeFrame);
         String debugInfo = stackDump + "\n" + values;
         return debugInfo;
+    }
+
+    /**
+     * Helper method to check, at any given point during execution, whether a conditional breakpoint should be
+     * triggered. This method checks the condition contained in the {@code OC$} BASICODE string.
+     *
+     * @return {@code true} if the condition in {@code OC$} evaluates to true when this method is invoked, or if
+     *         {@code OC$} is undefined.
+     */
+    public boolean shouldTriggerBreakpoint() {
+        Optional<Object> oc = getVar("OC$");
+        if (oc.isEmpty()) {
+            return true;
+        }
+        String ocs = (String) oc.get();
+        Parser parser = new Parser(new StringReader(ocs));
+        ExpressionNode condition = parser.expression();
+        Object cond = condition.eval(this);
+        return cond instanceof Number n && n.doubleValue() != 0.0;
     }
 
 }

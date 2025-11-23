@@ -184,4 +184,74 @@ public class BreakpointTest extends InterpreterTest {
                 """);
     }
 
+    @Test
+    public void testConditionalBreakpoint() {
+        testInterpreter("""
+                1000 GOTO 20
+                1010 X=1:GOSUB 963
+                1020 OC$="X=2":GOSUB 963
+                1030 X=2:GOSUB 963
+                1040 GOTO 950
+                """, """
+                at line 1010, statement 1
+                1010 X=1:GOSUB 963
+                ---------^
+                == variables ==
+                CN = 0.0
+                HG = 320.0
+                HO = 39.0
+                SV = 15.0
+                VE = 24.0
+                VG = 200.0
+                X = 1.0
+                == arrays ==
+                CC = (3)
+                 (0) 6.0
+                 (1) 1.0
+                 (2) 0.0
+                
+                at line 1030, statement 1
+                1030 X=2:GOSUB 963
+                ---------^
+                == variables ==
+                CN = 0.0
+                HG = 320.0
+                HO = 39.0
+                OC$ = X=2
+                SV = 15.0
+                VE = 24.0
+                VG = 200.0
+                X = 2.0
+                == arrays ==
+                CC = (3)
+                 (0) 6.0
+                 (1) 1.0
+                 (2) 0.0\n
+                """);
+    }
+
+    @Test
+    public void testConditionalSelectiveBreakpoint() {
+        testInterpreter("""
+                1000 GOTO 20
+                1010 DIM OD$(1):OD$(1)="X"
+                1020 X=1:GOSUB 964
+                1030 OC$="X=2":GOSUB 964
+                1040 X=2:GOSUB 964
+                1050 GOTO 950
+                """, """
+                at line 1020, statement 1
+                1020 X=1:GOSUB 964
+                ---------^
+                == variables ==
+                X = 1.0
+                
+                at line 1040, statement 1
+                1040 X=2:GOSUB 964
+                ---------^
+                == variables ==
+                X = 2.0\n
+                """);
+    }
+
 }

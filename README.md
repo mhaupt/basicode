@@ -168,7 +168,10 @@ would be the case with a breakpoint (see below).
 
 Use this to trigger a breakpoint during execution. When this subroutine is 
 called, a dialogue box will open that displays the current call stack and 
-the values of all variables and contents of all arrays.
+the values of all variables and contents of all arrays. If, at the time the 
+subroutine is called, the string `OC$` contains a BASICODE condition that 
+evaluates to false, the breakpoint will not be triggered. If the string is 
+undefined or empty at that time, that counts as the condition being true.
 
 ### Breakpoints With Selective Value Display: `GOSUB 964`
 
@@ -178,6 +181,11 @@ what is contained in the `OD$()` array. Each element of that array should be
 the name of a variable or array the values or contents of which should be 
 displayed. The `OD$()` array must be declared and properly dimensioned before 
 the first use of this subroutine.
+
+If, at the time the subroutine is called, the string `OC$` contains a 
+BASICODE condition that evaluates to false, the breakpoint will not be 
+triggered. If the string is undefined or empty at that time, that counts as 
+the condition being true.
 
 ### Watchpoints: `GOSUB 965`
 

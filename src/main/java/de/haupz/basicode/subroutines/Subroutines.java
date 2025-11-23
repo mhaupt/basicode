@@ -919,13 +919,19 @@ public class Subroutines {
      * <p>When this subroutine is called, a dialogue box will open that displays the current call stack and
      * the values of all variables and contents of all arrays.</p>
      *
+     * <p>If, at the time the subroutine is called, the string `OC$` contains a BASICODE condition that evaluates to
+     * false, the breakpoint will not be triggered. If the string is undefined or empty at that time, that counts as the
+     * condition being true.</p>
+     *
      * @param state the interpreter state.
      */
     public static void gosub963(InterpreterState state) {
-        String stackDump = state.getStackDump(true);
-        String values = state.getValues();
-        String content = stackDump + "\n" + values;
-        state.getBreakpointHandler().breakRun(state, content);
+        if (state.shouldTriggerBreakpoint()) {
+            String stackDump = state.getStackDump(true);
+            String values = state.getValues();
+            String content = stackDump + "\n" + values;
+            state.getBreakpointHandler().breakRun(state, content);
+        }
     }
 
     /**
@@ -944,11 +950,17 @@ public class Subroutines {
      * <p>Variable names are simply the names including a {@code $} for string variables; array names must have the form
      * {@code ARRAY_NAME$()} or {@code ARRAY_NAME()}.</p>
      *
+     * <p>If, at the time the subroutine is called, the string `OC$` contains a BASICODE condition that evaluates to
+     * false, the breakpoint will not be triggered. If the string is undefined or empty at that time, that counts as the
+     * condition being true.</p>
+     *
      * @param state the interpreter state.
      */
     public static void gosub964(InterpreterState state) {
-        String content = state.getDebugInfo(true);
-        state.getBreakpointHandler().breakRun(state, content);
+        if (state.shouldTriggerBreakpoint()) {
+            String content = state.getDebugInfo(true);
+            state.getBreakpointHandler().breakRun(state, content);
+        }
     }
 
     /**
