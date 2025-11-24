@@ -8,6 +8,7 @@ import de.haupz.basicode.io.ConsoleConfiguration;
 import de.haupz.basicode.io.GraphicsCursor;
 import de.haupz.basicode.io.TextCursor;
 import de.haupz.basicode.parser.Parser;
+import de.haupz.basicode.parser.ParserException;
 import de.haupz.basicode.ui.BreakpointDialog;
 import de.haupz.basicode.ui.Sound;
 
@@ -24,6 +25,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.ParseException;
 import java.util.*;
 
 /**
@@ -970,7 +972,7 @@ public class Subroutines {
      * "met". The condition is expressed in BASICODE syntax in the {@code OC$} variable. After execution of the
      * subroutine, the variable {@code OP} will contain a running number of the watchpoint. Numbering starts at 1. If
      * anything goes wrong during watchpoint registration, {@code OP} will be set to -1. Thus, 0 is an undefined value
-     * for {@code OP}.</p>
+     * for {@code OP}. If an error occurs, `OC$` will also contain an error message; otherwise, it will be empty.</p>
      *
      * <p>The watchpoint will be triggered whenever the condition flips from "unmet" to "met" after the execution of a
      * statement. It will honour the contents of the {@code OD$()} array for selective display of variable values and
@@ -980,14 +982,21 @@ public class Subroutines {
      */
     public static void gosub965(InterpreterState state) {
         double op = -1.0;
+        String error = "";
         Optional<Object> oods = state.getVar("OC$");
         if (oods.isPresent()) {
             String ods = (String) oods.get();
             Parser parser = new Parser(new StringReader(ods));
-            ExpressionNode condition = parser.expression();
-            op = state.getProgramInfo().registerWatchpoint(condition);
+            ExpressionNode condition;
+            try {
+                condition = parser.expression();
+                op = state.getProgramInfo().registerWatchpoint(condition);
+            } catch (ParserException pe) {
+                error = pe.getMessage();
+            }
         }
         state.setVar("OP", Double.valueOf(op));
+        state.setVar("OE$", error);
     }
 
 }

@@ -77,4 +77,20 @@ public class WatchpointTest extends InterpreterTest {
                 """);
     }
 
+    @Test
+    public void testWatchpointFaultyCondition() {
+        testInterpreter("""
+                1000 GOTO 20
+                1010 OC$="+-*/":GOSUB 965
+                1020 PRINT "watchpoint: ";OP
+                1030 PRINT "error: ";OE$
+                1040 GOTO 950
+                """, """
+                watchpoint: -1\s
+                error: Expected LeftBracket but got Divide << / >>
+                
+                +-*/
+                """);
+    }
+
 }

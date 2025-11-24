@@ -1,0 +1,5 @@
+1000 GOTO 20
+1010 OC$="+-*/":GOSUB 965
+1020 PRINT "watchpoint: ";OP
+1030 PRINT "error: ";OE$
+1040 GOTO 950

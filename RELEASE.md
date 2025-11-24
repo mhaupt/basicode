@@ -1,7 +1,12 @@
 ## upcoming
 
-*   Breakpoints (GOSUB 963), breakpoints with selective display of variable
-    values and array contents (GOSUB 964), and watchpoints (GOSUB 965).
+*   Debugging support:
+    *    Dump all or selected variables and array contents (GOSUB 960/961).
+    *    Dump the call stack (GOSUB 962).
+    *    Breakpoints (GOSUB 963).
+    *    Breakpoints with selective display of variable values and array 
+         contents (GOSUB 964).
+    *    Watchpoints (GOSUB 965).
 
 ## 1.0
 
