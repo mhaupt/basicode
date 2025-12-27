@@ -34,6 +34,11 @@ public class Breakpoint {
     private final List<String> displayInfo;
 
     /**
+     * Denote whether this breakpoint is currently active.
+     */
+    private boolean isActive = true;
+
+    /**
      * This breakpoint's condition, if one is given.
      */
     private final Optional<ExpressionNode> condition;
@@ -72,6 +77,19 @@ public class Breakpoint {
         return condition
                 .map(c -> c.eval(state) instanceof Number n && n.doubleValue() != 0.0)
                 .orElse(true); // no condition means the breakpoint triggers
+    }
+
+    /**
+     * Set this breakpoint's activation state.
+     *
+     * @param active {@code true} if this breakpoint should be active; {@code false} otherwise.
+     */
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
+    public boolean isActive() {
+        return isActive;
     }
 
 }

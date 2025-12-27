@@ -217,7 +217,17 @@ define a condition. See above for details on both of these.
 
 After the invocation of the subroutine, `OP` contains the running number of 
 the registered breakpoint (starting at 1), or -1 in case anything has gone 
-wrong. In the latter case, `OE$` will also contain an error message. 
+wrong. In the latter case, `OE$` will also contain an error message.
+
+### Selectively (De)activating Breakpoints: `GOSUB 967 (968)`
+
+Any breakpoint registered with `GOSUB 966` can be selectively (de)activated by 
+calling one of these two subroutines. They both expect the breakpoint in 
+question to be identified by the `OP` variable. A call to `GOSUB 967` will 
+activate the breakpoint, and a call to `GOSUB 968` will deactivate it. In 
+case of success, `OP` will be unchanged after the subroutine call. In case 
+of any kind of error, `OP` will be set to -1 and `OE$` will contain an error 
+message.
 
 ## Contributions
 

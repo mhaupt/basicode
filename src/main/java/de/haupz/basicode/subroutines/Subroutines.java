@@ -4,6 +4,7 @@ import de.haupz.basicode.array.BasicArray;
 import de.haupz.basicode.array.BasicArray1D;
 import de.haupz.basicode.ast.ExpressionNode;
 import de.haupz.basicode.ast.LineNode;
+import de.haupz.basicode.interpreter.Breakpoint;
 import de.haupz.basicode.interpreter.InterpreterState;
 import de.haupz.basicode.io.ConsoleConfiguration;
 import de.haupz.basicode.io.GraphicsCursor;
@@ -1054,6 +1055,60 @@ public class Subroutines {
             int op = state.getProgramInfo().registerBreakpoint(line, statement, displayInfo, condition);
             state.setVar("OP", Double.valueOf(op));
         }
+    }
+
+    /**
+     * Helper method to set the activation state of a breakpoint.
+     * @param state the interpreter state.
+     * @param active {@code true} if the breakpoint should be active; {@code false} otherwise.
+     */
+    private static void setBreakpointActiveState(InterpreterState state, boolean active) {
+        int resultOp = 0;
+        String error = "";
+        Optional<Object> op = state.getVar("OP");
+        if (op.isPresent()) {
+            resultOp = ((Double) op.get()).intValue();
+            List<Breakpoint> breakpoints = state.getProgramInfo().breakpoints();
+            if (resultOp > 0 && resultOp <= breakpoints.size()) {
+                breakpoints.get(resultOp - 1).setActive(active);
+            } else {
+                resultOp = -1;
+                error = "breakpoint " + resultOp + " does not exist";
+            }
+        } else {
+            resultOp = -1;
+            error = "OP is undefined";
+        }
+        state.setVar("OP", Double.valueOf(resultOp));
+        if (!error.isEmpty()) {
+            state.setVar("OE$", error);
+        }
+    }
+
+    /**
+     * <p>{@code GOSUB 967}: activate a breakpoint.</p>
+     *
+     * <p>Activates a breakpoint identified by the `OP` variable. If the breakpoint is already active, no action is
+     * taken. If the breakpoint does not exist or `OP` is otherwise unusable, an error message is set in `OE$` and `OP`
+     * is set to -1. Otherwise, `OP` is unchanged.</p>
+     *
+     * @param state the interpreter state.
+     */
+    public static void gosub967(InterpreterState state) {
+        setBreakpointActiveState(state, true);
+    }
+
+    /**
+     * <p>{@code GOSUB 968}: deactivate a breakpoint.</p>
+     *
+     * <p>Deactivates a breakpoint identified by the `OP` variable. If the breakpoint is already inactive, no action is
+     * taken. If the breakpoint does not exist or `OP` is otherwise unusable, an error message is set in `OE$` and `OP`
+     * is set to -1. Otherwise, `OP` is unchanged.</p>
+     *
+     * @param state the interpreter state.
+     */
+    public static void gosub968(InterpreterState state) {
+        setBreakpointActiveState(state, false);
     }
 
 }

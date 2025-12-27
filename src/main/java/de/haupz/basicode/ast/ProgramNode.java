@@ -82,7 +82,7 @@ public class ProgramNode extends BasicNode {
             statement = state.getStatementIterator().getNext();
             try {
                 state.getProgramInfo().breakpointsForHere(state.getHere()).forEach(breakpoint -> {
-                    if (breakpoint.shouldIntercept(state)) {
+                    if (breakpoint.isActive() && breakpoint.shouldIntercept(state)) {
                         String content = state.getDebugInfo(false);
                         state.getBreakpointHandler().breakRun(state, content);
                     }

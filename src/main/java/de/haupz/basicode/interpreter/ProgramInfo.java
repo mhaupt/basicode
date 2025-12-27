@@ -122,6 +122,13 @@ public class ProgramInfo {
     }
 
     /**
+     * @return the registered breakpoints for this BASICODE program.
+     */
+    public List<Breakpoint> breakpoints() {
+        return breakpoints;
+    }
+
+    /**
      * @return the breakpoints (if any) for a given line number and statement index.
      *
      * @param here the current line and statement index.
