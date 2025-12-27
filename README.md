@@ -156,7 +156,8 @@ variable values and array contents to the Java console. For `GOSUB 961`, the
 `OD$()` array controls what is dumped. Each element of that array should be
 the name of a variable or array the values or contents of which should be
 displayed. The `OD$()` array must be declared and properly dimensioned before
-the first use of this subroutine.
+the first use of this subroutine. If it is not present or unusable, all 
+variables and arrays will be dumped.
 
 ### Call Stack: `GOSUB 962`
 
@@ -180,7 +181,8 @@ The variable values and array contents displayed will however be governed by
 what is contained in the `OD$()` array. Each element of that array should be 
 the name of a variable or array the values or contents of which should be 
 displayed. The `OD$()` array must be declared and properly dimensioned before 
-the first use of this subroutine.
+the first use of this subroutine. If it is not present or unusable, all 
+variables and arrays will be displayed.
 
 If, at the time the subroutine is called, the string `OC$` contains a 
 BASICODE condition that evaluates to false, the breakpoint will not be 
@@ -200,6 +202,22 @@ The watchpoint will be triggered  whenever the condition flips from "unmet" to
 "met" after the execution of a statement. It will honour the contents of the 
 `OD$()` array for selective display of variable values and array contents, 
 as described above.
+
+### Programmatically Setting Breakpoints: `GOSUB 966`
+
+Call this subroutine to register a breakpoint that will trigger without an 
+explicit call to `GOSUB 963`. Before calling this subroutine, set `OL` to 
+the line where the breakpoint should be triggered, and `OS` to the number of 
+the statement (starting at 0) before the execution of which the breakpoint 
+should be triggered.
+
+Optionally, pass `OD$` to control which variable values and array contents 
+should be displayed when the breakpoint is triggered; and  use `OC$` to 
+define a condition. See above for details on both of these.
+
+After the invocation of the subroutine, `OP` contains the running number of 
+the registered breakpoint (starting at 1), or -1 in case anything has gone 
+wrong. In the latter case, `OE$` will also contain an error message. 
 
 ## Contributions
 

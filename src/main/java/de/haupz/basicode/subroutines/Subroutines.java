@@ -3,13 +3,13 @@ package de.haupz.basicode.subroutines;
 import de.haupz.basicode.array.BasicArray;
 import de.haupz.basicode.array.BasicArray1D;
 import de.haupz.basicode.ast.ExpressionNode;
+import de.haupz.basicode.ast.LineNode;
 import de.haupz.basicode.interpreter.InterpreterState;
 import de.haupz.basicode.io.ConsoleConfiguration;
 import de.haupz.basicode.io.GraphicsCursor;
 import de.haupz.basicode.io.TextCursor;
 import de.haupz.basicode.parser.Parser;
 import de.haupz.basicode.parser.ParserException;
-import de.haupz.basicode.ui.BreakpointDialog;
 import de.haupz.basicode.ui.Sound;
 
 import java.awt.*;
@@ -25,8 +25,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.text.ParseException;
 import java.util.*;
+import java.util.List;
 
 /**
  * <p>The {@code Subroutines} class holds all implementations of the BASICODE standard subroutines. Most of these are
@@ -876,7 +876,7 @@ public class Subroutines {
      * @param state the interpreter state.
      */
     public static void gosub960(InterpreterState state) {
-        String values = state.getValues();
+        String values = state.getValues(false);
         System.err.println("===== BASICODE values =====\n" + values + "\n===========================");
     }
 
@@ -889,8 +889,7 @@ public class Subroutines {
      * {@code OD$()} array must be declared and properly dimensioned before the first use of this subroutine.</p>
      *
      * <p>If an element of {@code OD$()} is unusable (empty string, or a name that's not defined), it will be ignored.
-     * If the {@code OD$()} array is not defined, this will be ignored, and no variable values or array contents will be
-     * dumped.</p>
+     * If the {@code OD$()} array is not defined, all variable values or array contents will be dumped.</p>
      *
      * <p>Variable names are simply the names including a {@code $} for string variables; array names must have the form
      * {@code ARRAY_NAME$()} or {@code ARRAY_NAME()}.</p>
@@ -898,7 +897,7 @@ public class Subroutines {
      * @param state the interpreter state.
      */
     public static void gosub961(InterpreterState state) {
-        String values = state.getSelectedValues();
+        String values = state.getValues(true);
         System.err.println("===== BASICODE values =====\n" + values + "\n===========================");
     }
 
@@ -930,7 +929,7 @@ public class Subroutines {
     public static void gosub963(InterpreterState state) {
         if (state.shouldTriggerBreakpoint()) {
             String stackDump = state.getStackDump(true);
-            String values = state.getValues();
+            String values = state.getValues(false);
             String content = stackDump + "\n" + values;
             state.getBreakpointHandler().breakRun(state, content);
         }
@@ -946,8 +945,8 @@ public class Subroutines {
      * dimensioned before the first use of this subroutine.</p>
      *
      * <p>If an element of {@code OD$()} is unusable (empty string, or a name that's not defined), it will be ignored.
-     * If the {@code OD$()} array is not defined, this will be ignored, and the breakpoint will display no variable
-     * values or array contents.</p>
+     * If the {@code OD$()} array is not defined, the breakpoint will display all variable values and array
+     * contents.</p>
      *
      * <p>Variable names are simply the names including a {@code $} for string variables; array names must have the form
      * {@code ARRAY_NAME$()} or {@code ARRAY_NAME()}.</p>
@@ -982,7 +981,7 @@ public class Subroutines {
      */
     public static void gosub965(InterpreterState state) {
         double op = -1.0;
-        String error = "";
+        String error = "no condition given";
         Optional<Object> oods = state.getVar("OC$");
         if (oods.isPresent()) {
             String ods = (String) oods.get();
@@ -997,6 +996,64 @@ public class Subroutines {
         }
         state.setVar("OP", Double.valueOf(op));
         state.setVar("OE$", error);
+    }
+
+    /**
+     * <p>{@code GOSUB 966}: programmatically register a breakpoint.</p>
+     *
+     * <p>Calling this subroutine registers a breakpoint that will trigger without an explicit call to
+     * {@code GOSUB 963}. As parameters, {@code OL} contains the line number where the breakpoint should be triggered,
+     * and {@code OS} contains the number of the statement (starting at 0) before the execution of which the breakpoint
+     * should be triggered.</p>
+     *
+     * <p>Optionally, {@code OD$()} can be used to control which variable values and array contents should be displayed
+     * when the breakpoint is triggered (see {@link #gosub964(InterpreterState)}); and {@code OC$} can be used to define
+     * a condition (see {@link #gosub965(InterpreterState)}).</p>
+     *
+     * <p>After the invocation of this subroutine, {@code OP} contains the running number of the registered breakpoint
+     * (starting at 1), or -1 in case anything has gone wrong. In the latter case, {@code OE$} will also contain an
+     * error message.</p>
+     *
+     * @param state the interpreter state.
+     */
+    public static void gosub966(InterpreterState state) {
+        Optional<Object> ol = state.getVar("OL");
+        Optional<Object> os = state.getVar("OS");
+        state.setVar("OP", Double.valueOf(-1)); // expect the worst
+        if (ol.isEmpty() || os.isEmpty()) {
+            state.setVar("OE$", "both OL and OS must be defined");
+            return;
+        }
+        int line = ((Double) ol.get()).intValue();
+        if (!state.getProgramInfo().hasLineNumber(line)) {
+            state.setVar("OE$", "line number " + line + " does not exist");
+            return;
+        }
+        int statement = ((Double) os.get()).intValue();
+        LineNode lineNode = state.getProgramInfo().getLine(line);
+        if (statement < 0 || statement >= lineNode.getStatements().size()) {
+            state.setVar("OE$", "statement number " + statement + " does not exist on line " + line);
+            return;
+        }
+        Optional<BasicArray> od = state.getArray("OD$");
+        List<String> displayInfo = od.map(a -> Arrays.asList((String[]) a.getRawData())).orElse(List.of());
+        Optional<Object> oc = state.getVar("OC$");
+        boolean conditionOK = true;
+        Optional<ExpressionNode> condition = Optional.empty();
+        if (oc.isPresent()) {
+            String expr = (String) oc.get();
+            Parser parser = new Parser(new StringReader(expr));
+            try {
+                condition = Optional.of(parser.expression());
+            } catch (ParserException pe) {
+                conditionOK = false;
+                state.setVar("OE$", pe.getMessage());
+            }
+        }
+        if (conditionOK) {
+            int op = state.getProgramInfo().registerBreakpoint(line, statement, displayInfo, condition);
+            state.setVar("OP", Double.valueOf(op));
+        }
     }
 
 }

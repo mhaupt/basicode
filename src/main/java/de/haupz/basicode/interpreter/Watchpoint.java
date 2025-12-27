@@ -1,7 +1,6 @@
 package de.haupz.basicode.interpreter;
 
 import de.haupz.basicode.ast.ExpressionNode;
-import de.haupz.basicode.subroutines.Subroutines;
 
 /**
  * <p>A watchpoint in a BASICODE program.</p>

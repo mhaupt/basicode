@@ -180,7 +180,22 @@ public class BreakpointTest extends InterpreterTest {
                 at line 1020, statement 0
                 1020 GOSUB 964
                 -----^
-                -- OD$() not present --
+                == variables ==
+                A = 23.0
+                CN = 0.0
+                HG = 320.0
+                HO = 39.0
+                SV = 15.0
+                VE = 24.0
+                VG = 200.0
+                == arrays ==
+                A = (2)
+                 (0) 0.0
+                 (1) 42.0
+                CC = (3)
+                 (0) 6.0
+                 (1) 1.0
+                 (2) 0.0\n
                 """);
     }
 
@@ -251,6 +266,41 @@ public class BreakpointTest extends InterpreterTest {
                 ---------^
                 == variables ==
                 X = 2.0\n
+                """);
+    }
+
+    @Test
+    public void testRegisterBreakpoint() {
+        testInterpreter("""
+                1000 GOTO 20
+                1010 OL=1030:OS=1:GOSUB 966
+                1020 PRINT "breakpoint: ";OP
+                1030 PRINT "before":PRINT "here":PRINT "after"
+                1040 GOTO 950
+                """, """
+                breakpoint:  1\s
+                before
+                at line 1030, statement 1
+                1030 PRINT "before":PRINT "here":PRINT "after"
+                --------------------^
+                == variables ==
+                CN = 0.0
+                HG = 320.0
+                HO = 39.0
+                OL = 1030.0
+                OP = 1.0
+                OS = 1.0
+                SV = 15.0
+                VE = 24.0
+                VG = 200.0
+                == arrays ==
+                CC = (3)
+                 (0) 6.0
+                 (1) 1.0
+                 (2) 0.0
+                 
+                here
+                after
                 """);
     }
 

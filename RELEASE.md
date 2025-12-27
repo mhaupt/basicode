@@ -7,6 +7,7 @@
     *    Breakpoints with selective display of variable values and array 
          contents (GOSUB 964).
     *    Watchpoints (GOSUB 965).
+    *    Programmatic breakpoints (GOSUB 966).
 
 ## 1.0
 

@@ -81,6 +81,12 @@ public class ProgramNode extends BasicNode {
         while (!state.shouldEnd()) {
             statement = state.getStatementIterator().getNext();
             try {
+                state.getProgramInfo().breakpointsForHere(state.getHere()).forEach(breakpoint -> {
+                    if (breakpoint.shouldIntercept(state)) {
+                        String content = state.getDebugInfo(false);
+                        state.getBreakpointHandler().breakRun(state, content);
+                    }
+                });
                 statement.run(state);
                 state.getProgramInfo().watchpoints().forEach(watchpoint -> {
                     if (watchpoint.shouldIntercept(state)) {
@@ -97,7 +103,7 @@ public class ProgramNode extends BasicNode {
                 }
             } catch (Exception e) {
                 String stackDump = state.getStackDump(false);
-                String values = state.getValues();
+                String values = state.getValues(false);
                 throw new IllegalStateException(e.getMessage() + "\n" + stackDump + "\n" + values, e);
             }
 

@@ -624,7 +624,7 @@ public class InterpreterState {
         Stack<Integer> stack = getCallStack();
         String stackDump = "";
         if (!suppressNativeFrame) {
-            LineAndStatement las = getProgramInfo().locateStatement(getStatementIterator().getNextIndex() - 1);
+            LineAndStatement las = getHere();
             stackDump = stackTraceEntry(las, getStatementIterator().getNextIndex() - 1);
         }
         if (!stack.isEmpty()) {
@@ -634,6 +634,13 @@ public class InterpreterState {
             }).collect(Collectors.joining("\n"));
         }
         return stackDump;
+    }
+
+    /**
+     * @return the line and statement index of the current statement.
+     */
+    public LineAndStatement getHere() {
+        return getProgramInfo().locateStatement(getStatementIterator().getNextIndex() - 1);
     }
 
     /**
@@ -648,9 +655,19 @@ public class InterpreterState {
     /**
      * Helper method to generate a textual representation of the BASICODE program's variables for debugging purposes.
      *
+     * @param select {@code false} if all variable and array values should be displayed, {@code true} if only those
+     *               given in {@code OD$()} should be displayed.
      * @return all variable and array values at the current state.
      */
-    public String getValues() {
+    public String getValues(boolean select) {
+        if (select) {
+            Optional<BasicArray> oods = getArray("OD$");
+            if (oods.isPresent()) {
+                Object[] oodsObjects = oods.get().getRawData();
+                String[] oodsStrings = Arrays.copyOf(oodsObjects, oodsObjects.length, String[].class);
+                return getValues(oodsStrings);
+            }
+        }
         StringBuilder values = new StringBuilder();
         values.append("== variables ==\n");
         getVarStream().forEach(v -> appendRep(v, values));
@@ -716,23 +733,6 @@ public class InterpreterState {
     }
 
     /**
-     * Helper method to get a selection of variables and arrays in textual form, based on the contents of the
-     * {@code OD$} BASICODE array. If the array is not defined, an error string will be returned.
-     *
-     * @return the selected variable values and array contents, or an error string.
-     */
-    public String getSelectedValues() {
-        Optional<BasicArray> oods = getArray("OD$");
-        if (oods.isPresent()) {
-            Object[] oodsObjects = oods.get().getRawData();
-            String[] oodsStrings = Arrays.copyOf(oodsObjects, oodsObjects.length, String[].class);
-            return getValues(oodsStrings);
-        } else {
-            return "-- OD$() not present --";
-        }
-    }
-
-    /**
      * Helper method to generate a textual representation of relevant information to be displayed at breakpoints and
      * watchpoints. This consists of the stack trace and variable and array values and contents. Which variables and
      * array contents should be displayed is {@link de.haupz.basicode.subroutines.Subroutines#gosub964(InterpreterState)
@@ -743,7 +743,7 @@ public class InterpreterState {
      * @return debug information consisting of the stack trace and variable and array values and contents.
      */
     public String getDebugInfo(boolean suppressNativeFrame) {
-        String values = getSelectedValues();
+        String values = getValues(true);
         String stackDump = getStackDump(suppressNativeFrame);
         String debugInfo = stackDump + "\n" + values;
         return debugInfo;
