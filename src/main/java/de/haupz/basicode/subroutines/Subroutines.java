@@ -1074,12 +1074,12 @@ public class Subroutines {
             if (resultOp > 0 && resultOp <= breakpoints.size()) {
                 breakpoints.get(resultOp - 1).setActive(active);
             } else {
-                resultOp = -1;
                 error = "breakpoint " + resultOp + " does not exist";
+                resultOp = -1;
             }
         } else {
-            resultOp = -1;
             error = "OP is undefined";
+            resultOp = -1;
         }
         state.setVar("OP", Double.valueOf(resultOp));
         if (!error.isEmpty()) {
