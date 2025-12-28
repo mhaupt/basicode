@@ -372,4 +372,44 @@ public class BreakpointTest extends InterpreterTest {
                 """);
     }
 
+    @Test
+    public void testBreakpointActivationSelectiveDisplay() {
+        testInterpreter("""
+                1000 GOTO 20
+                1010 K=0:DIM OD$(1):OD$(1)="K":OL=1030:OS=3:GOSUB 966
+                1020 PRINT "breakpoint: ";OP
+                1030 K=K+1:PRINT K:PRINT "before":PRINT "here":PRINT "after"
+                1040 ON K GOTO 1050,1060,1070
+                1050 GOSUB 968:GOTO 1030
+                1060 GOSUB 967:GOTO 1030
+                1070 GOTO 950
+                """, """
+                breakpoint:  1\s
+                 1\s
+                before
+                at line 1030, statement 3
+                1030 K=K+1:PRINT K:PRINT "before":PRINT "here":PRINT "after"
+                ----------------------------------^
+                == variables ==
+                K = 1.0
+                 
+                here
+                after
+                 2\s
+                before
+                here
+                after
+                 3\s
+                before
+                at line 1030, statement 3
+                1030 K=K+1:PRINT K:PRINT "before":PRINT "here":PRINT "after"
+                ----------------------------------^
+                == variables ==
+                K = 3.0
+                 
+                here
+                after
+                """);
+    }
+
 }

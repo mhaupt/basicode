@@ -1037,7 +1037,9 @@ public class Subroutines {
             return;
         }
         Optional<BasicArray> od = state.getArray("OD$");
-        List<String> displayInfo = od.map(a -> Arrays.asList((String[]) a.getRawData())).orElse(List.of());
+        List<String> displayInfo = od
+                .map(a -> Arrays.stream(a.getRawData()).map(o -> (String) o).toList())
+                .orElse(List.of());
         Optional<Object> oc = state.getVar("OC$");
         boolean conditionOK = true;
         Optional<ExpressionNode> condition = Optional.empty();
