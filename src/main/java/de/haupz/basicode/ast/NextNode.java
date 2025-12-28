@@ -31,7 +31,8 @@ public class NextNode extends StatementNode {
         double step = frec.step().doubleValue();
         double nextit = it.doubleValue() + step;
         double end = frec.end().doubleValue();
-        boolean shouldEnd = step>= 0 ? nextit > end : nextit < end;
+        // Special case: if the step width is 0, reaching the target value terminates the loop.
+        boolean shouldEnd = step == 0 ? nextit == end : step > 0 ? nextit > end : nextit < end;
         state.setVar(id, nextit);
         if (shouldEnd) {
             state.stopLoop(id);

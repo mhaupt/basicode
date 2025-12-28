@@ -222,4 +222,23 @@ public class ForTest extends InterpreterTest {
                 """);
     }
 
+    @Test
+    public void testStep0() {
+        testInterpreter("""
+                1000 A=1
+                1010 FOR K=0 TO 1 STEP 0
+                1020 PRINT A
+                1030 IF A=3 THEN 2000
+                1040 IF A=2 THEN A=3:K=1
+                1050 IF A=1 THEN A=2
+                1060 NEXT K
+                1070 PRINT "success":GOTO 950
+                2000 PRINT "error";A;K:GOTO 950
+                """, """
+                 1\s
+                 2\s
+                success
+                """);
+    }
+
 }
