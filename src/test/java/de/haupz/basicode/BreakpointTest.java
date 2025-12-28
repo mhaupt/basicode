@@ -311,10 +311,9 @@ public class BreakpointTest extends InterpreterTest {
                 1010 K=0:OL=1030:OS=3:GOSUB 966
                 1020 PRINT "breakpoint: ";OP
                 1030 K=K+1:PRINT K:PRINT "before":PRINT "here":PRINT "after"
-                1040 ON K GOTO 1050,1060,1070
+                1040 ON K GOTO 1050,1060,950
                 1050 GOSUB 968:GOTO 1030
                 1060 GOSUB 967:GOTO 1030
-                1070 GOTO 950
                 """, """
                 breakpoint:  1\s
                  1\s
@@ -379,10 +378,9 @@ public class BreakpointTest extends InterpreterTest {
                 1010 K=0:DIM OD$(1):OD$(1)="K":OL=1030:OS=3:GOSUB 966
                 1020 PRINT "breakpoint: ";OP
                 1030 K=K+1:PRINT K:PRINT "before":PRINT "here":PRINT "after"
-                1040 ON K GOTO 1050,1060,1070
+                1040 ON K GOTO 1050,1060,950
                 1050 GOSUB 968:GOTO 1030
                 1060 GOSUB 967:GOTO 1030
-                1070 GOTO 950
                 """, """
                 breakpoint:  1\s
                  1\s
@@ -419,10 +417,9 @@ public class BreakpointTest extends InterpreterTest {
                 1010 K=0:OC$="K=3":DIM OD$(1):OD$(1)="K":OL=1030:OS=3:GOSUB 966
                 1020 PRINT "breakpoint: ";OP
                 1030 K=K+1:PRINT K:PRINT "before":PRINT "here":PRINT "after"
-                1040 ON K GOTO 1050,1060,1070
+                1040 ON K GOTO 1050,1060,950
                 1050 GOSUB 968:GOTO 1030
                 1060 GOSUB 967:GOTO 1030
-                1070 GOTO 950
                 """, """
                 breakpoint:  1\s
                  1\s

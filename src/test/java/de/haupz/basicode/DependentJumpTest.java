@@ -7,13 +7,13 @@ public class DependentJumpTest extends InterpreterTest {
     @Test
     public void testOnGoto() {
         testInterpreter("""
-                10 A=3
-                20 ON A GOTO 40,50,60,70
-                30 PRINT "Not to be seen."
-                40 PRINT "A"
-                50 PRINT "B"
-                60 PRINT "C"
-                70 PRINT "D"
+                1000 A=3
+                2000 ON A GOTO 4000,5000,6000,7000
+                3000 PRINT "Not to be seen."
+                4000 PRINT "A"
+                5000 PRINT "B"
+                6000 PRINT "C"
+                7000 PRINT "D"
                 """, """
                 C
                 D
@@ -23,13 +23,13 @@ public class DependentJumpTest extends InterpreterTest {
     @Test
     public void testOnGosub() {
         testInterpreter("""
-                10 A=3
-                20 ON A GOSUB 40,50,60,70
-                30 END
-                40 PRINT "A":RETURN
-                50 PRINT "B":RETURN
-                60 PRINT "C":RETURN
-                70 PRINT "D":RETURN
+                1000 A=3
+                2000 ON A GOSUB 4000,5000,6000,7000
+                3000 END
+                4000 PRINT "A":RETURN
+                5000 PRINT "B":RETURN
+                6000 PRINT "C":RETURN
+                7000 PRINT "D":RETURN
                 """, """
                 C
                 """);
@@ -38,13 +38,13 @@ public class DependentJumpTest extends InterpreterTest {
     @Test
     public void testOnGotoFloat() {
         testInterpreter("""
-                10 A=3.5
-                20 ON A GOTO 40,50,60,70
-                30 PRINT "Not to be seen."
-                40 PRINT "A"
-                50 PRINT "B"
-                60 PRINT "C"
-                70 PRINT "D"
+                1000 A=3.5
+                2000 ON A GOTO 4000,5000,6000,7000
+                3000 PRINT "Not to be seen."
+                4000 PRINT "A"
+                5000 PRINT "B"
+                6000 PRINT "C"
+                7000 PRINT "D"
                 """, """
                 C
                 D
@@ -54,13 +54,13 @@ public class DependentJumpTest extends InterpreterTest {
     @Test
     public void testOnGosubFloat() {
         testInterpreter("""
-                10 A=3.5
-                20 ON A GOSUB 40,50,60,70
-                30 END
-                40 PRINT "A":RETURN
-                50 PRINT "B":RETURN
-                60 PRINT "C":RETURN
-                70 PRINT "D":RETURN
+                1000 A=3.5
+                2000 ON A GOSUB 4000,5000,6000,7000
+                3000 END
+                4000 PRINT "A":RETURN
+                5000 PRINT "B":RETURN
+                6000 PRINT "C":RETURN
+                7000 PRINT "D":RETURN
                 """, """
                 C
                 """);
@@ -69,24 +69,37 @@ public class DependentJumpTest extends InterpreterTest {
     @Test
     public void testWrongIndexType() {
         testInterpreterThrows("""
-                10 A$="oops"
-                20 ON A$ GOTO 30
-                30 END
+                1000 A$="oops"
+                2000 ON A$ GOTO 3000
+                3000 END
                 """, IllegalStateException.class);
     }
 
     @Test
     public void testIndexOutOfBounds() {
         testInterpreterThrows("""
-                10 A=0
-                20 ON A GOTO 30
-                30 END
+                1000 A=0
+                2000 ON A GOTO 3000
+                3000 END
                 """, IllegalStateException.class);
         testInterpreterThrows("""
-                10 A=4
-                20 ON A GOTO 30,40,50
-                30 END
+                1000 A=4
+                2000 ON A GOTO 3000,4000,5000
+                3000 END
                 """, IllegalStateException.class);
+    }
+
+    @Test
+    public void testOnGotoSubroutine() {
+        testInterpreter("""
+                1000 GOTO 20
+                1010 FOR K=1 TO 2
+                1020 ON K GOTO 1030,950
+                1030 PRINT "1030"
+                1040 NEXT K
+                """, """
+                1030
+                """);
     }
 
 }

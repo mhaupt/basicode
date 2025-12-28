@@ -15,10 +15,8 @@ public class OnGotoNode extends DependentJumpNode {
     }
 
     @Override
-    public void run(InterpreterState state) {
-        int target = computeTarget(state);
-        state.setLineJumpTarget(target);
-        state.requestLineJump();
+    protected StatementNode makeJumpNode(int target) {
+        return new GotoNode(getStartPosition(), target);
     }
 
 }
